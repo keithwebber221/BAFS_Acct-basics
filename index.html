@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企會財數碼會計工作台｜基礎會計單元總目錄（第 1 至 7 課）</title>
+  <style>
+    :root {
+      --bg: #06141b;
+      --panel: #11212d;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --emerald: #059669;
+      --emerald-dark: #064e3b;
+      --emerald-light: #d1fae5;
+      --teal: #0d9488;
+      --blue: #2563eb;
+      --blue-light: #dbeafe;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --scale: 1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC", sans-serif; user-select: none; }
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(16, 185, 129, 0.14) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      padding: 14px;
+      font-size: calc(16px * var(--scale));
+      line-height: 1.55;
+    }
+    .app { max-width: 1120px; margin: 0 auto; }
+
+    @keyframes popIn { 0% { transform: scale(0.96); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    .pop { animation: popIn 0.22s ease-out; }
+    .shake { animation: shake 0.3s ease-in-out; }
+
+    /* 頂部領航看板 */
+    .hero-bar {
+      background: linear-gradient(135deg, #064e3b 0%, #0f766e 50%, #1e3a8a 100%);
+      border-radius: 20px;
+      padding: 20px 26px;
+      color: #fff;
+      margin-bottom: 14px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    .hero-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+    .hero-title { font-size: calc(23px * var(--scale)); font-weight: 900; display: flex; align-items: center; gap: 10px; letter-spacing: 0.5px; }
+    .hero-sub { font-size: calc(13.5px * var(--scale)); color: #a7f3d0; font-weight: 700; margin-top: 2px; }
+    .hero-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pill-stat { background: rgba(6, 20, 27, 0.65); border: 1px solid rgba(52, 211, 153, 0.45); padding: 6px 14px; border-radius: 30px; font-weight: 900; font-size: calc(13.5px * var(--scale)); color: #a7f3d0; }
+    .ctrl-btn { background: #fbbf24; color: #0f172a; border: none; padding: 7px 14px; border-radius: 30px; font-weight: 900; font-size: calc(13px * var(--scale)); cursor: pointer; transition: transform 0.15s; }
+    .ctrl-btn:hover { transform: scale(1.05); background: #fcd34d; }
+
+    /* 整體進度條 */
+    .progress-wrap { background: rgba(6, 20, 27, 0.55); border-radius: 12px; padding: 10px 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; border: 1px solid rgba(255,255,255,0.15); }
+    .prog-label { font-size: calc(13.5px * var(--scale)); font-weight: 900; color: #ecfdf5; white-space: nowrap; }
+    .prog-track { flex: 1; min-width: 180px; height: 12px; background: rgba(255,255,255,0.15); border-radius: 20px; overflow: hidden; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, #34d399, #fbbf24); border-radius: 20px; transition: width 0.35s ease; }
+    .prog-reset { background: transparent; border: 1px solid rgba(255,255,255,0.35); color: #cbd5e1; padding: 4px 10px; border-radius: 8px; font-size: calc(12px * var(--scale)); font-weight: 800; cursor: pointer; }
+    .prog-reset:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+    /* 四大主視圖切換導航 */
+    .hub-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    @media (max-width: 780px) { .hub-nav { grid-template-columns: repeat(2, 1fr); } }
+    .hub-tab {
+      background: var(--panel);
+      border: 2px solid #1e3a4c;
+      border-radius: 14px;
+      padding: 12px 10px;
+      color: #94a3b8;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .hub-tab:hover { border-color: #34d399; color: #fff; transform: translateY(-2px); }
+    .hub-tab.active {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-color: #6ee7b7;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
+    }
+    .hub-icon { font-size: calc(24px * var(--scale)); display: block; margin-bottom: 4px; }
+    .hub-label { font-size: calc(14.5px * var(--scale)); font-weight: 900; display: block; }
+    .hub-sub { font-size: calc(11.5px * var(--scale)); opacity: 0.9; }
+
+    /* 主舞台 */
+    .stage {
+      background-color: var(--card);
+      background-image: linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+      border-radius: 20px;
+      padding: 24px;
+      min-height: 550px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+      border: 2px solid #cbd5e1;
+    }
+
+    /* ================= 視圖 1：七課傳送門圖卡（預設主頁） ================= */
+    .filter-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }
+    .filter-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .f-btn { padding: 7px 14px; border-radius: 20px; border: 2px solid #cbd5e1; background: #f8fafc; font-weight: 900; font-size: calc(13.5px * var(--scale)); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .f-btn:hover { border-color: var(--emerald); color: var(--emerald-dark); }
+    .f-btn.active { background: var(--emerald-dark); color: #fff; border-color: var(--emerald-dark); }
+
+    .lessons-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    @media (max-width: 820px) { .lessons-grid { grid-template-columns: 1fr; } }
+
+    .lesson-card {
+      background: #fff;
+      border: 2px solid #cbd5e1;
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .lesson-card:hover { transform: translateY(-4px); border-color: var(--teal); box-shadow: 0 12px 24px rgba(13,148,136,0.15); }
+    .lesson-card.completed { border-color: #10b981; background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%); }
+
+    .lc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .lc-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: calc(13px * var(--scale)); color: #fff; }
+    .done-toggle {
+      padding: 5px 11px; border-radius: 20px; border: 2px solid #cbd5e1; background: #f8fafc;
+      font-size: calc(12px * var(--scale)); font-weight: 900; color: var(--muted); cursor: pointer; transition: all 0.15s;
+    }
+    .done-toggle.is-done { background: #dcfce7; border-color: #16a34a; color: #14532d; }
+
+    .lc-title { font-size: calc(19.5px * var(--scale)); font-weight: 900; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .lc-desc { font-size: calc(14px * var(--scale)); font-weight: 700; color: var(--muted); margin-bottom: 12px; }
+
+    .lc-Formula-box {
+      background: #f8fafc; border-left: 4px solid var(--teal); padding: 8px 12px;
+      border-radius: 8px; font-size: calc(13px * var(--scale)); font-weight: 900; color: #0f172a; margin-bottom: 12px;
+    }
+
+    .lc-modes-title { font-size: calc(12px * var(--scale)); font-weight: 900; color: #64748b; margin-bottom: 6px; }
+    .lc-modes-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .mode-pill { font-size: calc(12px * var(--scale)); font-weight: 800; padding: 3px 9px; border-radius: 6px; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+
+    .lc-actions { display: flex; gap: 10px; align-items: center; }
+    .launch-btn {
+      flex: 1; padding: 11px 16px; border-radius: 12px; border: none;
+      background: linear-gradient(135deg, #059669, #0d9488); color: #fff;
+      font-size: calc(15px * var(--scale)); font-weight: 900; cursor: pointer;
+      text-align: center; text-decoration: none; display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+      box-shadow: 0 4px 12px rgba(5,150,105,0.3); transition: all 0.15s;
+    }
+    .launch-btn:hover { background: linear-gradient(135deg, #047857, #0f766e); transform: scale(1.01); }
+    .preview-btn {
+      padding: 11px 14px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff;
+      font-size: calc(13.5px * var(--scale)); font-weight: 900; color: var(--emerald-dark); cursor: pointer;
+    }
+    .preview-btn:hover { background: #ecfdf5; border-color: var(--emerald); }
+
+    /* ================= 視圖 2：互動「會計循環與 7 課知識地圖」 ================= */
+    .cycle-map-box { background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 18px; padding: 20px; color: #fff; margin-bottom: 18px; border: 2px solid #34d399; }
+    .cm-title { font-size: calc(16px * var(--scale)); font-weight: 900; color: #34d399; margin-bottom: 12px; text-align: center; }
+    .cm-flow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    @media (max-width: 900px) { .cm-flow { grid-template-columns: repeat(2, 1fr); } }
+    .cm-node {
+      background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.2s;
+    }
+    .cm-node:hover { border-color: #fbbf24; background: rgba(255,255,255,0.15); transform: translateY(-3px); }
+    .cm-node.active { background: linear-gradient(145deg, #059669, #0d9488); border-color: #fde047; box-shadow: 0 0 15px rgba(52,211,153,0.5); }
+    .cm-ch { font-size: calc(11.5px * var(--scale)); font-weight: 900; color: #fbbf24; display: block; margin-bottom: 3px; }
+    .cm-icon { font-size: calc(26px * var(--scale)); display: block; margin-bottom: 4px; }
+    .cm-name { font-size: calc(13.5px * var(--scale)); font-weight: 900; line-height: 1.3; }
+
+    .map-detail-card { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 16px; padding: 22px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; align-items: center; }
+    @media (max-width: 780px) { .map-detail-card { grid-template-columns: 1fr; } }
+    .md-List { list-style: none; margin: 10px 0; }
+    .md-List li { padding: 6px 0; font-weight: 800; font-size: calc(14.5px * var(--scale)); border-bottom: 1px dashed #cbd5e1; }
+    .md-trap-box { background: #fff1f2; border: 2px solid #fda4af; border-radius: 12px; padding: 14px; color: #881337; font-weight: 800; font-size: calc(14px * var(--scale)); }
+
+    /* ================= 視圖 3：跨課「四大黃金公式與法則」速查表 ================= */
+    .formula-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .ft-btn { flex: 1; min-width: 180px; padding: 11px 12px; border-radius: 12px; border: 2px solid #cbd5e1; background: #f8fafc; font-weight: 900; font-size: calc(14px * var(--scale)); color: var(--muted); cursor: pointer; }
+    .ft-btn.active { background: #065f46; color: #fff; border-color: #065f46; }
+    .cheat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 760px) { .cheat-grid { grid-template-columns: 1fr; } }
+    .cheat-card { border-radius: 14px; padding: 18px; border: 2px solid #cbd5e1; background: #fff; }
+    .cheat-card h4 { font-size: calc(16.5px * var(--scale)); font-weight: 900; margin-bottom: 10px; color: #065f46; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+
+    /* ================= 視圖 4：跨課綜合「課題雷達」快測擂台 ================= */
+    .quiz-banner { background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; border-radius: 16px; padding: 22px; margin-bottom: 16px; border-left: 8px solid #fbbf24; }
+    .qb-tag { font-size: calc(13px * var(--scale)); color: #fbbf24; font-weight: 900; margin-bottom: 6px; display: block; }
+    .qb-stem { font-size: calc(18.5px * var(--scale)); font-weight: 900; line-height: 1.5; }
+    .quiz-opts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .q-opt-btn { padding: 14px 18px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(15px * var(--scale)); font-weight: 800; text-align: left; cursor: pointer; transition: all 0.15s; line-height: 1.5; }
+    .q-opt-btn:hover { border-color: var(--blue); background: #eff6ff; }
+    .feedback-pop { margin-top: 14px; padding: 16px 18px; border-radius: 14px; font-size: calc(15px * var(--scale)); font-weight: 700; display: none; line-height: 1.6; }
+    .fb-ok { background: #dcfce7; border: 2px solid var(--emerald); color: #14532d; }
+    .fb-err { background: #ffe4e6; border: 2px solid var(--rose); color: #881337; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- 頂部單元總覽與進度看板 -->
+  <div class="hero-bar">
+    <div class="hero-top">
+      <div>
+        <div class="hero-title">📊 企會財（BAFS）數碼會計工作台｜基礎會計單元總目錄</div>
+        <div class="hero-sub">涵蓋必修部分《基礎會計》全套 7 課（會計循環 ➔ 會計等式 ➔ 複式記帳 ➔ 試算表 ➔ 損益表 ➔ 財務狀況表 ➔ 會計原則）</div>
+      </div>
+      <div class="hero-controls">
+        <div class="pill-stat" id="doneCountBadge">🏆 完成進度：0 / 7 課</div>
+        <button class="ctrl-btn" onclick="toggleZoom()" id="zoomBtn">🔍 投影大字體：關</button>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <span class="prog-label" id="progPercentText">單元學習進度：0%</span>
+      <div class="prog-track"><div class="prog-fill" id="progFillBar" style="width: 0%;"></div></div>
+      <button class="prog-reset" onclick="resetProgress()">🔄 重置進度標記</button>
+    </div>
+  </div>
+
+  <!-- 四大導航模式切換 -->
+  <div class="hub-nav">
+    <button class="hub-tab active" onclick="switchHubView(0)" id="hTab0">
+      <span class="hub-icon">📚</span>
+      <span class="hub-label">七課工作台傳送門</span>
+      <span class="hub-sub">一鍵進入第 1 至 7 課</span>
+    </button>
+    <button class="hub-tab" onclick="switchHubView(1)" id="hTab1">
+      <span class="hub-icon">🗺️</span>
+      <span class="hub-label">會計循環互動地圖</span>
+      <span class="hub-sub">視覺化串連 7 課邏輯</span>
+    </button>
+    <button class="hub-tab" onclick="switchHubView(2)" id="hTab2">
+      <span class="hub-icon">⚡</span>
+      <span class="hub-label">跨課黃金公式速查</span>
+      <span class="hub-sub">等式、借貸、報表與原則</span>
+    </button>
+    <button class="hub-tab" onclick="switchHubView(3)" id="hTab3">
+      <span class="hub-icon">🎯</span>
+      <span class="hub-label">跨課綜合診斷擂台</span>
+      <span class="hub-sub">隨機抽選全單元實戰題</span>
+    </button>
+  </div>
+
+  <!-- 主舞台容器 -->
+  <div class="stage" id="hubStage"></div>
+</div>
+
+<script>
+  // =========================================================================
+  // 🔗 【老師專用設定區】請在此處填入第 1 至 7 課的網址（如 Google Sites 分頁連結或檔案名稱）
+  // =========================================================================
+  const LESSON_URLS = {
+    1: "lesson1.html", // 第 1 課：會計的目的及角色
+    2: "lesson2.html", // 第 2 課：會計等式
+    3: "lesson3.html", // 第 3 課：複式記帳法
+    4: "lesson4.html", // 第 4 課：試算表
+    5: "lesson5.html", // 第 5 課：獨資企業的財務報表（一）損益表
+    6: "lesson6.html", // 第 6 課：獨資企業的財務報表（二）財務狀況表
+    7: "lesson7.html"  // 第 7 課：會計假設、原則及慣例
+  };
+
+  // 設定點擊傳送門時是否在新分頁開啟（true = 新分頁開啟，適合嵌入 Google Sites；false = 原視窗開啟）
+  const OPEN_IN_NEW_TAB = true;
+
+  // ==================== 七課完整資料庫 ====================
+  const lessonsData = [
+    {
+      ch: 1,
+      group: "basic",
+      icon: "📊",
+      badgeColor: "#059669",
+      title: "第 1 課：會計的目的及角色",
+      subtitle: "簿記 vs 會計四大功能、決策關係（策劃與監控）及會計循環五部曲",
+      coreFormula: "會計循環：原始單據 ➔ 原始分錄簿 ➔ 分類帳 ➔ 試算表 ➔ 期末調整 ➔ 財務報表",
+      modes: ["🔄 循環 6 步流水線", "🗂️ 數據與功能分揀", "💼 會計師諮詢室", "🧲 磁力積木砌答案", "🏆 捉錯與消去擂台"],
+      points: [
+        "分辨「簿記（記錄及保存財務記錄）」與「會計（記錄、分類、歸納及溝通）」的範疇差異。",
+        "掌握管理人員如何利用會計信息進行「策劃（預測策略影響）」與「監控（比較實際業績與預算目標）」。",
+        "熟記會計循環的標準次序：過帳到分類帳後隨即「編製試算表」，緊隨試算表之後是「期末調整」，最後才「編製財務報表」。"
+      ],
+      trap: "考場伏位：切勿誤以為「過帳至分類帳後隨即作期末調整」或「編製試算表後隨即編製財務報表」；且非牟利機構同樣須進行會計工作！"
+    },
+    {
+      ch: 2,
+      group: "basic",
+      icon: "⚖️",
+      badgeColor: "#0d9488",
+      title: "第 2 課：會計等式",
+      subtitle: "資產、資本與負債的關係、收益費用與提用的影響、購貨與非購貨債權債務",
+      coreFormula: "擴展會計等式：資產 ＝ 資本 ＋（收益 － 費用）－ 提用 ＋ 負債",
+      modes: ["⚖️ 等式動態天秤", "🗂️ 債權債務與要素", "🧮 資本與負債計算", "🧲 磁力積木砌答案", "🏆 捉錯與消去擂台"],
+      points: [
+        "理解基本會計等式（資產 ＝ 資本 ＋ 負債）及移項公式（資本 ＝ 資產 － 負債 ＝ 淨資產）。",
+        "分辨「購貨債權人（應付貨款）」vs「非購貨債權人（其他應付款）」，以及「銷貨債務人（應收貨款）」vs「非銷貨債務人（其他應收款）」。",
+        "計算期末或期初資本額時，懂得剔除「向東主親友借入款項（屬負債）」的干擾陷阱。"
+      ],
+      trap: "考場伏位：賒購轉售貨品會令「資本減少（購貨屬費用）」及「負債增加（應付貨款）」，資產不變；東主以私人支票替企業還債或付費用則屬「注入額外資本」而非提用！"
+    },
+    {
+      ch: 3,
+      group: "basic",
+      icon: "📖",
+      badgeColor: "#2563eb",
+      title: "第 3 課：複式記帳法",
+      subtitle: "T 字形帳戶（左借右貸）、等式移項借貸法則、月底結平帳戶與三類餘額",
+      coreFormula: "借貸黃金定律：資產 ＋ 費用 ＋ 提用（借增貸減）＝ 資本 ＋ 收益 ＋ 負債（貸增借減）",
+      modes: ["⚡ 借貸法則雷達", "📖 T 字帳記帳台", "🧮 結平與餘額計算", "🧲 磁力積木砌答案", "🏆 捉錯與消去擂台"],
+      points: [
+        "明白「借方（Dr）」純粹指帳戶左方，「貸方（Cr）」指帳戶右方；每項交易必須一借一貸、金額相等。",
+        "利用移項等式分辨左陣營（資／費／提：借記增加、常現借方餘額）與右陣營（資／收／債：貸記增加、常現貸方餘額）。",
+        "掌握月底結平帳戶時，期末「餘額轉下」寫在金額較小一方，而下期初「餘額承上」則轉到金額較大一方。"
+      ],
+      trap: "考場伏位：當帳戶有「貸方餘額」時，本期末的「餘額轉下」是出現在借方，下期初的「餘額承上」才出現在貸方；且借貸結餘絕不代表正數或負數！"
+    },
+    {
+      ch: 4,
+      group: "stmt",
+      icon: "📋",
+      badgeColor: "#4f46e5",
+      title: "第 4 課：試算表",
+      subtitle: "試算表的功能與格式（「於」某日）、重編錯誤試算表、影響與不影響平衡的錯誤",
+      coreFormula: "試算表平衡條件：所有帳戶借方餘額總和 ＝ 所有帳戶貸方餘額總和",
+      modes: ["🛠️ 試算表執錯器", "🕵️ 失蹤資本與調整", "🔍 錯誤影響 X 光機", "🧲 磁力積木砌答案", "🏆 捉錯與消去擂台"],
+      points: [
+        "掌握試算表的兩大功能：① 檢查分類帳記帳的算術準確度；② 方便在會計期末編製財務報表。",
+        "緊記試算表並不是分類帳帳戶，標題必須使用「於（期末日期）」，且不須把零餘額的帳戶列於試算表內。",
+        "區分「影響試算表平衡的錯誤（如單邊漏記、同方重複記帳）」與「不影響試算表平衡的錯誤（如整筆漏記、入錯同向帳戶、借貸同記錯金額）」。"
+      ],
+      trap: "考場伏位：企業的「手頭現金帳戶」只會出現借方餘額或零餘額（不會有貸方餘額）；若試算表借方總和大於貸方總和，只代表「複式記帳有錯誤」而非代表有虧損！"
+    },
+    {
+      ch: 5,
+      group: "stmt",
+      icon: "📈",
+      badgeColor: "#d97706",
+      title: "第 5 課：獨資企業的財務報表（一）損益表",
+      subtitle: "直式損益表格式（「截至……止年度」）、銷貨成本、運費、退貨、交易與現金折扣",
+      coreFormula: "毛利 ＝ 銷貨淨額 － 銷貨成本 ｜ 淨利 ＝ 毛利 ＋ 其他收益 － 營業費用",
+      modes: ["🛠️ 損益表診症室", "🗂️ 毛利淨利分揀機", "🧮 折扣與損益計算", "🧲 磁力積木砌答案", "🏆 捉錯與消去擂台"],
+      points: [
+        "熟練計算銷貨成本：期初存貨 ＋（購貨 ＋ 購貨運費 － 購貨退出）－ 期末存貨。",
+        "分辨「購貨運費（入銷貨成本，同時影響毛利和淨利）」與「銷貨運費（列作營業費用，只影響淨利）」。",
+        "分辨「交易折扣（大額購貨優惠，直接扣減標價不入帳，會影響銷貨成本）」與「現金折扣（提早還款優惠，入帳為銷貨折扣［費用］或購貨折扣［其他收益］）」。"
+      ],
+      trap: "考場伏位：損益表標題必用「截至（年結日）止年度」，毛損或淨損失必須加上括號 `(XX)` 標示；汽車、設備、銀行透支本金及提用均不可列入損益表！"
+    },
+    {
+      ch: 6,
+      group: "stmt",
+      icon: "🏛️",
+      badgeColor: "#7c3aed",
+      title: "第 6 課：獨資企業的財務報表（二）財務狀況表",
+      subtitle: "流量 vs 存量概念、資產負債分類與排序、營運資金、人名與虛實帳戶、報表限制",
+      coreFormula: "資產（非流動 ＋ 流動）＝ 期末資本（期初 ＋ 淨利 － 提用）＋ 負債（非流動 ＋ 流動）",
+      modes: ["🛠️ 狀況表診症室", "🗂️ 資產與帳戶快篩", "🧮 營運資金計算機", "🧲 磁力積木砌答案", "🏆 捉錯與消去擂台"],
+      points: [
+        "掌握排序規則：非流動資產按「耐用性降序」排列；流動資產按「變現能力升序」排列（存貨 ➔ 應收貨款 ➔ 銀行存款 ➔ 現金）。",
+        "計算「流動資產淨值（營運資金 ＝ 流動資產 － 流動負債）」及「淨流動負債」，並分辨按金、訂金及定期存款的分類。",
+        "掌握分類帳帳戶雙維度分類（人名 vs 非人名［注意：東主資本屬非人名］；虛帳戶［收益費用］vs 實帳戶［資產負債資本］）及財務報表六大限制。"
+      ],
+      trap: "考場伏位：財務狀況表屬存量概念，標題必用「於（年結日）」，只展示實帳戶結餘；銀行透支屬「流動負債」；且報表只提供量化信息，無法反映員工晉升前景或產品質素等質化信息！"
+    },
+    {
+      ch: 7,
+      group: "prin",
+      icon: "🧭",
+      badgeColor: "#e11d48",
+      title: "第 7 課：會計假設、原則及慣例",
+      subtitle: "企業個體概念、歷史成本原則、繼續經營概念、一貫原則及應計概念的情境應用",
+      coreFormula: "情境題三步策略：① 識別會計原則或概念 ➔ ② 套用定義重要字眼 ➔ ③ 列出具體會計處理",
+      modes: ["⚖️ 合規裁判診斷台", "🏷️ 資產計價計算器", "⏱️ 應計跨期計算機", "🧲 情境三步砌答案", "🏆 捉錯與消去擂台"],
+      points: [
+        "企業個體概念：企業獨立於東主及東主其他企業；東主私人開支或取去免費樣本自用須作「提用」處理（惟獨資在法律上並非獨立法人）。",
+        "繼續經營概念與歷史成本原則：繼續經營下資產按購買成本淨額（標價減交易折扣）計價，不理會市值變動；若決定短期內清盤結業，則改按「清盤價值或變現淨值」計價。",
+        "一貫原則（除非新方法更能反映實際情況否則沿用同一政策）與應計概念（在賺取時確認收益、招致時確認費用，而非按收付款時間）。"
+      ],
+      trap: "考場伏位：一貫原則並無規定會計政策永久不可更改，亦無要求所有不同企業採用相同政策；而東主妻子存入企業銀行戶口的借款應列作「資產和負債」而非資本！"
+    }
+  ];
+
+  // ==================== 跨課綜合「課題雷達」快測題庫 ====================
+  let crossQuizzes = [
+    {
+      tag: "跨課綜合實戰 #01（串連第 2、3、4 及 6 課）",
+      stem: "下列哪項有關企業「銀行存款」、「現金」與「銀行透支」在各帳簿及報表處理的陳述是正確的？",
+      opts: [
+        { text: "企業的手頭現金帳戶只會出現借方餘額或零餘額；而當往來存款帳戶出現貸方餘額時稱為「銀行透支」，應列於試算表的貸方欄及財務狀況表的流動負債部分。", ok: true },
+        { text: "銀行透支與透支利息均屬於須在會計期末結清的「虛帳戶」，兩者均應列示於損益表的營業費用部分。", ok: false },
+        { text: "企業存放在銀行的兩年期定期存款可隨時簽發支票付款，在財務狀況表中應排在應收貨款之前列為流動資產。", ok: false },
+        { text: "當企業把手頭現金存入銀行往來存款帳戶時，企業的流動資產總額及會計等式總額均會相應增加。", ok: false }
+      ],
+      exp: "【跨課整合解析】① 手頭現金帳戶只有借方餘額或零餘額（第 4 課題 4.7）；② 銀行透支屬流動負債（實帳戶、貸方餘額），列於試算表貸方及財務狀況表流動負債，只有「透支利息」才屬虛帳戶入損益表（第 5、6 課）；③ 兩年期定期存款屬非流動資產，往來帳戶才可簽發支票（第 2、6 課）；④ 現金存入銀行屬資產內部一增一減，總額不變（第 2 課）！"
+    },
+    {
+      tag: "跨課綜合實戰 #02（串連第 2、5 及 7 課）",
+      stem: "某商號在 2022 年 12 月 28 日向供應商賒購一批標價 $50,000 的營運機器，獲 10% 交易折扣；商號於 2023 年 1 月 15 日才以支票付清款項。年底該機器市值跌至 $40,000。下列哪項處理是正確的？",
+      opts: [
+        { text: "根據歷史成本原則，該機器在 2022 年 12 月 31 日的財務狀況表中應按非流動資產 $45,000 列示，同時列示非購貨債權人（其他應付款）$45,000。", ok: true },
+        { text: "根據應計概念，由於商號在 2023 年 1 月才支付支票，因此該台機器及相關負債應留待 2023 年度才記入帳冊。", ok: false },
+        { text: "商號應將該機器按 $50,000 列入損益表的購貨項目內，並將 $5,000 交易折扣列作損益表的其他收益。", ok: false },
+        { text: "由於年底機器市值跌至 $40,000，根據繼續經營概念，商號應在 2022 年底的財務狀況表按清盤價值 $40,000 列示該機器。", ok: false }
+      ],
+      exp: "【跨課整合解析】① 購買機器供營運使用屬於「非流動資產」，未付貨款屬於「非購貨債權人：其他應付款（流動負債）」（第 2、6 課）；② 交易折扣（10%）直接從標價扣除不設獨立帳戶（第 5 課）；③ 根據歷史成本原則及繼續經營概念，機器按購買成本淨額 $45,000（$50,000 × 90%）入帳，不理會市值跌至 $40,000（第 7 課）！"
+    },
+    {
+      tag: "跨課綜合實戰 #03（串連第 1、4、5 及 6 課）",
+      stem: "下列哪項有關「試算表」、「損益表」與「財務狀況表」三者比較的陳述是正確的？",
+      opts: [
+        { text: "試算表及財務狀況表的標題均使用「於（某特定日期）」，而損益表的標題則使用「截至（某特定日期）止年度」；且只有損益表採用流量概念。", ok: true },
+        { text: "三者均屬於企業對外公布的財務報表，只要試算表的借貸總額相等，即保證損益表計算出的淨利絕對沒有任何記帳錯誤。", ok: false },
+        { text: "試算表內的存貨餘額與財務狀況表內的存貨餘額均代表本會計期的「期末存貨」，兩者的金額必定相同。", ok: false },
+        { text: "東主的「提用」帳戶餘額會同時出現在試算表的借方欄及損益表的營業費用部分，用以減低企業的年度淨利。", ok: false }
+      ],
+      exp: "【跨課整合解析】① 試算表與財務狀況表反映截至某日的結餘（標題用「於某日」），損益表反映一段期間的收益與費用流量（標題用「截至……止年度」，屬流量概念）（第 4、5、6 課）；② 試算表只是內部餘額清單而非對外財務報表，且無法找出不影響平衡的錯誤（第 4 課）；③ 試算表內的存貨通常是「期初存貨」，財務狀況表內的存貨才是「期末存貨」（第 5、6 課）；④ 提用是在財務狀況表從資本扣除，不入損益表（第 5、6 課）！"
+    },
+    {
+      tag: "跨課綜合實戰 #04（串連第 2、3、6 及 7 課）",
+      stem: "獨資東主陳先生在年結日前進行了兩項交易：(1) 提取企業貨倉內成本 $3,000 的免費樣本供家人自用；(2) 由陳先生的妻子將 $50,000 私人存款轉入企業的銀行帳戶作為免息借款。這兩項交易對企業帳目有何影響？",
+      opts: [
+        { text: "根據企業個體概念，交易 (1) 應借記「提用帳戶」$3,000（令資本減少）；交易 (2) 則令企業的「銀行存款（資產）」及「貸款（負債）」同時增加 $50,000。", ok: true },
+        { text: "根據一貫原則，交易 (1) 應借記「促銷費用帳戶」$3,000；交易 (2) 則應貸記「東主資本帳戶」$50,000。", ok: false },
+        { text: "兩項交易均屬於東主與家人的私人事務，根據企業個體概念，兩項交易均不應記錄在企業的會計帳簿內。", ok: false },
+        { text: "交易 (1) 會令企業的銷貨收益增加 $3,000；交易 (2) 則會令企業的其他收益增加 $50,000。", ok: false }
+      ],
+      exp: "【跨課整合解析】① 根據第 7 課「企業個體概念」（公開試題 7.25），東主取去免費樣本自用必須作「提用（借記提用，扣減資本）」處理而非促銷費用；② 根據第 2 及 7 課（題 7.1），東主妻子屬於「東主以外的人士」，其借予企業的 $50,000 屬於企業的「負債（貸款）」而非東主資本！"
+    }
+  ];
+
+  // ==================== 狀態管理 ====================
+  let curView = 0; // 0: 七課傳送門, 1: 會計循環互動地圖, 2: 黃金公式速查, 3: 跨課診斷擂台
+  let curFilter = "all";
+  let selectedMapCh = 1;
+  let curFormulaTab = 0;
+  let curQuizIdx = 0;
+  let isZoom = false;
+
+  // 從 localStorage 讀取完成進度
+  let completedMap = {};
+  try {
+    const saved = localStorage.getItem("bafs_acct_done_v1");
+    if (saved) completedMap = JSON.parse(saved);
+  } catch (e) {}
+
+  function saveProgress() {
+    try {
+      localStorage.setItem("bafs_acct_done_v1", JSON.stringify(completedMap));
+    } catch (e) {}
+    updateProgressBar();
+  }
+
+  function toggleLessonDone(ch, event) {
+    if (event) event.stopPropagation();
+    completedMap[ch] = !completedMap[ch];
+    saveProgress();
+    renderHubStage();
+  }
+
+  function resetProgress() {
+    completedMap = {};
+    saveProgress();
+    renderHubStage();
+  }
+
+  function updateProgressBar() {
+    let doneCnt = 0;
+    for (let i = 1; i <= 7; i++) {
+      if (completedMap[i]) doneCnt++;
+    }
+    const pct = Math.round((doneCnt / 7) * 100);
+    document.getElementById("doneCountBadge").innerText = `🏆 完成進度：${doneCnt} / 7 課`;
+    document.getElementById("progPercentText").innerText = `單元學習進度：${pct}%（已完成 ${doneCnt} 課）`;
+    document.getElementById("progFillBar").style.width = `${pct}%`;
+  }
+
+  function toggleZoom() {
+    isZoom = !isZoom;
+    document.documentElement.style.setProperty('--scale', isZoom ? '1.16' : '1');
+    document.getElementById("zoomBtn").innerText = isZoom ? "🔍 投影大字體：開" : "🔍 投影大字體：關";
+  }
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function switchHubView(v) {
+    curView = v;
+    for (let i = 0; i < 4; i++) {
+      document.getElementById(`hTab${i}`).className = "hub-tab" + (i === v ? " active" : "");
+    }
+    if (v === 3) {
+      crossQuizzes = shuffle(crossQuizzes);
+      crossQuizzes.forEach(q => { q.opts = shuffle(q.opts); });
+      curQuizIdx = 0;
+    }
+    renderHubStage();
+  }
+
+  function jumpToMapCh(ch) {
+    selectedMapCh = ch;
+    switchHubView(1);
+  }
+
+  function renderHubStage() {
+    const stage = document.getElementById("hubStage");
+    stage.classList.remove("pop");
+    void stage.offsetWidth;
+    stage.classList.add("pop");
+
+    if (curView === 0) renderPortalView(stage);
+    else if (curView === 1) renderCycleMapView(stage);
+    else if (curView === 2) renderFormulaCheatView(stage);
+    else if (curView === 3) renderCrossQuizView(stage);
+  }
+
+  // ==================== 渲染視圖 1：七課工作台傳送門 ====================
+  function renderPortalView(stage) {
+    const filtered = lessonsData.filter(item => curFilter === "all" || item.group === curFilter);
+
+    const cardsHtml = filtered.map(item => {
+      const isDone = !!completedMap[item.ch];
+      const url = LESSON_URLS[item.ch] || "#";
+      const targetAttr = OPEN_IN_NEW_TAB ? 'target="_blank" rel="noopener"' : '';
+      const pills = item.modes.map(m => `<span class="mode-pill">${m}</span>`).join("");
+
+      return `
+        <div class="lesson-card ${isDone ? 'completed' : ''}">
+          <div>
+            <div class="lc-top">
+              <span class="lc-badge" style="background:${item.badgeColor};">${item.icon} 第 ${item.ch} 課</span>
+              <button class="done-toggle ${isDone ? 'is-done' : ''}" onclick="toggleLessonDone(${item.ch}, event)">
+                ${isDone ? '✅ 已完成溫習' : '⬜ 標記完成'}
+              </button>
+            </div>
+            <div class="lc-title">${item.title}</div>
+            <div class="lc-desc">${item.subtitle}</div>
+            <div class="lc-Formula-box">📌 ${item.coreFormula}</div>
+            <div class="lc-modes-title">🎮 內置 5 大互動訓練模組：</div>
+            <div class="lc-modes-wrap">${pills}</div>
+          </div>
+          <div class="lc-actions">
+            <a class="launch-btn" href="${url}" ${targetAttr}>🚀 進入第 ${item.ch} 課工作台 →</a>
+            <button class="preview-btn" onclick="jumpToMapCh(${item.ch})" title="查看本課溫習要點與考場伏位">🔍 重點預覽</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    stage.innerHTML = `
+      <div class="filter-bar">
+        <div style="font-weight:900; color:#065f46; font-size:calc(16.5px * var(--scale));">
+          🗂️ 請選擇你要進入的《基礎會計》課題工作台：
+        </div>
+        <div class="filter-btns">
+          <button class="f-btn ${curFilter === 'all' ? 'active' : ''}" onclick="setPortalFilter('all')">全部課題（共 7 課）</button>
+          <button class="f-btn ${curFilter === 'basic' ? 'active' : ''}" onclick="setPortalFilter('basic')">記帳原理（第 1–3 課）</button>
+          <button class="f-btn ${curFilter === 'stmt' ? 'active' : ''}" onclick="setPortalFilter('stmt')">試算與報表（第 4–6 課）</button>
+          <button class="f-btn ${curFilter === 'prin' ? 'active' : ''}" onclick="setPortalFilter('prin')">會計原則（第 7 課）</button>
+        </div>
+      </div>
+      <div class="lessons-grid">${cardsHtml}</div>
+    `;
+  }
+
+  function setPortalFilter(f) {
+    curFilter = f;
+    renderPortalView(document.getElementById("hubStage"));
+  }
+
+  // ==================== 渲染視圖 2：互動「會計循環與 7 課知識地圖」 ====================
+  function renderCycleMapView(stage) {
+    const nodesHtml = lessonsData.map(item => `
+      <div class="cm-node ${selectedMapCh === item.ch ? 'active' : ''}" onclick="selectMapNode(${item.ch})">
+        <span class="cm-ch">第 ${item.ch} 課</span>
+        <span class="cm-icon">${item.icon}</span>
+        <div class="cm-name">${item.title.split("：")[1]}</div>
+      </div>
+    `).join("");
+
+    const curItem = lessonsData.find(d => d.ch === selectedMapCh);
+    const url = LESSON_URLS[curItem.ch] || "#";
+    const targetAttr = OPEN_IN_NEW_TAB ? 'target="_blank" rel="noopener"' : '';
+    const pointsHtml = curItem.points.map(p => `<li>✔️ ${p}</li>`).join("");
+
+    stage.innerHTML = `
+      <div class="cycle-map-box">
+        <div class="cm-title">🔄 點擊下方任何一課節點，即時檢視該課在「會計循環」中的角色與必考伏位：</div>
+        <div class="cm-flow">${nodesHtml}</div>
+      </div>
+
+      <div class="map-detail-card">
+        <div>
+          <span class="lc-badge" style="background:${curItem.badgeColor}; margin-bottom:8px;">${curItem.icon} 第 ${curItem.ch} 課核心檔案</span>
+          <h3 style="font-size:calc(21px * var(--scale)); font-weight:900; margin-bottom:6px;">${curItem.title}</h3>
+          <div class="lc-Formula-box" style="margin-bottom:10px;">📌 ${curItem.coreFormula}</div>
+          <div style="font-weight:900; color:#065f46; font-size:calc(14.5px * var(--scale));">🎯 本課三大必考重點：</div>
+          <ul class="md-List">${pointsHtml}</ul>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="md-trap-box">
+            <div style="font-size:calc(15px * var(--scale)); font-weight:900; margin-bottom:4px;">⚠️ 公開試高頻失分陷阱：</div>
+            <div>${curItem.trap}</div>
+          </div>
+          <a class="launch-btn" style="padding:15px;" href="${url}" ${targetAttr}>
+            🚀 立即進入「${curItem.title}」互動工作台 →
+          </a>
+          <button class="preview-btn" onclick="switchHubView(0)">← 返回七課總目錄列表</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function selectMapNode(ch) {
+    selectedMapCh = ch;
+    renderCycleMapView(document.getElementById("hubStage"));
+  }
+
+  // ==================== 渲染視圖 3：跨課「四大黃金公式與法則」速查表 ====================
+  function renderFormulaCheatView(stage) {
+    let contentHtml = "";
+    if (curFormulaTab === 0) {
+      contentHtml = `
+        <div class="cheat-grid">
+          <div class="cheat-card" style="background:#eff6ff; border-color:#60a5fa;">
+            <h4>🟦 等式左陣營：資產 ＋ 費用 ＋ 提用</h4>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>複式記帳方向</strong>：➕ 增加 ➔ <strong>借記（Dr 左方）</strong> ｜ ➖ 減少 ➔ <strong>貸記（Cr 右方）</strong></p>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>試算表正常餘額</strong>：通常出現 <strong>借方餘額</strong>（借方總額 ＞ 貸方總額）</p>
+            <p style="font-weight:800;">• <strong>代表帳戶</strong>：機器、汽車、存貨、應收貨款、其他應收款、租金按金（租客）、銀行存款、現金、購貨、購貨運費、銷貨運費、銷貨折扣、薪金、提用（另「銷貨退回」亦屬借方餘額）。</p>
+          </div>
+          <div class="cheat-card" style="background:#f5f3ff; border-color:#a78bfa;">
+            <h4>🟪 等式右陣營：資本 ＋ 收益 ＋ 負債</h4>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>複式記帳方向</strong>：➕ 增加 ➔ <strong>貸記（Cr 右方）</strong> ｜ ➖ 減少 ➔ <strong>借記（Dr 左方）</strong></p>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>試算表正常餘額</strong>：通常出現 <strong>貸方餘額</strong>（貸方總額 ＞ 借方總額）</p>
+            <p style="font-weight:800;">• <strong>代表帳戶</strong>：資本、銷貨、購貨折扣、銀行存款利息收益、佣金收益、應付貨款、其他應付款、銀行透支、銀行貸款、客戶訂金（另「購貨退出」亦屬貸方餘額）。</p>
+          </div>
+        </div>
+      `;
+    } else if (curFormulaTab === 1) {
+      contentHtml = `
+        <div class="cheat-grid">
+          <div class="cheat-card">
+            <h4>📈 直式損益表標準五步公式（標題：截至某日止年度）</h4>
+            <p style="font-weight:800; margin-bottom:6px;">1️⃣ <strong>銷貨淨額</strong> ＝ 銷貨 － 銷貨退回</p>
+            <p style="font-weight:800; margin-bottom:6px;">2️⃣ <strong>購貨淨額</strong> ＝ 購貨 ＋ 購貨運費 － 購貨退出</p>
+            <p style="font-weight:800; margin-bottom:6px;">3️⃣ <strong>銷貨成本</strong> ＝ 期初存貨 ＋ 購貨淨額 － 期末存貨</p>
+            <p style="font-weight:800; margin-bottom:6px;">4️⃣ <strong>毛利／(毛損)</strong> ＝ 銷貨淨額 － 銷貨成本</p>
+            <p style="font-weight:800;">5️⃣ <strong>淨利／(淨損失)</strong> ＝ 毛利 ＋ 其他收益（如購貨折扣、存款利息）－ 營業費用（如銷貨運費、銷貨折扣、租金、薪金、貸款及透支利息）</p>
+          </div>
+          <div class="cheat-card" style="background:#fffbeb; border-color:#f59e0b;">
+            <h4>🏷️ 交易折扣 vs 現金折扣 ＆ 兩種運費對比</h4>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>交易折扣（大額購貨優惠）</strong>：直接從標價扣除，<strong>不記錄在帳冊內</strong>；供應商給予的交易折扣會減低購貨買價（減低銷貨成本），同時影響毛利及淨利。</p>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>現金折扣（提早還款優惠）</strong>：按扣除交易折扣後的欠款淨額計算，獨立記入<strong>銷貨折扣（營業費用）</strong>及<strong>購貨折扣（其他收益）</strong>，只影響淨利而不影響毛利。</p>
+            <p style="font-weight:800;">• <strong>購貨運費 vs 銷貨運費</strong>：購貨運費計入銷貨成本（影響毛利及淨利）；銷貨運費列作營業費用（只影響淨利）。</p>
+          </div>
+        </div>
+      `;
+    } else if (curFormulaTab === 2) {
+      contentHtml = `
+        <div class="cheat-grid">
+          <div class="cheat-card">
+            <h4>🏛️ 財務狀況表排序與營運資金（標題：於某特定日期）</h4>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>非流動資產排序</strong>：按<strong>耐用性降序</strong>排列（由最耐用的物業、廠房機器、設備、家具及裝置排起）。</p>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>流動資產排序</strong>：按<strong>變現能力升序</strong>排列（由最難變現排至現金：<strong>存貨 ➔ 應收貨款 ➔ 銀行存款 ➔ 現金</strong>）。</p>
+            <p style="font-weight:800;">• <strong>流動資產淨值（營運資金）</strong> ＝ 流動資產 － 流動負債（反映短期變現及償債能力；若流動負債 ＞ 流動資產則稱為<strong>淨流動負債</strong>，須加括號）。</p>
+          </div>
+          <div class="cheat-card" style="background:#f0fdf4; border-color:#4ade80;">
+            <h4>🗂️ 分類帳帳戶的兩種分類方法（第 6.5 節必考）</h4>
+            <p style="font-weight:800; margin-bottom:8px;">• <strong>維度一：人名帳戶 vs 非人名帳戶</strong><br>
+              — <strong>人名帳戶</strong>：只包括債務人及債權人（應收貨款、其他應收款、應付貨款、其他應付款）。<br>
+              — <strong>非人名帳戶</strong>：所有其他帳戶（注意：<strong>東主的資本</strong>、員工薪金、銀行存款均屬非人名帳戶！）。</p>
+            <p style="font-weight:800;">• <strong>維度二：虛帳戶 vs 實帳戶</strong><br>
+              — <strong>虛帳戶（臨時帳戶）</strong>：期末須結清的帳戶（所有<strong>收益</strong>及<strong>費用</strong>，如購貨折扣、汽車維修費）。<br>
+              — <strong>實帳戶（永久性帳戶）</strong>：餘額移後至下期的帳戶（所有<strong>資產、負債及資本</strong>，如存貨、銀行透支）。</p>
+          </div>
+        </div>
+      `;
+    } else {
+      contentHtml = `
+        <div class="cheat-grid">
+          <div class="cheat-card">
+            <h4>🧭 五大會計假設、原則及慣例（一）</h4>
+            <p style="font-weight:800; margin-bottom:8px;">1️⃣ <strong>企業個體概念</strong>：企業應被視作一個<strong>獨立於其東主（及東主其他企業）的個體</strong>，只有影響企業的交易才記入企業帳簿（東主私人開支或取去免費樣本自用須作「提用」處理）。</p>
+            <p style="font-weight:800; margin-bottom:8px;">2️⃣ <strong>歷史成本原則</strong>：資產價值應按<strong>購買或生產該資產的成本（扣除交易折扣後淨額）</strong>計算，無須理會市值在其後的變化（好處：客觀及易核實；限制：無法反映現值）。</p>
+            <p style="font-weight:800;">3️⃣ <strong>繼續經營概念</strong>：假設企業在<strong>可見的未來會繼續經營</strong>（是應用歷史成本原則的基礎）；若決定短期內清盤結業，假設便失效，資產應改按<strong>清盤價值或變現淨值</strong>計價。</p>
+          </div>
+          <div class="cheat-card">
+            <h4>🧭 五大會計假設、原則及慣例（二）</h4>
+            <p style="font-weight:800; margin-bottom:10px;">4️⃣ <strong>一貫原則</strong>：<strong>除非更改會計政策或方法能更準確地反映企業的實際情況</strong>（並須在報表披露重大影響），否則企業處理類似項目時應<strong>持續採用同一會計政策或方法</strong>（不可為推高利潤而更改）。</p>
+            <p style="font-weight:800;">5️⃣ <strong>應計概念</strong>：企業應按<strong>應計基礎</strong>而非現金基礎量度損益——<strong>收益應在賺取時（貨品已送達客戶並由客戶接收）確認</strong>，而不應在收款時確認；<strong>費用應在招致時（期內已耗用服務或資源）確認</strong>，而不應在付款時確認。</p>
+          </div>
+        </div>
+      `;
+    }
+
+    stage.innerHTML = `
+      <div>
+        <div class="formula-tabs">
+          <button class="ft-btn ${curFormulaTab === 0 ? 'active' : ''}" onclick="setFormulaTab(0)">⚖️ 1. 等式移項與借貸法則（第 2–3 課）</button>
+          <button class="ft-btn ${curFormulaTab === 1 ? 'active' : ''}" onclick="setFormulaTab(1)">📈 2. 損益表結構與折扣運費（第 5 課）</button>
+          <button class="ft-btn ${curFormulaTab === 2 ? 'active' : ''}" onclick="setFormulaTab(2)">🏛️ 3. 財務狀況表與帳戶分類（第 6 課）</button>
+          <button class="ft-btn ${curFormulaTab === 3 ? 'active' : ''}" onclick="setFormulaTab(3)">🧭 4. 五大會計假設與原則（第 7 課）</button>
+        </div>
+        ${contentHtml}
+      </div>
+    `;
+  }
+
+  function setFormulaTab(t) {
+    curFormulaTab = t;
+    renderFormulaCheatView(document.getElementById("hubStage"));
+  }
+
+  // ==================== 渲染視圖 4：跨課綜合「課題雷達」快測擂台 ====================
+  function renderCrossQuizView(stage) {
+    const qItem = crossQuizzes[curQuizIdx];
+    const optsHtml = qItem.opts.map((o, oIdx) => `
+      <button class="q-opt-btn" onclick="checkCrossQuiz(${oIdx})">👉 ${o.text}</button>
+    `).join("");
+
+    let dotsHtml = "";
+    for (let i = 0; i < crossQuizzes.length; i++) {
+      dotsHtml += `<button class="dot-btn ${i === curQuizIdx ? 'active' : ''}" onclick="goCrossQuiz(${i})">${i + 1}</button>`;
+    }
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🎯 跨課綜合「課題雷達」實戰快測（測試第 1 至 7 課融會貫通能力）</span>
+          <div class="dots-nav">${dotsHtml}</div>
+        </div>
+        <div class="quiz-banner">
+          <span class="qb-tag">${qItem.tag}</span>
+          <div class="qb-stem">${qItem.stem}</div>
+        </div>
+        <div class="quiz-opts">${optsHtml}</div>
+        <div class="feedback-pop" id="cqFb"></div>
+        <div style="display:flex; justify-content:space-between; margin-top:18px; padding-top:12px; border-top:2px solid #e2e8f0;">
+          <button class="preview-btn" onclick="goCrossQuiz(${Math.max(0, curQuizIdx - 1)})" ${curQuizIdx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="launch-btn" style="flex:0; padding:10px 22px;" onclick="goCrossQuiz(${(curQuizIdx + 1) % crossQuizzes.length})">下一題 →</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function goCrossQuiz(idx) {
+    curQuizIdx = idx;
+    renderCrossQuizView(document.getElementById("hubStage"));
+  }
+
+  function checkCrossQuiz(oIdx) {
+    const qItem = crossQuizzes[curQuizIdx];
+    const fb = document.getElementById("cqFb");
+    fb.style.display = "block";
+    if (qItem.opts[oIdx].ok) {
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🏆 <strong>跨課概念完全融會貫通！</strong><br>${qItem.exp}`;
+    } else {
+      const st = document.getElementById("hubStage");
+      st.classList.remove("shake");
+      void st.offsetWidth;
+      st.classList.add("shake");
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `❌ <strong>小心跨課概念陷阱！</strong><br>${qItem.exp}`;
+    }
+  }
+
+  // 啟動總目錄頁
+  updateProgressBar();
+  renderHubStage();
+</script>
+</body>
+</html>

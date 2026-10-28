@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企會財會計互動工作台｜第 7 課：會計假設、原則及慣例</title>
+  <style>
+    :root {
+      --bg: #06141b;
+      --panel: #11212d;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      --teal: #0d9488;
+      --blue: #2563eb;
+      --blue-light: #dbeafe;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --scale: 1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC", sans-serif; user-select: none; }
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      padding: 12px;
+      font-size: calc(16px * var(--scale));
+      line-height: 1.55;
+    }
+    .app { max-width: 1080px; margin: 0 auto; }
+
+    @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    .pop { animation: popIn 0.22s ease-out; }
+    .shake { animation: shake 0.3s ease-in-out; }
+
+    /* 頂部狀態列 */
+    .top-bar {
+      background: linear-gradient(135deg, #064e3b 0%, #0f766e 50%, #1e3a8a 100%);
+      border-radius: 16px;
+      padding: 14px 22px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+    .brand-title { font-size: calc(20px * var(--scale)); font-weight: 900; display: flex; align-items: center; gap: 10px; }
+    .stat-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pill-stat { background: rgba(6, 20, 27, 0.65); border: 1px solid rgba(52, 211, 153, 0.4); padding: 6px 13px; border-radius: 30px; font-weight: 800; font-size: calc(13.5px * var(--scale)); color: #a7f3d0; }
+    .ctrl-btn { background: #fbbf24; color: #0f172a; border: none; padding: 7px 14px; border-radius: 30px; font-weight: 900; font-size: calc(13px * var(--scale)); cursor: pointer; transition: transform 0.15s; }
+    .ctrl-btn:hover { transform: scale(1.05); background: #fcd34d; }
+
+    /* 五大互動模式導航 */
+    .mode-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+    @media (max-width: 820px) { .mode-nav { grid-template-columns: repeat(2, 1fr); } }
+    .mode-tab {
+      background: var(--panel);
+      border: 2px solid #1e3a4c;
+      border-radius: 14px;
+      padding: 12px 8px;
+      color: #94a3b8;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .mode-tab:hover { border-color: #34d399; color: #fff; transform: translateY(-2px); }
+    .mode-tab.active {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-color: #6ee7b7;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
+    }
+    .mode-icon { font-size: calc(24px * var(--scale)); display: block; margin-bottom: 4px; }
+    .mode-label { font-size: calc(14px * var(--scale)); font-weight: 900; display: block; }
+    .mode-sub { font-size: calc(11.5px * var(--scale)); opacity: 0.9; }
+
+    /* 主舞台 */
+    .stage {
+      background-color: var(--card);
+      background-image: linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+      border-radius: 20px;
+      padding: 24px;
+      min-height: 540px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid #cbd5e1;
+    }
+
+    .level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #e2e8f0; background: rgba(255,255,255,0.92); border-radius: 10px; padding: 10px 14px; }
+    .level-title { font-size: calc(18px * var(--scale)); font-weight: 900; color: #065f46; }
+    .dots-nav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .dot-btn {
+      width: calc(36px * var(--scale)); height: calc(36px * var(--scale));
+      border-radius: 10px; border: 2px solid #cbd5e1; background: #fff;
+      font-weight: 900; font-size: calc(14px * var(--scale)); cursor: pointer; color: var(--muted);
+    }
+    .dot-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .dot-btn.done { background: var(--emerald-light); color: #065f46; border-color: var(--emerald); }
+
+    /* ================= 模組 1：會計原則「合規裁判官」診斷台（無提示按鈕） ================= */
+    .pillars-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 14px; }
+    @media (max-width: 780px) { .pillars-strip { grid-template-columns: repeat(2, 1fr); } }
+    .pillar-chip {
+      padding: 13px 8px; border-radius: 10px; border: 2px solid #cbd5e1; background: #f8fafc;
+      text-align: center; cursor: pointer; font-weight: 900; font-size: calc(14.5px * var(--scale)); transition: all 0.15s;
+    }
+    .pillar-chip:hover { border-color: var(--teal); background: #f0fdfa; transform: translateY(-2px); }
+    .pillar-chip.picked { border-color: var(--emerald); background: #d1fae5; color: #064e3b; box-shadow: 0 0 0 3px rgba(5,150,105,0.25); }
+
+    .dispute-box {
+      background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff;
+      border-radius: 16px; padding: 20px 24px; margin-bottom: 16px;
+      border-left: 8px solid #fbbf24; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .dispute-speaker { font-size: calc(13px * var(--scale)); color: #fbbf24; font-weight: 900; margin-bottom: 6px; display: block; }
+    .dispute-speech { font-size: calc(18px * var(--scale)); font-weight: 900; line-height: 1.5; }
+
+    .step-label { font-size: calc(14.5px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 8px; }
+    .ruling-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .ruling-btn {
+      padding: 13px 16px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff;
+      font-size: calc(15px * var(--scale)); font-weight: 800; text-align: left; cursor: pointer; transition: all 0.15s; line-height: 1.5;
+    }
+    .ruling-btn:hover { border-color: var(--blue); background: #eff6ff; }
+    .ruling-btn.picked { border-color: var(--emerald); background: #d1fae5; color: #064e3b; box-shadow: 0 0 0 3px rgba(5,150,105,0.25); }
+
+    /* ================= 模組 2 ＆ 3：三步純數值與對稱計算機 ================= */
+    .invoice-card {
+      background: #fffbeb; border: 2px solid #f59e0b; border-radius: 14px; padding: 16px 20px;
+      margin-bottom: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+    .inv-title { font-size: calc(16.5px * var(--scale)); font-weight: 900; color: #92400e; margin-bottom: 8px; border-bottom: 2px dashed #fcd34d; padding-bottom: 6px; }
+    .inv-body { font-size: calc(14.5px * var(--scale)); font-weight: 800; color: #451a03; line-height: 1.65; }
+    .calc-steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+    @media (max-width: 780px) { .calc-steps-grid { grid-template-columns: 1fr; } }
+    .calc-step-box { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; }
+    .calc-step-q { font-size: calc(13.5px * var(--scale)); font-weight: 900; color: var(--blue); margin-bottom: 8px; min-height: 42px; }
+    .calc-opt-btn {
+      display: block; width: 100%; text-align: center; padding: 10px; margin-bottom: 6px;
+      border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(14px * var(--scale)); cursor: pointer; transition: all 0.15s;
+    }
+    .calc-opt-btn:hover { border-color: var(--blue); background: #eff6ff; }
+    .calc-opt-btn.picked { background: #dbeafe; border-color: var(--blue); color: #1e3a8a; }
+
+    /* ================= 模組 4：磁力積木砌答案（課本第 85 頁三步答題錦囊） ================= */
+    .question-strip { background: #fffbeb; border-left: 6px solid var(--amber); padding: 14px 18px; border-radius: 12px; font-size: calc(16px * var(--scale)); font-weight: 900; color: #78350f; margin-bottom: 14px; }
+    .tray-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+    .tray-box { background: #f1f5f9; border: 3px dashed #64748b; border-radius: 16px; padding: 14px 16px; min-height: 84px; margin-bottom: 16px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .tray-placeholder { color: var(--muted); font-weight: 800; font-size: calc(14.5px * var(--scale)); }
+    .slot-chip { padding: 9px 14px; border-radius: 10px; font-weight: 900; font-size: calc(14.5px * var(--scale)); color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+    .chip-step0 { background: var(--blue); }
+    .chip-step1 { background: var(--amber); }
+    .chip-step2 { background: var(--emerald); }
+    .blocks-section-title { font-size: calc(14px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 6px; }
+    .blocks-pool { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 720px) { .blocks-pool { grid-template-columns: 1fr; } }
+    .mag-block { padding: 12px 14px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(14px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; text-align: left; transition: all 0.15s; line-height: 1.5; }
+    .mag-block:hover { border-color: var(--emerald); background: #ecfdf5; transform: translateY(-2px); }
+    .mag-block.selected { background: #d1fae5; border-color: var(--emerald); box-shadow: inset 0 0 0 2px var(--emerald); }
+    .block-tag { display: inline-block; font-size: calc(11.5px * var(--scale)); font-weight: 900; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
+    .helper-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--emerald); background: #ecfdf5; color: #065f46; font-weight: 800; font-size: calc(13px * var(--scale)); cursor: pointer; }
+    .helper-btn:hover { background: var(--emerald); color: #fff; }
+
+    /* ================= 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ================= */
+    .sub-mode-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+    .sub-mode-btn { flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #cbd5e1; background: #f8fafc; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: var(--muted); }
+    .sub-mode-btn.active { background: #065f46; color: #fff; border-color: #065f46; }
+    .paper-sheet { background: #fefce8; border: 2px solid #fde047; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+    .sentence-chips-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .sentence-chip { padding: 14px 16px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(15px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; line-height: 1.5; }
+    .sentence-chip:hover { border-color: var(--rose); background: #fff1f2; }
+    .sentence-chip.flaw-found { border-color: var(--rose); background: #ffe4e6; color: #9f1239; text-decoration: line-through; }
+    .sentence-chip.good-clicked { border-color: var(--emerald); background: #dcfce7; color: #14532d; }
+
+    .elim-stmt-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; }
+    .elim-stmt-text { font-size: calc(15px * var(--scale)); font-weight: 800; flex: 1; }
+    .elim-toggles { display: flex; gap: 6px; }
+    .elim-btn { padding: 6px 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(13.5px * var(--scale)); cursor: pointer; }
+    .elim-btn.t-true { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .elim-btn.t-false { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .mc-options-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 600px) { .mc-options-row { grid-template-columns: 1fr; } }
+    .mc-card-btn { padding: 14px 18px; border-radius: 12px; border: 2px solid #94a3b8; background: #fff; font-size: calc(16px * var(--scale)); font-weight: 900; text-align: left; cursor: pointer; }
+    .mc-card-btn:hover { border-color: var(--emerald); background: #ecfdf5; }
+    .mc-card-btn.eliminated { opacity: 0.3; text-decoration: line-through; background: #e2e8f0; border-color: #cbd5e1; }
+
+    .feedback-pop { margin-top: 14px; padding: 16px 18px; border-radius: 14px; font-size: calc(15px * var(--scale)); font-weight: 700; display: none; line-height: 1.6; }
+    .fb-ok { background: #dcfce7; border: 2px solid var(--emerald); color: #14532d; }
+    .fb-err { background: #ffe4e6; border: 2px solid var(--rose); color: #881337; }
+
+    .footer-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 12px; border-top: 2px solid #e2e8f0; }
+    .nav-btn { padding: 10px 20px; border-radius: 10px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: #065f46; }
+    .nav-btn:hover { background: #ecfdf5; border-color: var(--emerald); }
+    .primary-action { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .primary-action:hover { background: #047857; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- 頂部狀態列 -->
+  <div class="top-bar">
+    <div class="brand-title">⚖️ 基礎會計第 7 課：會計假設、原則及慣例｜數碼會計工作台</div>
+    <div class="stat-group">
+      <div class="pill-stat" id="comboBadge">🔥 連擊：0</div>
+      <div class="pill-stat" id="scoreBadge">⭐ 專業積分：0</div>
+      <button class="ctrl-btn" onclick="reshuffleAll()" title="重新隨機打亂所有題目與選項次序">🔀 隨機洗牌</button>
+      <button class="ctrl-btn" onclick="toggleZoom()" id="zoomBtn">🔍 投影大字體：關</button>
+    </div>
+  </div>
+
+  <!-- 五大專屬會計學習模組導航 -->
+  <div class="mode-nav">
+    <button class="mode-tab active" onclick="switchMode(0)" id="mTab0">
+      <span class="mode-icon">⚖️</span>
+      <span class="mode-label">合規裁判診斷台</span>
+      <span class="mode-sub">無提示辨識與專業裁決</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(1)" id="mTab1">
+      <span class="mode-icon">🏷️</span>
+      <span class="mode-label">資產計價計算器</span>
+      <span class="mode-sub">三步純數值計價挑戰</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(2)" id="mTab2">
+      <span class="mode-icon">⏱️</span>
+      <span class="mode-label">應計跨期計算機</span>
+      <span class="mode-sub">跨期損益三步純數值</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(3)" id="mTab3">
+      <span class="mode-icon">🧲</span>
+      <span class="mode-label">情境三步砌答案</span>
+      <span class="mode-sub">對稱選項拼出滿分論述</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(4)" id="mTab4">
+      <span class="mode-icon">🏆</span>
+      <span class="mode-label">捉錯與消去擂台</span>
+      <span class="mode-sub">紅筆批改 ＋ 選擇題消去</span>
+    </button>
+  </div>
+
+  <!-- 主舞台 -->
+  <div class="stage" id="mainStage"></div>
+</div>
+
+<script>
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ==================== 模組 1：會計原則「合規裁判官」診斷台（移除概念小字提示與裁決內的自爆字眼） ====================
+  const fivePillars = [
+    { key: "entity", name: "🏢 企業個體概念" },
+    { key: "cost", name: "🏷️ 歷史成本原則" },
+    { key: "going", name: "🚀 繼續經營概念" },
+    { key: "consist", name: "📏 一貫原則" },
+    { key: "accrual", name: "⏱️ 應計概念" }
+  ];
+
+  let judgeCases = [
+    {
+      speaker: "爭議個案 A：鐘錶店東主陳祖銘（課本第 87 頁「精確時計(7)」及第 93 頁題 7.25）",
+      speech: "「我全資擁有這家企業！我從企業銀行帳戶提取 $6,000 買禮物給太太，又在年底取去一些原本給予顧客的免費樣本自用，金額不大，為甚麼不直接列作企業的『雜費』或『促銷費用』，而要扣減我的資本？」",
+      conceptAns: "entity",
+      rulings: [
+        { text: "企業與其東主在會計上屬於兩個獨立個體；東主提取企業資金或免費樣本供私人自用均屬私人交易，必須視作「提用」並從資本中扣除，不可列作企業費用。", ok: true },
+        { text: "由於商號平時一直將免費樣本開支記作促銷費用，為確保前後會計期間的處理方法保持一致，東主取去自用的免費樣本亦應一併列作促銷費用。", ok: false },
+        { text: "只要東主提取自用的現金禮物與免費樣本金額佔總營業額比例極小，便可按實際購買成本直接列作企業本年度的雜費開支處理。", ok: false }
+      ],
+      exp: "【課本第 75、87、92 頁題 7.23a 及第 93 頁公開試題 7.25】根據**企業個體概念**，企業應被視作一個獨立於其東主的個體。東主提取企業資金買禮物給太太或取去免費樣本自用，均與企業業務無關，必須記錄為**「提用（Drawings）」**並扣減資本，絕不可因「平時記作促銷費用」而誤選一貫原則！"
+    },
+    {
+      speaker: "爭議個案 B：獨資東主林先生（課本第 92 頁短答題 7.18 經典陷阱題）",
+      speech: "「林先生是獨資經營者。去年，他把妻子名下的一個私人住宅物業記入企業的財務狀況表內；但在本年度，他決定不再把該項妻子物業記入企業的財務狀況表內。有人指責他今年更改做法是違反了會計原則。」",
+      conceptAns: "entity",
+      rulings: [
+        { text: "林先生在本年度的做法並沒有違反會計原則（反而是糾正了去年的錯誤）；因為妻子的私人物業與企業無關，在去年記入企業帳目時違反了將企業與東主私人事務分開的原則。", ok: true },
+        { text: "林先生在本年度的做法違反了會計原則；因為企業去年既已將該物業納入財務狀況表，今年便必須持續沿用相同處理方法繼續將該物業列入報表。", ok: false },
+        { text: "林先生在本年度的做法違反了會計原則；因為該項物業在可見的未來仍可繼續使用，必須按當初購入該住宅時的原始購買價格繼續列示於企業帳冊。", ok: false }
+      ],
+      exp: "【課本第 92 頁題 7.18 防伏解析】很多考生見到「去年記入、今年不記入」就誤選一貫原則！事實上，妻子的私人物業並非企業擁有的資源，林先生**去年將妻子私人物業記入企業報表違反了「企業個體概念」**，而今年不再記入只是糾正去年的違規做法，完全符合企業個體概念！"
+    },
+    {
+      speaker: "爭議個案 C：東主羅女士與唐先生（課本第 76 頁測試站 P7-3b 及 P7-3c）",
+      speech: "「(1) 唐先生同時經營兩家獨立運作的同業商號，為節省時間要求會計師把兩家商號合併在同一份帳目內編製一套報表；(2) 羅女士與企業客戶共晉商務午餐洽談合約，因以她個人信用卡付款，故沒有記入企業帳目。」",
+      conceptAns: "entity",
+      rulings: [
+        { text: "兩人的做法均不合規！每家獨立運作的商號均須各自保存獨立會計帳目；而請企業客戶共晉商務午餐屬影響企業的業務交易，即使以個人信用卡支付仍須記入企業帳目。", ok: true },
+        { text: "唐先生將兩家商號合併記帳屬於違規；但羅女士既以個人信用卡支付午餐費用，因尚未動用企業銀行存款，故無須記入企業本年度的會計帳目。", ok: false },
+        { text: "由於兩家商號屬於同一行業且由同一東主全資擁有，合併編製一套財務報表以及省略東主私人代付的零星商務開支，均符合簡化會計程序的要求。", ok: false }
+      ],
+      exp: "【課本第 75–76 頁 P7-3b、c 及第 91、94 頁題 7.11(3)、7.28B】根據**企業個體概念**，企業會被視作獨立於其東主及東主其他企業的個體，只有影響企業的交易才會記入企業帳簿：① 唐先生必須為每家商號保存個別會計記錄；② 羅女士與客戶的商務午餐是為企業業務招致的費用（影響企業的交易），即使以個人卡支付，仍須記入企業帳目（借記：費用；貸記：資本）！"
+    },
+    {
+      speaker: "爭議個案 D：企業甲與企業乙的東主（課本第 81–82 頁測試站 P7-7a、b 及第 92 頁題 7.22c）",
+      speech: "「企業甲的東主見今年盈利下跌，決定更改存貨計價方法以大幅推高報告淨利；而企業乙的東主則因為現行存貨計價方法已無法反映存貨的實際流動情況，決定改用新方法並在報表中披露有關轉變的影響。」",
+      conceptAns: "consist",
+      rulings: [
+        { text: "企業甲為操縱及推高淨利而更改存貨計價方法屬於違規；但企業乙因新方法能更準確反映企業的實際情況而作出更改（並在報表披露重大影響），則符合會計原則。", ok: true },
+        { text: "會計政策或方法一經企業選用便永久不可更改，否則無法比較不同年度的財務業績，因此企業甲與企業乙更改存貨計價方法的做法均屬違規。", ok: false },
+        { text: "只要企業在年結日已完成實地存貨盤點，東主便有權在每個會計年度自由轉換最能提高公司帳面利潤的存貨計價方法，兩家企業的做法均屬合規。", ok: false }
+      ],
+      exp: "【課本第 81–82 頁 P7-7、P7-8 及第 94 頁題 7.30X】根據**一貫原則**：「除非更改會計政策或方法能更準確地反映企業的實際情況，否則企業處理類似的項目時，應持續採用同一會計政策或方法。」因此企業甲為推高淨利而改方法屬違規；企業乙因新方法更能反映實際情況而更改則屬合規！"
+    },
+    {
+      speaker: "爭議個案 E：鐘錶店東主陳祖銘與陳女士（課本第 87 頁「精確時計(7)」及第 92 頁題 7.21b）",
+      speech: "「基於我與供應商的交情，我們才能以 $51,000 的低價購入店舖家具及設備，但這批設備正常售價高達 $85,000！另外我們有一項自用物業現時市值比購入價高出 $100,000，我們應將設備按 $85,000 入帳並把物業帳面值調高！」",
+      conceptAns: "cost",
+      rulings: [
+        { text: "企業資產的價值應按購買或生產該資產時實際支付的成本（$51,000 及原購入價）計算，無須理會正常售價或資產市值在其後的上升，以確保資產計價客觀及容易核實。", ok: true },
+        { text: "為免低估企業的資產淨值及真實財富，凡以友情優惠價購入的設備應按正常市場售價（$85,000）入帳，而市值大幅上升的自用物業亦應按年結日的現行市值調高帳面值。", ok: false },
+        { text: "由於設備及自用物業在未來出售時可帶來更高現金流入，企業應在購入當日將友情差價（$34,000）及物業升值額（$100,000）提前確認為本年度的其他收益。", ok: false }
+      ],
+      exp: "【課本第 77–78、87 頁及第 92 頁題 7.20b、7.21b】根據**歷史成本原則**，企業資產的價值應按購買或生產該資產的實際成本計算，而無須理會資產市值在其後的變化。這能確保資產計價客觀可靠，不受個人主觀偏見影響！"
+    },
+    {
+      speaker: "爭議個案 F：東主方女士與黃先生（課本第 87 頁「精確時計(7)」及第 92–93 頁題 7.22a、7.23b）",
+      speech: "「(1) 我年初向叔叔借款 $100,000 作企業營運資金，年息 10%，叔叔容許我在十年後才連本帶利一併歸還，今年根本未付利息，為何列作今年費用？(2) 大部分客戶在年底仍未為已買走的鐘錶付款，為何不留待明年收款才列作銷貨收益？」",
+      conceptAns: "accrual",
+      rulings: [
+        { text: "企業不應在收款時才確認收益，而應在賺取收益（貨品已送交客戶）時確認；同樣不應在付款時才確認費用，而應在招致費用（期內已耗用貸款資金）時確認。", ok: true },
+        { text: "為了審慎管理企業的日常現金流量，所有尚未實際收到現鈔的賒銷交易以及尚未支付現鈔的十年期貸款利息，均應留待未來實際收付款項的年度才記入損益表。", ok: false },
+        { text: "向親戚借入款項的利息屬於東主個人的家庭債務，不應計入企業損益表；而年底尚未收款的鐘錶銷貨則應按歷史成本直接列作企業的期末存貨處理。", ok: false }
+      ],
+      exp: "【課本第 82–84、87 及 92–93 頁題 7.22a、7.23b】根據**應計概念**，企業應根據應計基礎而非現金基礎量度收益和費用：收益應在賺取時確認（鐘錶已售出交貨），費用應在招致時確認（本年度已使用貸款並招致一年利息 $10,000），不受實際收付款時間影響！"
+    }
+  ];
+  let judgePick = { concept: null, ruling: null };
+
+  // ==================== 模組 2：資產計價「歷史成本 vs 清盤價值」三步純數值計算器（零提示純數字挑戰） ====================
+  let valuationCases = [
+    {
+      title: "計價實戰 1：支票付部分款項、交易折扣與市值下跌（課本第 78 頁答題錦囊及第 85 頁例子）",
+      cardTitle: "📋 購買營運貨車及辦公室家具的交易檔案",
+      cardHtml: `
+        • <strong>項目甲（貨車）</strong>：2021 年 12 月 30 日購買一輛貨車作營運用途，定價為 <strong>$300,000</strong>，獲賣家提供交易折扣 <strong>$15,000</strong>。當日以支票支付 <strong>$80,000</strong>，餘款下月清還。2021 年 12 月 31 日貨車市值跌至 <strong>$250,000</strong>。<br>
+        • <strong>項目乙（家具）</strong>：購入一批辦公室家具作營運用途，標價為 <strong>$120,000</strong>，供應商提供交易折扣 <strong>10%</strong>，企業透過銀行戶口支付訂金 <strong>$50,000</strong>。年底該批家具市值升至 <strong>$150,000</strong>。
+      `,
+      q1: "1️⃣ 在 2021 年 12 月 31 日的財務狀況表中，「項目甲（貨車）」應記錄的金額是多少？",
+      opts1: [
+        { text: "$80,000", ok: false },
+        { text: "$250,000", ok: false },
+        { text: "$285,000", ok: true },
+        { text: "$300,000", ok: false }
+      ],
+      q2: "2️⃣ 在 2021 年 12 月 31 日的財務狀況表中，「項目乙（家具）」應記錄的金額是多少？",
+      opts2: [
+        { text: "$50,000", ok: false },
+        { text: "$108,000", ok: true },
+        { text: "$120,000", ok: false },
+        { text: "$150,000", ok: false }
+      ],
+      q3: "3️⃣ 因購買上述「貨車」及「家具」而尚未付清的餘款，在年結日應合共列作多少「其他應付款（負債）」？",
+      opts3: [
+        { text: "$130,000", ok: false },
+        { text: "$205,000", ok: false },
+        { text: "$263,000", ok: true },
+        { text: "$290,000", ok: false }
+      ],
+      exp: "【課本第 78、85 及 93 頁題 7.24b 標準拆解】<br>1. 根據**歷史成本原則**，資產按購買成本（標價扣除交易折扣後的淨額）計價，不理會市值變動，亦非只計已付支票／訂金。**貨車入帳成本** ＝ $300,000 － $15,000 ＝ **$285,000**。<br>2. **家具入帳成本** ＝ $120,000 × (1 － 10%) ＝ **$108,000**。<br>3. **尚欠非購貨債權人的其他應付款** ＝ 貨車未付餘款 ($285,000 － $80,000 ＝ $205,000) ＋ 家具未付餘款 ($108,000 － $50,000 ＝ $58,000) ＝ **$263,000**！"
+    },
+    {
+      title: "計價實戰 2：按金百分比反推總成本 ＆ 友情優惠價入帳（課本第 79 頁 P7-5a、b 及第 92 頁題 7.21b）",
+      cardTitle: "📋 物業、進口汽車及優惠價機器的計價檔案（假設企業繼續經營）",
+      cardHtml: `
+        • <strong>資產 A（物業）</strong>：彭女士購入一項物業供企業使用，簽約時繳付了樓價 <strong>10%</strong> 的按金，即 <strong>$200,000</strong>。一個月後她清付了餘額，而相類物業在當日的市值已上升 <strong>5%</strong>。<br>
+        • <strong>資產 B（汽車）</strong>：陳先生從海外訂購一輛營業汽車，標價 <strong>$80,000</strong>，獲 <strong>20%</strong> 交易折扣；汽車運抵時相類型號市值已跌至 <strong>$70,000</strong>。<br>
+        • <strong>資產 C（機器）</strong>：陳女士以友情優惠價 <strong>$75,000</strong> 購入一批機器（正常情況下須付 <strong>$140,000</strong> 才可購入，現行市值為 <strong>$100,000</strong>）。
+      `,
+      q1: "1️⃣ 按照歷史成本原則，「資產 A（物業）」在帳冊中應記錄的價值是多少？",
+      opts1: [
+        { text: "$200,000", ok: false },
+        { text: "$1,800,000", ok: false },
+        { text: "$2,000,000", ok: true },
+        { text: "$2,100,000", ok: false }
+      ],
+      q2: "2️⃣ 按照歷史成本原則，「資產 B（汽車）」在帳冊中應記錄的價值是多少？",
+      opts2: [
+        { text: "$64,000", ok: true },
+        { text: "$70,000", ok: false },
+        { text: "$76,000", ok: false },
+        { text: "$80,000", ok: false }
+      ],
+      q3: "3️⃣ 按照歷史成本原則，「資產 C（機器）」在帳冊中應記錄的價值是多少？",
+      opts3: [
+        { text: "$75,000", ok: true },
+        { text: "$100,000", ok: false },
+        { text: "$107,500", ok: false },
+        { text: "$140,000", ok: false }
+      ],
+      exp: "【課本第 79 頁 P7-5a、b 及第 92 頁題 7.21b 標準拆解】<br>1. **物業購買成本**：10% 按金為 $200,000，且後來已清付餘額，故物業總購買成本 ＝ $200,000 ÷ 10% ＝ **$2,000,000**（無須理會市值上升 5% 至 $2,100,000）。<br>2. **汽車購買成本** ＝ 標價 $80,000 × (1 － 20%) ＝ **$64,000**（無須理會市值 $70,000）。<br>3. **機器購買成本** ＝ 實際支付的優惠購買成本 **$75,000**（無須理會正常售價 $140,000 或現行市值 $100,000）！"
+    },
+    {
+      title: "計價實戰 3：繼續經營 vs 即將清盤結業的資產計價對比（課本第 80–81 頁 P7-6 及第 93 頁題 7.27X）",
+      cardTitle: "📋 兩家處於不同經營狀況的企業在年結日的資產資料",
+      cardHtml: `
+        • <strong>新輝公司</strong>：於 2020 年 12 月 31 日決定於三個月後結束營業（清盤）。同日，其非流動資產按歷史成本記錄為 <strong>$3,800,000</strong>，現行重置成本為 <strong>$3,100,000</strong>，而預計可收回的清算值（清盤價值）則為 <strong>$2,098,000</strong>。<br>
+        • <strong>宏達商號</strong>：近年業績欠佳，東主表示「若未來兩年仍錄得虧損便會考慮結業」。商號有一輛三年前以 <strong>$68,000</strong> 購入的汽車，現時轉售市值為 <strong>$30,000</strong>。
+      `,
+      q1: "1️⃣ 在 2020 年 12 月 31 日的財務狀況表中，「新輝公司」的非流動資產應計值多少？",
+      opts1: [
+        { text: "$1,702,000", ok: false },
+        { text: "$2,098,000", ok: true },
+        { text: "$3,100,000", ok: false },
+        { text: "$3,800,000", ok: false }
+      ],
+      q2: "2️⃣ 在本年度的財務狀況表中，「宏達商號」的汽車（不考慮折舊）應計值多少？",
+      opts2: [
+        { text: "$0", ok: false },
+        { text: "$30,000", ok: false },
+        { text: "$38,000", ok: false },
+        { text: "$68,000", ok: true }
+      ],
+      q3: "3️⃣ 決定上述兩家企業採用不同計價金額的最根本「會計假設（概念）」是甚麼？",
+      opts3: [
+        { text: "企業個體概念", ok: false },
+        { text: "繼續經營概念（假設）", ok: true },
+        { text: "一貫原則", ok: false },
+        { text: "應計概念", ok: false }
+      ],
+      exp: "【課本第 79–81 頁 P7-6、第 90 頁題 7.2、第 92 頁題 7.21a 及第 93 頁題 7.27X】<br>1. **繼續經營概念（假設）**是應用歷史成本原則的基礎。<br>2. **新輝公司**已決定於三個月後結束營業，繼續經營假設不再有效，故非流動資產應按**清算值（清盤價值）$2,098,000** 計值。<br>3. **宏達商號**雖然業績欠佳，但無法確定會否在短期內結業（未來兩年仍虧損才考慮），繼續經營假設仍然有效，故汽車仍應按歷史成本 **$68,000** 計值！"
+    }
+  ];
+
+  // ==================== 模組 3：應計概念「跨期損益」三步純數值計算機（零提示純數字挑戰） ====================
+  let timelineCases = [
+    {
+      title: "應計實戰 1：跨年度預繳兩年火險保費 ＆ 十年期親戚貸款利息（課本第 91 頁題 7.15 及第 92 頁題 7.22a）",
+      cardTitle: "⏳ 企業在 2021 年度（截至 2021 年 12 月 31 日止年度）的兩項跨期交易",
+      cardHtml: `
+        • <strong>事項一（火險保費）</strong>：企業在 2021 年 2 月 1 日一筆過支付火險保費 <strong>$4,800</strong>，保障期為兩年（共 24 個月，由 2021 年 2 月 1 日起至 2023 年 1 月 31 日／3 月 31 日期滿，即每月保費為 $200）。<br>
+        • <strong>事項二（貸款利息）</strong>：東主在 2021 年 1 月 1 日向叔叔借款 <strong>$100,000</strong> 作企業營運資金，年利率為 <strong>10%</strong>。叔叔容許企業在十年後才連本帶利一併歸還（2021 年內未支付任何利息現金）。
+      `,
+      q1: "1️⃣ 根據應計概念，企業在截至 2021 年 12 月 31 日止年度（2月1日至12月31日共 11 個月）所招致的「火險保費費用」是多少？",
+      opts1: [
+        { text: "$1,800", ok: false },
+        { text: "$2,200", ok: true },
+        { text: "$2,400", ok: false },
+        { text: "$4,800", ok: false }
+      ],
+      q2: "2️⃣ 根據應計概念，企業在截至 2021 年 12 月 31 日止年度的損益表中，應確認多少「貸款利息費用」？",
+      opts2: [
+        { text: "$0", ok: false },
+        { text: "$1,000", ok: false },
+        { text: "$10,000", ok: true },
+        { text: "$100,000", ok: false }
+      ],
+      q3: "3️⃣ 綜合上述兩項，企業在 2021 年度損益表內應合共確認多少「費用總額」？",
+      opts3: [
+        { text: "$2,200", ok: false },
+        { text: "$4,800", ok: false },
+        { text: "$12,200", ok: true },
+        { text: "$14,800", ok: false }
+      ],
+      exp: "【課本第 91 頁題 7.15 及第 92 頁題 7.22a 標準拆解】<br>1. **火險保費（題 7.15）**：兩年（24 個月）總保費為 $4,800，即每月保費 ＝ $4,800 ÷ 24 ＝ $200。在 2021 年 2 月 1 日至 12 月 31 日期間共耗用了 **11 個月**保障，因此 2021 年度招致的保險費 ＝ $200 × 11 個月 ＝ **$2,200**（題 7.15 答案為 B）！<br>2. **叔叔貸款利息（題 7.22a）**：雖然十年後才付款，但 2021 年度已使用該筆貸款一整年，已招致一年利息 ＝ $100,000 × 10% ＝ **$10,000**。<br>3. **兩項合共確認 2021 年度費用** ＝ $2,200 ＋ $10,000 ＝ **$12,200**！"
+    },
+    {
+      title: "應計實戰 2：跨年賒銷交貨、客戶預付訂金與跨年電費單（課本第 83–84 頁例子 7、8 及 P7-10b）",
+      cardTitle: "⏳ 企業丁在 2020 年 12 月底至 2021 年 1 月初的三項跨年業務紀錄（年結日為 12 月 31 日）",
+      cardHtml: `
+        • <strong>紀錄 A（現銷）</strong>：2020 年內已完成交貨並收妥現金的銷貨共 <strong>$150,000</strong>。<br>
+        • <strong>紀錄 B（年底賒銷）</strong>：2020 年 12 月 30 日把價值 <strong>$20,000</strong> 的貨品送到客戶手上（客戶已接收），客戶將於 2021 年 2 月付款。<br>
+        • <strong>紀錄 C（客戶訂金）</strong>：2020 年 12 月 30 日收到另一客戶以現金支付的貨品訂金 <strong>$12,000</strong>，該批貨品將於 2021 年 1 月底才送出。<br>
+        • <strong>紀錄 D（跨年電費單）</strong>：2021 年 1 月 5 日收到 2020 年 12 月份的電費單 <strong>$9,500</strong>，並於 2021 年 1 月 29 日付款。
+      `,
+      q1: "1️⃣ 根據應計概念，企業丁在截至 2020 年 12 月 31 日止年度應確認的「銷貨收益總額」是多少？",
+      opts1: [
+        { text: "$150,000", ok: false },
+        { text: "$162,000", ok: false },
+        { text: "$170,000", ok: true },
+        { text: "$182,000", ok: false }
+      ],
+      q2: "2️⃣ 紀錄 C 收到的 $12,000 客戶訂金，在 2020 年 12 月 31 日應計入「2020 年度收益」的金額是多少？",
+      opts2: [
+        { text: "$0", ok: true },
+        { text: "$6,000", ok: false },
+        { text: "$12,000", ok: false },
+        { text: "$20,000", ok: false }
+      ],
+      q3: "3️⃣ 紀錄 D 的 $9,500 電費單，應計入哪個年度的損益表作為電費費用？",
+      opts3: [
+        { text: "2020 年度（$9,500）", ok: true },
+        { text: "2021 年度（$9,500）", ok: false },
+        { text: "2020 年及 2021 年各計 $4,750", ok: false },
+        { text: "無須計入任何年度的損益表", ok: false }
+      ],
+      exp: "【課本第 83–84 頁例子 7、8、P7-10b 及第 93–94 頁題 7.26X、7.29X 拆解】<br>1. **2020 年度銷貨收益** ＝ 已交貨現銷 $150,000 ＋ 12 月 30 日已交貨賒銷 $20,000 ＝ **$170,000**。<br>2. **客戶訂金 ($12,000)**：由於貨品在 2021 年 1 月才送出，在 2020 年底尚未賺取該筆收益（應列為流動負債：客戶訂金），故計入 2020 年度收益的金額為 **$0**（見課本 P7-10b）！<br>3. **12 月份電費單 ($9,500)**：電力是在 2020 年 12 月耗用（費用已在 2020 年招致），故必須全數計入 **2020 年度**的費用！"
+    },
+    {
+      title: "應計實戰 3：比較「應計基礎」與「現金基礎」下的年度費用計算（課本第 84 頁 P7-10a）",
+      cardTitle: "⏳ 企業丙在 2020 年度的租金與保險費支付紀錄（年結日為 2020 年 12 月 31 日）",
+      cardHtml: `
+        • <strong>店舖租金</strong>：企業丙每月店舖租金為 <strong>$10,000</strong>。在 2020 年內，企業只以支票支付了 1 月至 11 月的租金（共 <strong>$110,000</strong>），而 2020 年 12 月份的租金 <strong>$10,000</strong> 留待 2021 年 1 月初才支付。<br>
+        • <strong>保險費</strong>：企業丙在 2020 年 10 月 1 日以支票一筆過繳付了由 2020 年 10 月 1 日至 2021 年 3 月 31 日止（共 <strong>6 個月</strong>）的保險費 <strong>$18,000</strong>（即每月 $3,000）。
+      `,
+      q1: "1️⃣ 根據「應計概念（應計基礎）」，企業丙在 2020 年度損益表應確認的「全年租金費用」是多少？",
+      opts1: [
+        { text: "$100,000", ok: false },
+        { text: "$110,000", ok: false },
+        { text: "$120,000", ok: true },
+        { text: "$130,000", ok: false }
+      ],
+      q2: "2️⃣ 根據「應計概念（應計基礎）」，企業丙在 2020 年度損益表應確認的「保險費費用（10月至12月共 3 個月）」是多少？",
+      opts2: [
+        { text: "$3,000", ok: false },
+        { text: "$6,000", ok: false },
+        { text: "$9,000", ok: true },
+        { text: "$18,000", ok: false }
+      ],
+      q3: "3️⃣ 綜合租金及保險費兩項，在「應計基礎」下確認的 2020 年度總費用是多少？",
+      opts3: [
+        { text: "$119,000", ok: false },
+        { text: "$128,000", ok: false },
+        { text: "$129,000", ok: true },
+        { text: "$138,000", ok: false }
+      ],
+      exp: "【課本第 82–84 頁 P7-10a 標準拆解】<br>1. **2020 年度應計租金費用**：雖然只付了 11 個月現金 ($110,000)，但企業在 2020 年已使用店舖滿 12 個月（已招致 12 個月租金），故應確認 **$120,000**。<br>2. **2020 年度應計保險費**：6 個月保費 $18,000（每月 $3,000），在 2020 年 10 月 1 日至 12 月 31 日期間只耗用了 **3 個月**，故應確認 **$9,000**（其餘 $9,000 屬 2021 年首季費用）。<br>3. **2020 年度應計總費用** ＝ $120,000 ＋ $9,000 ＝ **$129,000**（若誤用現金基礎則會算成 $110,000 ＋ $18,000 ＝ $128,000）！"
+    }
+  ];
+  let cStepPicks = [null, null, null];
+
+  // ==================== 模組 4：磁力積木砌答案（對應課本第 85 頁情境題三步答題錦囊，字數語氣完全對稱） ====================
+  const legoChallenges = [
+    {
+      title: "砌答案挑戰 1：課本第 92 頁題 7.16 及第 94 頁題 7.31X —— 企業即將清盤的資產計價（3 分）",
+      q: "題目：馬先生獨資經營一家小型企業，過去數年業績欠佳。在 2021 年 11 月，他決定於三個月內把企業清盤。在 2021 年 12 月 31 日的帳冊內，馬先生的企業應如何為資產計價？以相關的會計假設、原則或慣例解釋你的答案。（3 分）",
+      step0: [
+        { text: "🟦 這個情境須應用「繼續經營概念（或繼續經營假設）」，該概念與企業的資產應否按歷史成本計價息息相關", ok: true },
+        { text: "🟦 這個情境須應用「一貫原則（或一致性原則）」，該原則規定企業在每個會計期處理類似資產項目時應採用相同方法", ok: false, err: "企業決定於短期內清盤結業而改變資產計價基礎，涉及的是「繼續經營概念」，而非一貫原則！" },
+        { text: "🟦 這個情境須應用「企業個體概念」，該概念規定企業應被視作一個獨立於其東主的個體，東主私人事務不應記入企業帳目", ok: false, err: "題目考核的是企業即將清盤時的資產計價方法，須應用「繼續經營概念」而非企業個體概念！" }
+      ],
+      step1: [
+        { text: "🟨 繼續經營概念假設企業在可見的未來會繼續經營，東主沒有計劃清盤、結業或大幅縮減營運規模；但馬先生已決定於三個月內清盤，故繼續經營假設不再有效", ok: true },
+        { text: "🟨 繼續經營概念假設即使東主已決定於三個月內把企業清盤或法院已發出清盤令，會計人員在編製最後一套財務報表時仍須假設企業會永久持續經營下去", ok: false, err: "課本第 79–80 頁指出：當企業即將結業或面臨破產清盤時，繼續經營的假設便不再有效！" },
+        { text: "🟨 繼續經營概念假設只要企業在過去數年的業績欠佳並錄得虧損，不論東主有否計劃在短期內結業，繼續經營假設都會自動失效並須即時停用歷史成本原則", ok: false, err: "課本第 79–80 頁例子 5 強調：若只是業績欠佳但未確定短期內結業，繼續經營假設仍然有效；本題是因為「決定於三個月內清盤」才令假設失效！" }
+      ],
+      step2: [
+        { text: "🟩 由於繼續經營假設及歷史成本原則不再適用，馬先生企業在 2021 年 12 月 31 日的資產應按「清盤價值（清算值）或變現淨值」計價，而非按歷史成本計價。", ok: true },
+        { text: "🟩 由於繼續經營假設不再適用，馬先生企業在 2021 年 12 月 31 日的所有非流動資產與流動資產價值在財務狀況表中均必須一律直接撇銷並計值為零。", ok: false, err: "課本第 90 頁題 7.6 指出：資產的清盤價值是指清盤時預期可從出售該資產收回的款項，並非必定等於零！" },
+        { text: "🟩 由於歷史成本是最客觀且容易核實的計價基準，馬先生企業在 2021 年 12 月 31 日的資產仍須嚴格按照當初購入時的「歷史成本」在財務狀況表列示。", ok: false, err: "當企業不會繼續經營（即將清盤）時，歷史成本原則不再適用，必須改按清盤價值或變現淨值計價！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 2：課本第 85 頁示範及第 92 頁題 7.19X —— 購買資產獲交易折扣及市值變動（3 分）",
+      q: "題目：某小型貨車的標價為 $100,000，某企業購入該貨車作營運用途時獲 5% 的交易折扣。一年後，該貨車的轉售市場價值跌至 $80,000。在該企業的會計帳目中，該輛小型貨車在購入後一年的價值是多少（無須考慮折舊）？以相關的會計原則或概念解釋你的答案。（3 分）",
+      step0: [
+        { text: "🟦 這個情境須應用「歷史成本原則」，該原則專門規範企業在繼續經營下應如何為所持有的資產計價", ok: true },
+        { text: "🟦 這個情境須應用「應計概念」，該概念專門規範企業在會計期末應如何根據市場價格波動確認資產的未實現損益", ok: false, err: "應計概念應用於量度收益和費用；規範資產按購買成本計價的是「歷史成本原則」（見課本第 90–91 頁題 7.8 vs 7.9）！" },
+        { text: "🟦 這個情境須應用「企業個體概念」，該概念規定企業購入的營業貨車必須與東主的私人座駕分開獨立計價", ok: false, err: "題目問的是貨車獲交易折扣及一年後市值下跌時的入帳價值，須應用「歷史成本原則」！" }
+      ],
+      step1: [
+        { text: "🟨 根據歷史成本原則，企業資產的價值應按購買或生產該資產的實際成本計算，而無須理會該項資產的市場價值（轉售價值 $80,000）在其後的變化", ok: true },
+        { text: "🟨 根據歷史成本原則，企業資產的價值必須按供應商開出的原始標價毛額計算，不可扣除任何因大量採購而獲得的交易折扣或現金折扣", ok: false, err: "課本第 85 頁答題錦囊明確指出：資產的購買成本等於扣除交易折扣後的價格淨額！" },
+        { text: "🟨 根據歷史成本原則，當資產在購入一年後的轉售市場價值低於原本購買成本時，企業必須改按較低的現行轉售市值（$80,000）調整非流動資產的帳面值", ok: false, err: "歷史成本原則規定非流動資產按購買成本計算，無須理會市值在其後的變化（見課本第 77 頁例子 3）！" }
+      ],
+      step2: [
+        { text: "🟩 該輛小型貨車的購買成本等於標價扣除交易折扣後的價格淨額，即 $95,000［＝ $100,000 × (1 － 5%)］，這個金額就是購入後一年在會計帳目中應列示的價值。", ok: true },
+        { text: "🟩 該輛小型貨車在購入後一年的價值應按最新轉售市值列為 $80,000，並將市值下跌的差額 $15,000 列作本年度損益表的營業費用扣除。", ok: false, err: "違反歷史成本原則！在無須考慮折舊下，購入後一年的帳面價值仍應維持在購買成本 $95,000！" },
+        { text: "🟩 該輛小型貨車在購入後一年的價值應按原始標價列為 $100,000，並將供應商提供的 5% 交易折扣（$5,000）獨立記錄在損益表的其他收益部分。", ok: false, err: "交易折扣直接從標價中扣除以計算購買成本（$95,000），不會記錄在帳冊或列作其他收益！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 3：課本第 94 頁公開試題 7.29X —— 跨年收到電費單的費用確認（3 分）",
+      q: "題目：乙公司的財務年終為 12 月 31 日。2017 年 1 月 4 日，乙公司收到一張 2016 年 12 月份的電費單，費用為 $9,500，公司於 2017 年 1 月 29 日繳清。試以一項相關的會計原則或概念，解釋電費 $9,500 應記錄為哪年的費用。（3 分）",
+      step0: [
+        { text: "🟦 這個情境須應用「應計概念（或應計觀念）」，該概念專門規範企業應在哪個會計期間確認及量度收益和費用", ok: true },
+        { text: "🟦 這個情境須應用「歷史成本原則」，該原則規定企業的所有公用事業開支均須按電費單上列明的原始歷史金額入帳", ok: false, err: "決定跨年費用應計入 2016 年還是 2017 年，須應用「應計概念」而非歷史成本原則！" },
+        { text: "🟦 這個情境須應用「一貫原則」，該原則規定企業每年都必須固定在 1 月份才將上一年度 12 月份的電費記入新一年的損益表", ok: false, err: "將 2016 年 12 月耗用的電力記在 2017 年違反了「應計概念」，並非一貫原則所允許的做法！" }
+      ],
+      step1: [
+        { text: "🟨 根據應計概念，企業應按「應計基礎」而非「現金基礎」量度收益和費用；企業不應在實際支付款項時才確認費用，而應在「招致費用時」確認", ok: true },
+        { text: "🟨 根據應計概念，企業應按「現金基礎」而非「應計基礎」量度收益和費用；企業必須在收到正式發票並以支票付清款項當日，才可在帳冊確認費用", ok: false, err: "在付款時才確認費用屬於「現金基礎」，與應計概念的定義正好相反（見課本第 82–84 頁）！" },
+        { text: "🟨 根據應計概念，凡在會計年度終結日（12 月 31 日）尚未收到供應商結單或尚未付清款項的開支，一律屬於或有負債而無須計入當年度的損益表", ok: false, err: "即使在年底尚未收到電費單及尚未繳交電費，只要電力已在期內耗用，仍須計入當年度損益表（見課本第 83 頁例子 8）！" }
+      ],
+      step2: [
+        { text: "🟩 由於乙公司是在 2016 年 12 月耗用與該電費單相關的電力（費用在 2016 年招致），即使在 2017 年 1 月才收到電費單及付款，該筆 $9,500 電費仍須記錄為 2016 年度的費用。", ok: true },
+        { text: "🟩 由於乙公司是在 2017 年 1 月 4 日才收到電費單並於 1 月 29 日付款，該筆款項的現金流出發生在 2017 年，因此該筆 $9,500 電費應記錄為 2017 年度的費用。", ok: false, err: "年份判斷錯誤！按應計概念，費用應歸屬耗用電力的「2016 年度」，而非收到帳單或付款的 2017 年度！" },
+        { text: "🟩 由於該張電費單跨越了 2016 年及 2017 年兩個年度處理，乙公司應將 $9,500 電費平均攤分，在 2016 年度及 2017 年度的損益表各記錄 $4,750 費用。", ok: false, err: "該電費單是「2016 年 12 月份」的電費（全數在 2016 年耗用），故 $9,500 應全數記錄為 2016 年度的費用！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 4：課本第 86 頁例子 10 —— 為何銷貨收益持續上升仍會出現「現金短缺」？（3 分）",
+      q: "題目：方先生是企業東主。雖然他的企業在過去數年的銷貨收益持續上升，但企業卻正面對現金短缺的問題。試根據「應計概念」向方先生解釋原因。（3 分）",
+      step0: [
+        { text: "🟦 這是因為企業的損益表是根據「應計概念（應計基礎）」而非「現金基礎」編製的，因此損益表上所列的銷貨額未必等於該年度從銷貨實際收取的現金金額", ok: true },
+        { text: "🟦 這是因為企業的損益表是根據「歷史成本原則」編製的，導致損益表上所列的銷貨收益全數按過往較低的歷史價格計算，未能反映現時的通貨膨脹水平", ok: false, err: "銷貨收益上升卻出現現金短缺，是由「應計概念（應計基礎 vs 現金基礎）」所造成的（見課本第 84 頁 P7-9 及第 86 頁例子 10）！" },
+        { text: "🟦 這是因為企業在編製損益表時違反了「企業個體概念」，將東主個人的大額銀行存款一併計入了企業的銷貨收益內，造成帳面銷貨虛高的假象", ok: false, err: "題目設定是在正常合規編製報表下為何「高銷貨額卻面對現金短缺」，核心原因是「應計基礎下的賒銷交易」！" }
+      ],
+      step1: [
+        { text: "🟨 根據應計概念，當企業把貨品送到客戶手上並由客戶接收後（已賺取收益），不論客戶是否已即時付款，企業都必須將該宗交易確認為當期的「銷貨收益」", ok: true },
+        { text: "🟨 根據應計概念，當企業與客戶簽訂銷售訂單並收取 10% 現金訂金時，企業便可將整張訂單的 100% 總金額提前確認為當期的「銷貨收益」", ok: false, err: "課本第 84 頁 P7-10b 及第 90 頁題 7.3A 指出：只確認訂單或只收訂金而未送貨，尚未賺取收益，不可確認為銷貨收益！" },
+        { text: "🟨 根據應計概念，企業在計算銷貨收益時必須先扣除所有尚未支付給供應商的應付貨款及長期銀行貸款本金，從而直接減少了企業帳面上的手頭現金", ok: false, err: "應付貨款與銀行貸款屬於負債（列於財務狀況表），不會在計算銷貨收益時扣除！" }
+      ],
+      step2: [
+        { text: "🟩 因此，如果方先生企業的大部分銷貨交易都是以「賒帳形式（賒銷）」進行，而銷貨債務人又遲遲未清還貨款，企業便會一方面錄得高銷貨收益，另一方面卻出現現金短缺。", ok: true },
+        { text: "🟩 因此，如果方先生企業的大部分銷貨交易都是以「現金形式（現銷）」進行，但企業在年底持有過多非流動資產，損益表上的銷貨收益便會自動轉化為銀行透支。", ok: false, err: "若大部分銷貨是收取現鈔的「現銷」，便會有大量現金流入；正是因為大部分銷貨是「賒銷（應收貨款未收回）」才會導致高銷貨額卻現金短缺！" },
+        { text: "🟩 因此，方先生只須指示會計師在下年度改按「現金基礎」編製損益表，企業銀行往來帳戶內的實際可用現金餘額便會立即大幅增加，解決現金短缺問題。", ok: false, err: "改變報表編製基礎只會改變報表數字，並不會令銀行戶口實際多出現金（必須透過催收應收貨款來改善現金流）！" }
+      ]
+    }
+  ];
+
+  // ==================== 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台（語氣對稱，1/2/3 正確數目齊備） ====================
+  const redPenCases = [
+    {
+      title: "紅筆捉錯挑戰 1：找出考生對「企業個體概念與家人交易處理」的錯句",
+      q: "試題：試根據「企業個體概念」，說明企業與東主及東主家人的法律與會計關係。",
+      chips: [
+        { text: "根據企業個體概念，企業會被視作一個獨立於其東主以及東主其他企業的個體；若東主擁有三家獨立運作的商號，應為每家商號保存個別的會計記錄。", isFlaw: false },
+        { text: "如果獨資東主聘請妻子在企業內擔任全職行政助理，向妻子支付的薪金屬於影響企業營運的交易，應列作企業的費用。", isFlaw: false },
+        { text: "在企業個體概念下，所有獨資商號在法律上均必須被視作「獨立的法定個體（法人）」；而且當東主的妻子把個人款項借予商號並存入商號銀行戶口時，應列作商號的資產和資本。", isFlaw: true }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 76 頁 P7-3a、第 90 頁題 7.1 及第 91 頁題 7.11）：<br>1. **會計上的「企業個體」≠ 法律上的「獨立法定個體」**！獨資商號在會計上視作獨立於東主的個體，但在法律上並非獨立法人（因此題 7.11 陳述 (1)「企業必須被視作獨立的法定個體」是**錯誤**的）！<br>2. 東主的妻子屬於「東主以外的人士」，當妻子把 $20,000 存入企業銀行帳戶時，這筆款項應列作**企業的資產（銀行存款）和負債（貸款）**，而非資本（見課本第 90 頁題 7.1C）！"
+    },
+    {
+      title: "紅筆捉錯挑戰 2：找出考生對「一貫原則與遵從會計原則目的」的錯句",
+      q: "試題：試說明企業遵從「一貫原則」及其他會計原則、慣例的規範與主要目的。",
+      chips: [
+        { text: "根據一貫原則，企業應在每一會計期就類似項目沿用同一會計政策，亦應在同一會計期間內對類似項目採用相同的會計政策。", isFlaw: false },
+        { text: "企業遵從會計原則的主要目的，是強制全香港所有不同企業在處理類似項目時必須統一採用完全相同的唯一會計方法，而且會計政策一經採用便永久不可更改。", isFlaw: true },
+        { text: "會計人員在入帳時遵守會計假設、原則及慣例，能確保會計信息的準確性和一致性，令財務報表的會計信息對不同使用者更有用，並讓使用者較容易比較財務業績。", isFlaw: false }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 74、81–82 頁及第 91 頁選擇題 7.10、7.13）：<br>1. 課本第 91 頁題 7.13 明確指出：陳述 (1)「會計政策一經採用，便不可更改」及陳述 (4)「所有企業在處理類似的項目時，應採用相同的會計政策」均是**不正確**的（因此題 7.13 問哪些是**不正確**的，答案並非包含 1 和 4 的選項；正確的只有陳述 2 和 3）！<br>2. 不同企業可按自身情況選擇不同會計政策（如不同存貨計價法），一貫原則只要求同一企業自身前後保持一致！"
+    },
+    {
+      title: "紅筆捉錯挑戰 3：找出考生對「歷史成本原則限制與清盤價值定義」的錯句",
+      q: "試題：試說明「歷史成本原則」的優點與限制，以及當企業即將清盤時「清盤價值」的定義。",
+      chips: [
+        { text: "「繼續經營概念」是應用歷史成本原則的基礎；在繼續經營下，資產以歷史成本而不以市值計價的好處，是因為歷史成本不會隨時間改變，較為客觀且容易核實。", isFlaw: false },
+        { text: "採用歷史成本原則為資產計價的主要限制，是因為當市場價格出現顯著波動時，歷史成本無法反映該項資產在當前的真正市場價值（現值）。", isFlaw: false },
+        { text: "當企業將在數個月內清盤或被另一家企業收購時，資產應改按「清盤價值」列出；而資產的清盤價值是指在企業清盤完成後，從出售該資產所收回的實際現鈔款項（或必定等於零）。", isFlaw: true }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 77–79、90 頁題 7.4C、7.6D 及第 91 頁題 7.12B、7.14D）：<br>課本第 79 頁註腳 2 及第 90 頁選擇題 7.6D 特別區分了「預期可收回款項（選項 D）」與「收回的實際款項（選項 C）」：在編製清盤前的財務狀況表時，資產尚未真正變賣，因此**清盤價值（Liquidation value）是指「在企業清盤時，預期可從出售該資產收回的款項」**（選項 D 正確，而非已收回的實際款項或等於零）！"
+    }
+  ];
+
+  // 包含「只有 1 項正確」、「2 項正確」及「3 項全對」，徹底消除規律
+  let elimMCs = [
+    {
+      title: "消去法實戰 1：根據會計原則判斷正確的會計處理（課本第 94 頁公開試題 7.28X 題型）",
+      stem: "根據會計假設、原則及慣例，下列哪項會計處理方法是正確的？",
+      rawStmts: [
+        { text: "陳先生獨資擁有三家同業商號，他為每家商號保存個別獨立的會計記錄；當他取去其中一家商號的免費樣本自用時，將其作「提用」處理。", isTrue: true, exp: "正確（見課本第 93–94 頁公開試題 7.25B 及 7.28B）！完全符合企業個體概念。" },
+        { text: "如果預期企業將於下月停止營運並進行清盤，財務狀況表內的所有非流動資產均應繼續按原始購買成本（歷史成本）計值。", isTrue: false, exp: "錯誤（見課本第 79 頁及題 7.27A、7.28C）！預期下月停止營運時，繼續經營假設失效，資產應按「清盤價值（清算值）或變現淨值」計值。" },
+        { text: "除非改用新會計方法可以為企業帶來更高的報告利潤，否則企業已採用的會計方法就不應改變。", isTrue: false, exp: "錯誤（見課本第 81 頁及題 7.28D）！為帶來更高利潤而改變會計方法違反一貫原則；必須是「新方法能更準確反映企業的實際情況」才可改變！" }
+      ]
+    },
+    {
+      title: "消去法實戰 2：一貫原則的真假陳述辨析（課本第 91 頁題 7.13 題型）",
+      stem: "下列哪些有關「一貫原則」的陳述是**正確**的？",
+      rawStmts: [
+        { text: "企業應在每一會計期就類似的項目沿用同一會計政策，亦應在同一會計期間內對類似項目採用相同的會計政策。", isTrue: true, exp: "正確（見課本第 81 頁及第 91 頁題 7.13 陳述 2 及 3）！" },
+        { text: "假如企業因實際需要而改用更能反映實際情況的新會計方法，且對該年度財務業績有重大影響，企業必須在該年度的財務報表披露並解釋有關轉變的影響。", isTrue: true, exp: "正確（見課本第 81 頁第 7.5 節正文）！" },
+        { text: "會計政策一經企業採用便永久不可更改；而且所有不同企業在處理類似項目時，都必須採用完全相同的會計政策。", isTrue: false, exp: "錯誤（見課本第 91 頁題 7.13 陳述 1 及 4）！若新方法更能準確反映實際情況便可更改；且不同企業可各自選擇合適的會計政策。" }
+      ]
+    },
+    {
+      title: "消去法實戰 3：企業個體概念與歷史成本原則的綜合辨析（課本第 90–91 頁題 7.1–7.5 及 7.11 綜合）",
+      stem: "下列哪些有關「企業個體概念」、「歷史成本原則」及「應計概念」的陳述是正確的？",
+      rawStmts: [
+        { text: "在企業個體概念下，企業會被視作獨立於其東主及東主其他企業的個體，企業的交易應獨立於東主的私人交易。", isTrue: true, exp: "正確（見課本第 91 頁題 7.11 陳述 2、3、4）！" },
+        { text: "「繼續經營概念」是應用「歷史成本原則」的基礎；資產以歷史成本而不以市值計價的好處是較為客觀，但其限制則是成本可能無法反映資產的現值。", isTrue: true, exp: "正確（見課本第 90–91 頁題 7.2B、7.4C 及 7.14D）！" },
+        { text: "根據「應計概念」，企業應在「貨品已送到客戶手上，且客戶亦已接收貨品」後確認銷貨收益，而非在客戶確認訂單、發出發票或收取貨款時確認。", isTrue: true, exp: "正確（見課本第 83 頁例子 7 及第 90 頁題 7.3A）！" }
+      ]
+    },
+    {
+      title: "消去法實戰 4：清盤價值與妻子存款的會計處理（課本第 90–91 頁題 7.1、7.6 及 7.12 題型）",
+      stem: "下列哪些有關「資產計價」與「會計帳目處理」的陳述是正確的？",
+      rawStmts: [
+        { text: "陳先生獨資經營一家企業，最近他的妻子把 $20,000 存入企業的銀行帳戶；在企業帳目中，這筆款項應列作企業的「資產（銀行存款）」和「負債（貸款）」。", isTrue: true, exp: "正確（見課本第 90 頁題 7.1C）！妻子屬於東主以外的人士，其提供的資金屬於企業的負債而非東主資本。" },
+        { text: "假設某企業將在數個月內清盤（或被另一家企業收購）並正編製最後一套財務報表，其資產價值應按「清盤價值（即預期可從出售該資產收回的款項）」列出。", isTrue: true, exp: "正確（見課本第 90–91 頁題 7.6D 及 7.12B）！" },
+        { text: "在企業個體概念下，所有獨資經營商號及合夥商號在法律上都必須被視作「獨立的法定個體（法人）」。", isTrue: false, exp: "錯誤（見課本第 91 頁題 7.11 陳述 1）！獨資與合夥在「會計上」是獨立於東主的會計個體，但在「法律上」並非獨立法定個體（只有有限公司才是獨立法定個體）！" }
+      ]
+    }
+  ];
+
+  const allComboDefs = [
+    { order: 1, reqTrue: [1], reqFalse: [2, 3], text: "只有 (1)" },
+    { order: 2, reqTrue: [2], reqFalse: [1, 3], text: "只有 (2)" },
+    { order: 3, reqTrue: [3], reqFalse: [1, 2], text: "只有 (3)" },
+    { order: 4, reqTrue: [1, 2], reqFalse: [3], text: "只有 (1) 及 (2)" },
+    { order: 5, reqTrue: [1, 3], reqFalse: [2], text: "只有 (1) 及 (3)" },
+    { order: 6, reqTrue: [2, 3], reqFalse: [1], text: "只有 (2) 及 (3)" },
+    { order: 7, reqTrue: [1, 2, 3], reqFalse: [], text: "(1)、(2) 及 (3)" }
+  ];
+
+  function prepareDynamicMC(mcItem) {
+    const shuffled = shuffle(mcItem.rawStmts);
+    mcItem.stmts = shuffled.map((s, idx) => ({
+      id: idx + 1,
+      text: `(${idx + 1}) ${s.text}`,
+      isTrue: s.isTrue,
+      exp: s.exp
+    }));
+    const trueIds = mcItem.stmts.filter(s => s.isTrue).map(s => s.id);
+    const correctCombo = allComboDefs.find(c =>
+      c.reqTrue.length === trueIds.length && c.reqTrue.every(id => trueIds.includes(id))
+    );
+    const wrongPool = shuffle(allComboDefs.filter(c => c !== correctCombo)).slice(0, 3);
+    const chosenCombos = [correctCombo, ...wrongPool].sort((a, b) => a.order - b.order);
+    const letters = ["A", "B", "C", "D"];
+    mcItem.options = chosenCombos.map((c, idx) => ({
+      label: `${letters[idx]}. ${c.text}`,
+      reqTrue: c.reqTrue,
+      reqFalse: c.reqFalse
+    }));
+    mcItem.ansIdx = chosenCombos.indexOf(correctCombo);
+  }
+
+  function randomizeAllData() {
+    judgeCases = shuffle(judgeCases);
+    judgeCases.forEach(c => { c.rulings = shuffle(c.rulings); });
+    valuationCases.forEach(v => {
+      v.opts1 = shuffle(v.opts1);
+      v.opts2 = shuffle(v.opts2);
+      v.opts3 = shuffle(v.opts3);
+    });
+    timelineCases.forEach(t => {
+      t.opts1 = shuffle(t.opts1);
+      t.opts2 = shuffle(t.opts2);
+      t.opts3 = shuffle(t.opts3);
+    });
+    legoChallenges.forEach(ch => {
+      ch.step0 = shuffle(ch.step0);
+      ch.step1 = shuffle(ch.step1);
+      ch.step2 = shuffle(ch.step2);
+    });
+    redPenCases.forEach(c => { c.chips = shuffle(c.chips); });
+    elimMCs = shuffle(elimMCs);
+    elimMCs.forEach(m => prepareDynamicMC(m));
+  }
+
+  let curMode = 0;
+  let subIdx = [0, 0, 0, 0, 0];
+  let mod5Sub = 0;
+  let doneMap = {};
+  let score = 0;
+  let combo = 0;
+  let isZoom = false;
+  let legoPicked = [null, null, null];
+  let elimState = { 1: null, 2: null, 3: null };
+
+  function reshuffleAll() {
+    randomizeAllData();
+    judgePick = { concept: null, ruling: null };
+    cStepPicks = [null, null, null];
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function toggleZoom() {
+    isZoom = !isZoom;
+    document.documentElement.style.setProperty('--scale', isZoom ? '1.18' : '1');
+    document.getElementById("zoomBtn").innerText = isZoom ? "🔍 投影大字體：開" : "🔍 投影大字體：關";
+  }
+
+  function addScore(pts, key) {
+    combo++;
+    if (!doneMap[key]) { doneMap[key] = true; score += pts; }
+    updateTopBar();
+  }
+
+  function breakCombo() {
+    combo = 0;
+    updateTopBar();
+    const st = document.getElementById("mainStage");
+    st.classList.remove("shake");
+    void st.offsetWidth;
+    st.classList.add("shake");
+  }
+
+  function updateTopBar() {
+    document.getElementById("comboBadge").innerText = `🔥 連擊：${combo}`;
+    document.getElementById("scoreBadge").innerText = `⭐ 專業積分：${score}`;
+  }
+
+  function switchMode(m) {
+    curMode = m;
+    for (let i = 0; i < 5; i++) {
+      document.getElementById(`mTab${i}`).className = "mode-tab" + (i === m ? " active" : "");
+    }
+    judgePick = { concept: null, ruling: null };
+    cStepPicks = [null, null, null];
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function goSub(idx) {
+    subIdx[curMode] = idx;
+    judgePick = { concept: null, ruling: null };
+    cStepPicks = [null, null, null];
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function nextOrSwitch(maxLen, nextModeIdx) {
+    if (subIdx[curMode] < maxLen - 1) goSub(subIdx[curMode] + 1);
+    else switchMode(nextModeIdx);
+  }
+
+  function moveSub(delta, maxLen) {
+    let next = subIdx[curMode] + delta;
+    if (next >= 0 && next < maxLen) goSub(next);
+  }
+
+  function buildDots(total, customKeyPrefix) {
+    const prefix = customKeyPrefix || `${curMode}`;
+    let html = "";
+    for (let i = 0; i < total; i++) {
+      const k = `${prefix}_${i}`;
+      const cls = (i === subIdx[curMode]) ? "dot-btn active" : (doneMap[k] ? "dot-btn done" : "dot-btn");
+      html += `<button class="${cls}" onclick="goSub(${i})">${i + 1}</button>`;
+    }
+    return html;
+  }
+
+  function renderStage() {
+    const stage = document.getElementById("mainStage");
+    stage.classList.remove("pop");
+    void stage.offsetWidth;
+    stage.classList.add("pop");
+    if (curMode === 0) renderJudgeMode(stage);
+    else if (curMode === 1) renderValuationMode(stage);
+    else if (curMode === 2) renderTimelineMode(stage);
+    else if (curMode === 3) renderLegoMode(stage);
+    else if (curMode === 4) renderArenaMode(stage);
+  }
+
+  // ==================== 渲染模組 1：會計原則「合規裁判官」診斷台 ====================
+  function renderJudgeMode(stage) {
+    const idx = subIdx[0];
+    const item = judgeCases[idx];
+
+    const pillarsHtml = fivePillars.map(p => `
+      <div class="pillar-chip ${judgePick.concept === p.key ? 'picked' : ''}" onclick="setJudgePick('concept','${p.key}')">
+        ${p.name}
+      </div>
+    `).join("");
+
+    const rulingsHtml = item.rulings.map((r, rIdx) => `
+      <button class="ruling-btn ${judgePick.ruling === rIdx ? 'picked' : ''}" onclick="setJudgePick('ruling', ${rIdx})">
+        👨‍⚖️ ${r.text}
+      </button>
+    `).join("");
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">⚖️ 會計原則「合規裁判官」診斷台（無提示辨識與對稱裁決）</span>
+          <div class="dots-nav">${buildDots(judgeCases.length)}</div>
+        </div>
+
+        <div class="dispute-box">
+          <span class="dispute-speaker">🗣️ ${item.speaker}</span>
+          <div class="dispute-speech">${item.speech}</div>
+        </div>
+
+        <div class="step-label">第一步：點選此個案所涉及（或違反）的「會計假設、原則或概念」：</div>
+        <div class="pillars-strip">${pillarsHtml}</div>
+
+        <div class="step-label">第二步：點選你作為總會計師的「專業合規裁決」（選項已隨機排列）：</div>
+        <div class="ruling-grid">${rulingsHtml}</div>
+
+        <div class="feedback-pop" id="jdgFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${judgeCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一爭議</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${judgeCases.length}, 1)">
+          ${idx === judgeCases.length - 1 ? '進入「資產計價計算器」 →' : '下一爭議 →'}
+        </button>
+      </div>
+    `;
+
+    if (judgePick.concept !== null && judgePick.ruling !== null) {
+      const fb = document.getElementById("jdgFb");
+      fb.style.display = "block";
+      const cOk = (judgePick.concept === item.conceptAns);
+      const rOk = item.rulings[judgePick.ruling].ok;
+      if (cOk && rOk) {
+        addScore(20, `0_${idx}`);
+        fb.className = "feedback-pop fb-ok";
+        fb.innerHTML = `🎯 <strong>合規裁決完全正確！（+20 分）</strong><br>${item.exp}`;
+      } else {
+        breakCombo();
+        const ansName = fivePillars.find(p => p.key === item.conceptAns).name;
+        fb.className = "feedback-pop fb-err";
+        fb.innerHTML = `⚠️ <strong>裁決有誤！</strong><br>• 第一步（識別原則）：${cOk ? '✓ 正確' : '✗ 應為「' + ansName + '」'}<br>• 第二步（專業裁決）：${rOk ? '✓ 正確' : '✗ 請再細閱課本對該原則的規定！'}<br>${item.exp}`;
+      }
+    }
+  }
+
+  function setJudgePick(key, val) {
+    judgePick[key] = val;
+    renderJudgeMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 2：資產計價三步純數值計算器 ====================
+  function renderValuationMode(stage) {
+    const idx = subIdx[1];
+    const item = valuationCases[idx];
+
+    const buildStepBox = (qTitle, optsArr, sIdx) => {
+      const btns = optsArr.map((o, oIdx) =>
+        `<button class="calc-opt-btn ${cStepPicks[sIdx] === oIdx ? 'picked' : ''}" onclick="pickValStep(${sIdx}, ${oIdx})">${o.text}</button>`
+      ).join("");
+      return `
+        <div class="calc-step-box">
+          <div class="calc-step-q">${qTitle}</div>
+          ${btns}
+        </div>
+      `;
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🏷️ ${item.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoSolveVal()">💡 示範三步滿分計算</button>
+            ${buildDots(valuationCases.length)}
+          </div>
+        </div>
+
+        <div class="invoice-card">
+          <div class="inv-title">${item.cardTitle}</div>
+          <div class="inv-body">${item.cardHtml}</div>
+        </div>
+
+        <div class="calc-steps-grid">
+          ${buildStepBox(item.q1, item.opts1, 0)}
+          ${buildStepBox(item.q2, item.opts2, 1)}
+          ${buildStepBox(item.q3, item.opts3, 2)}
+        </div>
+
+        <div class="feedback-pop" id="valFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${valuationCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一檔案</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${valuationCases.length}, 2)">
+          ${idx === valuationCases.length - 1 ? '進入「應計跨期計算機」 →' : '下一檔案 →'}
+        </button>
+      </div>
+    `;
+
+    if (cStepPicks[0] !== null && cStepPicks[1] !== null && cStepPicks[2] !== null) {
+      const fb = document.getElementById("valFb");
+      fb.style.display = "block";
+      const ok0 = item.opts1[cStepPicks[0]].ok;
+      const ok1 = item.opts2[cStepPicks[1]].ok;
+      const ok2 = item.opts3[cStepPicks[2]].ok;
+      if (ok0 && ok1 && ok2) {
+        addScore(25, `1_${idx}`);
+        fb.className = "feedback-pop fb-ok";
+        fb.innerHTML = `🏆 <strong>三步資產計價全數命中！（+25 分）</strong><br>${item.exp}`;
+      } else {
+        breakCombo();
+        fb.className = "feedback-pop fb-err";
+        fb.innerHTML = `⚠️ <strong>部分步驟計價有誤：</strong> 第 1 步 [${ok0 ? '✓' : '✗'}] ｜ 第 2 步 [${ok1 ? '✓' : '✗'}] ｜ 第 3 步 [${ok2 ? '✓' : '✗'}]<br>${item.exp}`;
+      }
+    }
+  }
+
+  function pickValStep(sIdx, oIdx) {
+    cStepPicks[sIdx] = oIdx;
+    renderValuationMode(document.getElementById("mainStage"));
+  }
+
+  function autoSolveVal() {
+    const item = valuationCases[subIdx[1]];
+    cStepPicks[0] = item.opts1.findIndex(o => o.ok);
+    cStepPicks[1] = item.opts2.findIndex(o => o.ok);
+    cStepPicks[2] = item.opts3.findIndex(o => o.ok);
+    renderValuationMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 3：應計跨期損益三步純數值計算機 ====================
+  function renderTimelineMode(stage) {
+    const idx = subIdx[2];
+    const item = timelineCases[idx];
+
+    const buildStepBox = (qTitle, optsArr, sIdx) => {
+      const btns = optsArr.map((o, oIdx) =>
+        `<button class="calc-opt-btn ${cStepPicks[sIdx] === oIdx ? 'picked' : ''}" onclick="pickTlStep(${sIdx}, ${oIdx})">${o.text}</button>`
+      ).join("");
+      return `
+        <div class="calc-step-box">
+          <div class="calc-step-q">${qTitle}</div>
+          ${btns}
+        </div>
+      `;
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">⏱️ ${item.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoSolveTl()">💡 示範三步滿分計算</button>
+            ${buildDots(timelineCases.length)}
+          </div>
+        </div>
+
+        <div class="invoice-card">
+          <div class="inv-title">${item.cardTitle}</div>
+          <div class="inv-body">${item.cardHtml}</div>
+        </div>
+
+        <div class="calc-steps-grid">
+          ${buildStepBox(item.q1, item.opts1, 0)}
+          ${buildStepBox(item.q2, item.opts2, 1)}
+          ${buildStepBox(item.q3, item.opts3, 2)}
+        </div>
+
+        <div class="feedback-pop" id="tlFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${timelineCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一案例</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${timelineCases.length}, 3)">
+          ${idx === timelineCases.length - 1 ? '進入「情境三步砌答案」 →' : '下一案例 →'}
+        </button>
+      </div>
+    `;
+
+    if (cStepPicks[0] !== null && cStepPicks[1] !== null && cStepPicks[2] !== null) {
+      const fb = document.getElementById("tlFb");
+      fb.style.display = "block";
+      const ok0 = item.opts1[cStepPicks[0]].ok;
+      const ok1 = item.opts2[cStepPicks[1]].ok;
+      const ok2 = item.opts3[cStepPicks[2]].ok;
+      if (ok0 && ok1 && ok2) {
+        addScore(25, `2_${idx}`);
+        fb.className = "feedback-pop fb-ok";
+        fb.innerHTML = `🏆 <strong>三步應計損益計算全數正確！（+25 分）</strong><br>${item.exp}`;
+      } else {
+        breakCombo();
+        fb.className = "feedback-pop fb-err";
+        fb.innerHTML = `⚠️ <strong>部分步驟有誤：</strong> 第 1 步 [${ok0 ? '✓' : '✗'}] ｜ 第 2 步 [${ok1 ? '✓' : '✗'}] ｜ 第 3 步 [${ok2 ? '✓' : '✗'}]<br>${item.exp}`;
+      }
+    }
+  }
+
+  function pickTlStep(sIdx, oIdx) {
+    cStepPicks[sIdx] = oIdx;
+    renderTimelineMode(document.getElementById("mainStage"));
+  }
+
+  function autoSolveTl() {
+    const item = timelineCases[subIdx[2]];
+    cStepPicks[0] = item.opts1.findIndex(o => o.ok);
+    cStepPicks[1] = item.opts2.findIndex(o => o.ok);
+    cStepPicks[2] = item.opts3.findIndex(o => o.ok);
+    renderTimelineMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 4：磁力積木砌答案 ====================
+  function renderLegoMode(stage) {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    let trayHtml = "";
+    if (legoPicked[0] === null && legoPicked[1] === null && legoPicked[2] === null) {
+      trayHtml = `<span class="tray-placeholder">👇 三步積木的字數與語氣均已對稱設計並隨機洗牌！請按課本第 85 頁三步策略依序點擊：「🟦 1.識別概念」＋「🟨 2.套用定義」＋「🟩 3.會計處理」</span>`;
+    } else {
+      const colors = ["chip-step0", "chip-step1", "chip-step2"];
+      const stepLabels = ["🟦 步驟1", "🟨 步驟2", "🟩 步驟3"];
+      legoPicked.forEach((pk, sIdx) => {
+        if (pk !== null) {
+          const obj = item[`step${sIdx}`][pk];
+          trayHtml += `<span class="slot-chip ${colors[sIdx]}" onclick="removeLego(${sIdx})">${stepLabels[sIdx]}：${obj.text} ✖</span>`;
+        }
+      });
+    }
+
+    const buildPool = (stepArr, sIdx, tagLabel, tagBg, tagColor) => {
+      return stepArr.map((blk, bIdx) => {
+        const isSel = (legoPicked[sIdx] === bIdx);
+        return `
+          <button class="mag-block ${isSel ? 'selected' : ''}" onclick="pickLego(${sIdx}, ${bIdx})">
+            <span class="block-tag" style="background:${tagBg}; color:${tagColor};">${tagLabel} ${isSel ? '✓ 已選' : ''}</span>
+            <div>${blk.text}</div>
+          </button>
+        `;
+      }).join("");
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🧲 ${item.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoFillCorrectLego()">💡 示範滿分拼法</button>
+            ${buildDots(legoChallenges.length)}
+          </div>
+        </div>
+        <div class="question-strip">${item.q}</div>
+        <div class="tray-header">
+          <span style="font-size:calc(13.5px * var(--scale)); font-weight:900;">📥 你的磁力答題槽（揀齊 3 塊積木即自動批改）：</span>
+          <button class="helper-btn" onclick="resetAndShuffleLego()">🔄 清空並重新隨機排列積木</button>
+        </div>
+        <div class="tray-box">${trayHtml}</div>
+        <div class="blocks-section-title">1️⃣ 策略第 1 步：識別須應用的會計原則或概念［佔 1 分］</div>
+        <div class="blocks-pool">${buildPool(item.step0, 0, "🟦 步驟 1：識別概念", "#dbeafe", "#1e3a8a")}</div>
+        <div class="blocks-section-title">2️⃣ 策略第 2 步：將該會計概念應用到情境中（寫出定義的重要字眼）［佔 1 分］</div>
+        <div class="blocks-pool">${buildPool(item.step1, 1, "🟨 步驟 2：定義與應用", "#fef3c7", "#92400e")}</div>
+        <div class="blocks-section-title">3️⃣ 策略第 3 步：列出具體會計處理方法或入帳金額［佔 1 分］</div>
+        <div class="blocks-pool">${buildPool(item.step2, 2, "🟩 步驟 3：處理與金額", "#d1fae5", "#065f46")}</div>
+        <div class="feedback-pop" id="legoFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${legoChallenges.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${legoChallenges.length}, 4)">
+          ${idx === legoChallenges.length - 1 ? '進入「捉錯與消去擂台」 →' : '下一題 →'}
+        </button>
+      </div>
+    `;
+
+    if (legoPicked[0] !== null && legoPicked[1] !== null && legoPicked[2] !== null) evaluateLego();
+  }
+
+  function pickLego(sIdx, bIdx) { legoPicked[sIdx] = bIdx; renderLegoMode(document.getElementById("mainStage")); }
+  function removeLego(sIdx) { legoPicked[sIdx] = null; renderLegoMode(document.getElementById("mainStage")); }
+  function resetAndShuffleLego() {
+    const ch = legoChallenges[subIdx[3]];
+    ch.step0 = shuffle(ch.step0);
+    ch.step1 = shuffle(ch.step1);
+    ch.step2 = shuffle(ch.step2);
+    legoPicked = [null, null, null];
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+  function autoFillCorrectLego() {
+    const item = legoChallenges[subIdx[3]];
+    legoPicked[0] = item.step0.findIndex(b => b.ok);
+    legoPicked[1] = item.step1.findIndex(b => b.ok);
+    legoPicked[2] = item.step2.findIndex(b => b.ok);
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+
+  function evaluateLego() {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    const b0 = item.step0[legoPicked[0]], b1 = item.step1[legoPicked[1]], b2 = item.step2[legoPicked[2]];
+    const fb = document.getElementById("legoFb");
+    fb.style.display = "block";
+    if (b0.ok && b1.ok && b2.ok) {
+      addScore(25, `3_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🏆 <strong>三步答題策略拼合完美！穩奪滿分！（+25 分）</strong><br>✨ <strong>合成標準答案</strong>：「<strong>${b0.text}</strong>。<strong>${b1.text}</strong>。<strong>${b2.text}</strong>」`;
+    } else {
+      breakCombo();
+      let errs = [];
+      if (!b0.ok) errs.push(`• 🟦 <strong>步驟 1 積木有誤</strong>：${b0.err}`);
+      if (!b1.ok) errs.push(`• 🟨 <strong>步驟 2 積木有誤</strong>：${b1.err}`);
+      if (!b2.ok) errs.push(`• 🟩 <strong>步驟 3 積木有誤</strong>：${b2.err}`);
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⚠️ <strong>積木組合存在失分陷阱（請直接點擊下方正確積木替換）：</strong><br>${errs.join("<br>")}`;
+    }
+  }
+
+  // ==================== 渲染模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ====================
+  function switchMod5Sub(s) {
+    mod5Sub = s;
+    subIdx[4] = 0;
+    elimState = { 1: null, 2: null, 3: null };
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function renderArenaMode(stage) {
+    const idx = subIdx[4];
+    const topSwitch = `
+      <div class="sub-mode-bar">
+        <button class="sub-mode-btn ${mod5Sub === 0 ? 'active' : ''}" onclick="switchMod5Sub(0)">🖍️ 挑戰 A：紅筆捉錯（點擊答卷錯句）</button>
+        <button class="sub-mode-btn ${mod5Sub === 1 ? 'active' : ''}" onclick="switchMod5Sub(1)">🏆 挑戰 B：組合選擇題消去法神器</button>
+      </div>
+    `;
+
+    if (mod5Sub === 0) {
+      const item = redPenCases[idx];
+      const nums = ["①", "②", "③"];
+      const chipsHtml = item.chips.map((ch, cIdx) => `
+        <div class="sentence-chip" id="rpChip_${cIdx}" onclick="checkRedPen(${cIdx})">
+          <span>${nums[cIdx]} ${ch.text}</span>
+          <span style="font-size:calc(13px * var(--scale)); color:var(--rose); font-weight:900; white-space:nowrap;">🖍️ 點此捉錯</span>
+        </div>
+      `).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🖍️ ${item.title}</span>
+            <div class="dots-nav">${buildDots(redPenCases.length, "4_rp")}</div>
+          </div>
+          <div class="question-strip">${item.q}</div>
+          <div class="paper-sheet">
+            <div style="font-weight:900; color:var(--rose); margin-bottom:10px; font-size:calc(14px * var(--scale));">
+              🖍️ 句子次序已隨機洗牌，請點擊藏有嚴重會計原則概念錯誤的那一句：
+            </div>
+            <div class="sentence-chips-wrap">${chipsHtml}</div>
+          </div>
+          <div class="feedback-pop" id="rpFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${redPenCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="${idx === redPenCases.length - 1 ? 'switchMod5Sub(1)' : `moveSub(1, ${redPenCases.length})`}">
+            ${idx === redPenCases.length - 1 ? '進入「挑戰 B：選擇題消去法」 →' : '下一題 →'}
+          </button>
+        </div>
+      `;
+    } else {
+      const item = elimMCs[idx];
+      const stmtsHtml = item.stmts.map(st => {
+        const curVal = elimState[st.id];
+        return `
+          <div class="elim-stmt-row">
+            <div class="elim-stmt-text">${st.text}</div>
+            <div class="elim-toggles">
+              <button class="elim-btn ${curVal === true ? 't-true' : ''}" onclick="toggleElim(${st.id}, true)">⭕ 正確</button>
+              <button class="elim-btn ${curVal === false ? 't-false' : ''}" onclick="toggleElim(${st.id}, false)">❌ 錯誤</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const optsHtml = item.options.map((opt, oIdx) => {
+        let isElim = false;
+        [1, 2, 3].forEach(sId => {
+          if (elimState[sId] === true && opt.reqFalse.includes(sId)) isElim = true;
+          if (elimState[sId] === false && opt.reqTrue.includes(sId)) isElim = true;
+        });
+        return `<button class="mc-card-btn ${isElim ? 'eliminated' : ''}" onclick="checkElimMc(${oIdx})">${opt.label}</button>`;
+      }).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🏆 ${item.title}</span>
+            <div class="dots-nav">${buildDots(elimMCs.length, "4_mc")}</div>
+          </div>
+          <div class="question-strip">${item.stem}</div>
+          <p style="font-size:calc(14px * var(--scale)); font-weight:800; color:var(--teal); margin-bottom:8px;">
+            💡 消去法神器：本題可能只有 1 項、2 項或全部 3 項正確！請先在右方標記「⭕ 正確」或「❌ 錯誤」自動劃走錯項！
+          </p>
+          <div>${stmtsHtml}</div>
+          <div class="mc-options-row">${optsHtml}</div>
+          <div class="feedback-pop" id="elimFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${elimMCs.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="moveSub(1, ${elimMCs.length})" ${idx === elimMCs.length - 1 ? 'style="visibility:hidden"' : ''}>下一題 →</button>
+        </div>
+      `;
+    }
+  }
+
+  function checkRedPen(cIdx) {
+    const idx = subIdx[4];
+    const item = redPenCases[idx];
+    const ch = item.chips[cIdx];
+    const nums = ["①", "②", "③"];
+    const el = document.getElementById(`rpChip_${cIdx}`);
+    const fb = document.getElementById("rpFb");
+    fb.style.display = "block";
+    if (ch.isFlaw) {
+      el.className = "sentence-chip flaw-found";
+      addScore(20, `4_rp_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🖍️ 紅筆精準捉錯（第 ${nums[cIdx]} 句得 0 分）！</strong><br>${item.exp}`;
+    } else {
+      el.className = "sentence-chip good-clicked";
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⭕ <strong>第 ${nums[cIdx]} 句是完全正確的課本陳述！</strong> 請再檢查其餘句子找出真正的概念陷阱！`;
+    }
+  }
+
+  function toggleElim(sId, val) {
+    elimState[sId] = (elimState[sId] === val) ? null : val;
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function checkElimMc(oIdx) {
+    const idx = subIdx[4];
+    const item = elimMCs[idx];
+    const fb = document.getElementById("elimFb");
+    fb.style.display = "block";
+    if (oIdx === item.ansIdx) {
+      addScore(20, `4_mc_${idx}`);
+      const breakdown = item.stmts.map(s => `• <strong>陳述 (${s.id}) ${s.isTrue ? '⭕ 正確' : '❌ 錯誤'}</strong>：${s.exp}`).join("<br>");
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🏆 答對了！標準答案：${item.options[item.ansIdx].label}</strong><br>${breakdown}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = "❌ <strong>選項不正確！</strong> 試試先在上方逐句判斷 (1)、(2)、(3) 的對錯，利用消去法鎖定答案！";
+    }
+  }
+
+  randomizeAllData();
+  renderStage();
+</script>
+</body>
+</html>

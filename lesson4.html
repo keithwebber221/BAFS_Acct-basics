@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企會財會計互動工作台｜第 4 課：試算表</title>
+  <style>
+    :root {
+      --bg: #06141b;
+      --panel: #11212d;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      --teal: #0d9488;
+      --blue: #2563eb;
+      --blue-light: #dbeafe;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --scale: 1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC", sans-serif; user-select: none; }
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      padding: 12px;
+      font-size: calc(16px * var(--scale));
+      line-height: 1.55;
+    }
+    .app { max-width: 1080px; margin: 0 auto; }
+
+    @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    .pop { animation: popIn 0.22s ease-out; }
+    .shake { animation: shake 0.3s ease-in-out; }
+
+    /* 頂部狀態列 */
+    .top-bar {
+      background: linear-gradient(135deg, #064e3b 0%, #0f766e 50%, #1e3a8a 100%);
+      border-radius: 16px;
+      padding: 14px 22px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+    .brand-title { font-size: calc(20px * var(--scale)); font-weight: 900; display: flex; align-items: center; gap: 10px; }
+    .stat-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pill-stat { background: rgba(6, 20, 27, 0.65); border: 1px solid rgba(52, 211, 153, 0.4); padding: 6px 13px; border-radius: 30px; font-weight: 800; font-size: calc(13.5px * var(--scale)); color: #a7f3d0; }
+    .ctrl-btn { background: #fbbf24; color: #0f172a; border: none; padding: 7px 14px; border-radius: 30px; font-weight: 900; font-size: calc(13px * var(--scale)); cursor: pointer; transition: transform 0.15s; }
+    .ctrl-btn:hover { transform: scale(1.05); background: #fcd34d; }
+
+    /* 五大互動模式導航 */
+    .mode-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+    @media (max-width: 820px) { .mode-nav { grid-template-columns: repeat(2, 1fr); } }
+    .mode-tab {
+      background: var(--panel);
+      border: 2px solid #1e3a4c;
+      border-radius: 14px;
+      padding: 12px 8px;
+      color: #94a3b8;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .mode-tab:hover { border-color: #34d399; color: #fff; transform: translateY(-2px); }
+    .mode-tab.active {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-color: #6ee7b7;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
+    }
+    .mode-icon { font-size: calc(24px * var(--scale)); display: block; margin-bottom: 4px; }
+    .mode-label { font-size: calc(14px * var(--scale)); font-weight: 900; display: block; }
+    .mode-sub { font-size: calc(11.5px * var(--scale)); opacity: 0.9; }
+
+    /* 主舞台 */
+    .stage {
+      background-color: var(--card);
+      background-image: linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+      border-radius: 20px;
+      padding: 24px;
+      min-height: 540px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid #cbd5e1;
+    }
+
+    .level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #e2e8f0; background: rgba(255,255,255,0.92); border-radius: 10px; padding: 10px 14px; }
+    .level-title { font-size: calc(18px * var(--scale)); font-weight: 900; color: #065f46; }
+    .dots-nav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .dot-btn {
+      width: calc(36px * var(--scale)); height: calc(36px * var(--scale));
+      border-radius: 10px; border: 2px solid #cbd5e1; background: #fff;
+      font-weight: 900; font-size: calc(14px * var(--scale)); cursor: pointer; color: var(--muted);
+    }
+    .dot-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .dot-btn.done { background: var(--emerald-light); color: #065f46; border-color: var(--emerald); }
+
+    /* ================= 模組 1：互動試算表「一鍵調欄」執錯平衡器 ================= */
+    .tb-sheet {
+      max-width: 780px; margin: 0 auto 14px auto; background: #fff;
+      border: 2px solid #334155; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .tb-sheet-header {
+      background: #1e293b; color: #fff; text-align: center; padding: 12px;
+      font-weight: 900; font-size: calc(16px * var(--scale)); line-height: 1.4;
+    }
+    .tb-sheet-header small { display: block; font-size: calc(13px * var(--scale)); color: #fbbf24; }
+    .tb-table { width: 100%; border-collapse: collapse; font-size: calc(14.5px * var(--scale)); font-weight: 800; }
+    .tb-table th { background: #f1f5f9; border-bottom: 2px solid #334155; padding: 8px 14px; text-align: right; color: #0f172a; }
+    .tb-table th:first-child { text-align: left; }
+    .tb-row { border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.15s; }
+    .tb-row:hover { background: #eff6ff; }
+    .tb-row td { padding: 7px 14px; text-align: right; }
+    .tb-row td:first-child { text-align: left; display: flex; justify-content: space-between; align-items: center; }
+    .flip-hint { font-size: calc(11.5px * var(--scale)); padding: 2px 7px; border-radius: 6px; background: #e2e8f0; color: #475569; font-weight: 900; }
+    .tb-row:hover .flip-hint { background: var(--blue); color: #fff; }
+    .dr-cell { color: #1e3a8a; background: rgba(219, 234, 254, 0.3); width: 26%; }
+    .cr-cell { color: #4c1d95; background: rgba(237, 233, 254, 0.3); width: 26%; }
+    .tb-total-row { background: #f8fafc; border-top: 3px solid #0f172a; border-bottom: 4px double #0f172a; font-weight: 900; font-size: calc(16px * var(--scale)); }
+    .tb-total-row td { padding: 10px 14px; text-align: right; }
+    .tb-total-row td:first-child { text-align: left; }
+
+    .status-bar {
+      max-width: 780px; margin: 0 auto 12px auto; padding: 12px 16px; border-radius: 12px;
+      font-weight: 900; font-size: calc(15px * var(--scale)); text-align: center;
+    }
+    .status-unbal { background: #fff1f2; border: 2px solid var(--rose); color: #9f1239; }
+    .status-bal { background: #dcfce7; border: 2px solid var(--emerald); color: #14532d; }
+
+    /* ================= 模組 2：尋回失蹤資本三步純數值挑戰（無自動計算洩密） ================= */
+    .invoice-card {
+      background: #fffbeb; border: 2px solid #f59e0b; border-radius: 14px; padding: 16px 20px;
+      margin-bottom: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+    .inv-title { font-size: calc(16.5px * var(--scale)); font-weight: 900; color: #92400e; margin-bottom: 8px; border-bottom: 2px dashed #fcd34d; padding-bottom: 6px; }
+    .inv-body { font-size: calc(14.5px * var(--scale)); font-weight: 800; color: #451a03; line-height: 1.65; }
+    .calc-steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+    @media (max-width: 780px) { .calc-steps-grid { grid-template-columns: 1fr; } }
+    .calc-step-box { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; }
+    .calc-step-q { font-size: calc(13.5px * var(--scale)); font-weight: 900; color: var(--blue); margin-bottom: 8px; min-height: 42px; }
+    .calc-opt-btn {
+      display: block; width: 100%; text-align: center; padding: 10px; margin-bottom: 6px;
+      border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; transition: all 0.15s;
+    }
+    .calc-opt-btn:hover { border-color: var(--blue); background: #eff6ff; }
+    .calc-opt-btn.picked { background: #dbeafe; border-color: var(--blue); color: #1e3a8a; }
+
+    /* ================= 模組 3：記帳錯誤「影響 vs 不影響平衡」X 光機 ================= */
+    .error-case-box {
+      background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff;
+      border-radius: 16px; padding: 22px; margin-bottom: 16px; border-left: 8px solid #fbbf24;
+    }
+    .err-tag { font-size: calc(12.5px * var(--scale)); font-weight: 900; color: #fbbf24; margin-bottom: 6px; display: block; }
+    .err-desc { font-size: calc(18px * var(--scale)); font-weight: 900; line-height: 1.5; }
+    .step-label { font-size: calc(14.5px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 8px; }
+    .three-col-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+    .two-col-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    @media (max-width: 720px) { .three-col-btns, .two-col-btns { grid-template-columns: 1fr; } }
+    .xray-choice-btn {
+      padding: 13px 14px; border-radius: 12px; border: 3px solid #cbd5e1; background: #fff;
+      font-size: calc(15px * var(--scale)); font-weight: 900; cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .xray-choice-btn:hover { border-color: var(--teal); background: #f0fdfa; }
+    .xray-choice-btn.picked { border-color: var(--emerald); background: #d1fae5; box-shadow: 0 0 0 3px rgba(5,150,105,0.25); }
+
+    /* ================= 模組 4：磁力積木砌答案 ================= */
+    .question-strip { background: #fffbeb; border-left: 6px solid var(--amber); padding: 14px 18px; border-radius: 12px; font-size: calc(16px * var(--scale)); font-weight: 900; color: #78350f; margin-bottom: 14px; }
+    .tray-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+    .tray-box { background: #f1f5f9; border: 3px dashed #64748b; border-radius: 16px; padding: 14px 16px; min-height: 84px; margin-bottom: 16px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .tray-placeholder { color: var(--muted); font-weight: 800; font-size: calc(14.5px * var(--scale)); }
+    .slot-chip { padding: 9px 14px; border-radius: 10px; font-weight: 900; font-size: calc(14.5px * var(--scale)); color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+    .chip-step0 { background: var(--blue); }
+    .chip-step1 { background: var(--amber); }
+    .chip-step2 { background: var(--emerald); }
+    .blocks-section-title { font-size: calc(14px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 6px; }
+    .blocks-pool { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 720px) { .blocks-pool { grid-template-columns: 1fr; } }
+    .mag-block { padding: 12px 14px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(14px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; text-align: left; transition: all 0.15s; line-height: 1.5; }
+    .mag-block:hover { border-color: var(--emerald); background: #ecfdf5; transform: translateY(-2px); }
+    .mag-block.selected { background: #d1fae5; border-color: var(--emerald); box-shadow: inset 0 0 0 2px var(--emerald); }
+    .block-tag { display: inline-block; font-size: calc(11.5px * var(--scale)); font-weight: 900; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
+    .helper-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--emerald); background: #ecfdf5; color: #065f46; font-weight: 800; font-size: calc(13px * var(--scale)); cursor: pointer; }
+    .helper-btn:hover { background: var(--emerald); color: #fff; }
+
+    /* ================= 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ================= */
+    .sub-mode-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+    .sub-mode-btn { flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #cbd5e1; background: #f8fafc; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: var(--muted); }
+    .sub-mode-btn.active { background: #065f46; color: #fff; border-color: #065f46; }
+    .paper-sheet { background: #fefce8; border: 2px solid #fde047; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+    .sentence-chips-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .sentence-chip { padding: 14px 16px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(15px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; line-height: 1.5; }
+    .sentence-chip:hover { border-color: var(--rose); background: #fff1f2; }
+    .sentence-chip.flaw-found { border-color: var(--rose); background: #ffe4e6; color: #9f1239; text-decoration: line-through; }
+    .sentence-chip.good-clicked { border-color: var(--emerald); background: #dcfce7; color: #14532d; }
+
+    .elim-stmt-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; }
+    .elim-stmt-text { font-size: calc(15px * var(--scale)); font-weight: 800; flex: 1; }
+    .elim-toggles { display: flex; gap: 6px; }
+    .elim-btn { padding: 6px 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(13.5px * var(--scale)); cursor: pointer; }
+    .elim-btn.t-true { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .elim-btn.t-false { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .mc-options-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 600px) { .mc-options-row { grid-template-columns: 1fr; } }
+    .mc-card-btn { padding: 14px 18px; border-radius: 12px; border: 2px solid #94a3b8; background: #fff; font-size: calc(16px * var(--scale)); font-weight: 900; text-align: left; cursor: pointer; }
+    .mc-card-btn:hover { border-color: var(--emerald); background: #ecfdf5; }
+    .mc-card-btn.eliminated { opacity: 0.3; text-decoration: line-through; background: #e2e8f0; border-color: #cbd5e1; }
+
+    .feedback-pop { margin-top: 14px; padding: 16px 18px; border-radius: 14px; font-size: calc(15px * var(--scale)); font-weight: 700; display: none; line-height: 1.6; }
+    .fb-ok { background: #dcfce7; border: 2px solid var(--emerald); color: #14532d; }
+    .fb-err { background: #ffe4e6; border: 2px solid var(--rose); color: #881337; }
+
+    .footer-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 12px; border-top: 2px solid #e2e8f0; }
+    .nav-btn { padding: 10px 20px; border-radius: 10px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: #065f46; }
+    .nav-btn:hover { background: #ecfdf5; border-color: var(--emerald); }
+    .primary-action { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .primary-action:hover { background: #047857; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- 頂部狀態列 -->
+  <div class="top-bar">
+    <div class="brand-title">📋 基礎會計第 4 課：試算表｜數碼會計工作台</div>
+    <div class="stat-group">
+      <div class="pill-stat" id="comboBadge">🔥 連擊：0</div>
+      <div class="pill-stat" id="scoreBadge">⭐ 專業積分：0</div>
+      <button class="ctrl-btn" onclick="reshuffleAll()" title="重新隨機打亂所有題目與選項次序">🔀 隨機洗牌</button>
+      <button class="ctrl-btn" onclick="toggleZoom()" id="zoomBtn">🔍 投影大字體：關</button>
+    </div>
+  </div>
+
+  <!-- 五大專屬會計學習模組導航 -->
+  <div class="mode-nav">
+    <button class="mode-tab active" onclick="switchMode(0)" id="mTab0">
+      <span class="mode-icon">🛠️</span>
+      <span class="mode-label">試算表執錯器</span>
+      <span class="mode-sub">隨機行序點擊調欄平衡</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(1)" id="mTab1">
+      <span class="mode-icon">🕵️</span>
+      <span class="mode-label">失蹤資本與調整</span>
+      <span class="mode-sub">三步純數值實戰計算</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(2)" id="mTab2">
+      <span class="mode-icon">🔍</span>
+      <span class="mode-label">錯誤影響 X 光機</span>
+      <span class="mode-sub">借貸大小關係與可否識別</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(3)" id="mTab3">
+      <span class="mode-icon">🧲</span>
+      <span class="mode-label">磁力積木砌答案</span>
+      <span class="mode-sub">對稱選項拼出滿分論述</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(4)" id="mTab4">
+      <span class="mode-icon">🏆</span>
+      <span class="mode-label">捉錯與消去擂台</span>
+      <span class="mode-sub">紅筆批改 ＋ 選擇題消去</span>
+    </button>
+  </div>
+
+  <!-- 主舞台 -->
+  <div class="stage" id="mainStage"></div>
+</div>
+
+<script>
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function fmt(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // ==================== 模組 1：互動試算表「一鍵調欄」執錯平衡器（行序每次隨機洗牌） ====================
+  const tbFixCases = [
+    {
+      firm: "李先生",
+      date: "於 2022 年 6 月 30 日",
+      targetTotal: 297150,
+      rawRows: [
+        { name: "資本", amt: 108000, initSide: "cr", ansSide: "cr" },
+        { name: "裝置", amt: 57700, initSide: "cr", ansSide: "dr" },
+        { name: "銷貨", amt: 175000, initSide: "dr", ansSide: "cr" },
+        { name: "購貨", amt: 121000, initSide: "dr", ansSide: "dr" },
+        { name: "工資", amt: 19000, initSide: "cr", ansSide: "dr" },
+        { name: "租金", amt: 35500, initSide: "dr", ansSide: "dr" },
+        { name: "佣金收益", amt: 7800, initSide: "cr", ansSide: "cr" },
+        { name: "應收貨款：石先生及夏女士", amt: 13200, initSide: "dr", ansSide: "dr" },
+        { name: "應付貨款：陳先生及游女士", amt: 6350, initSide: "cr", ansSide: "cr" },
+        { name: "銀行存款", amt: 50750, initSide: "dr", ansSide: "dr" }
+      ],
+      exp: "【課本第 73 頁題 4.17 拆解】原表將「裝置（資產）」及「工資（費用）」誤放在貸方，又將「銷貨（收益）」誤放在借方！把裝置及工資調回借方、銷貨調回貸方後，借貸總額即同時平衡於 $297,150！"
+    },
+    {
+      firm: "黃女士",
+      date: "於 2022 年 5 月 31 日",
+      targetTotal: 501700,
+      rawRows: [
+        { name: "樓房", amt: 120000, initSide: "dr", ansSide: "dr" },
+        { name: "機器", amt: 55100, initSide: "cr", ansSide: "dr" },
+        { name: "裝置", amt: 18000, initSide: "dr", ansSide: "dr" },
+        { name: "應收貨款：麥先生及登達有限公司", amt: 18800, initSide: "dr", ansSide: "dr" },
+        { name: "應付貨款：成記有限公司及文女士", amt: 11900, initSide: "cr", ansSide: "cr" },
+        { name: "貸款：謝先生", amt: 20000, initSide: "dr", ansSide: "cr" },
+        { name: "薪金及工資", amt: 22300, initSide: "dr", ansSide: "dr" },
+        { name: "雜費", amt: 6100, initSide: "dr", ansSide: "dr" },
+        { name: "銷貨", amt: 287000, initSide: "cr", ansSide: "cr" },
+        { name: "購貨", amt: 181200, initSide: "dr", ansSide: "dr" },
+        { name: "銀行存款", amt: 80200, initSide: "dr", ansSide: "dr" },
+        { name: "資本", amt: 182800, initSide: "dr", ansSide: "cr" }
+      ],
+      exp: "【課本第 74 頁題 4.18 拆解】原表將「機器（$55,100，資產）」誤放在貸方，又將「貸款：謝先生（$20,000，負債）」及「資本（$182,800）」誤放在借方！修正這三項後，借貸總額即同時平衡於 $501,700！"
+    },
+    {
+      firm: "精確時計",
+      date: "於 2023 年 8 月 31 日",
+      targetTotal: 10630000,
+      rawRows: [
+        { name: "資本", amt: 2000000, initSide: "cr", ansSide: "cr" },
+        { name: "購貨", amt: 3600000, initSide: "cr", ansSide: "dr" },
+        { name: "銷貨", amt: 7350000, initSide: "cr", ansSide: "cr" },
+        { name: "租金按金", amt: 160000, initSide: "cr", ansSide: "dr" },
+        { name: "租金、薪金及雜費", amt: 1249000, initSide: "dr", ansSide: "dr" },
+        { name: "家具及設備", amt: 3000000, initSide: "dr", ansSide: "dr" },
+        { name: "應付貨款：東方時計及最佳鐘錶", amt: 1280000, initSide: "dr", ansSide: "cr" },
+        { name: "提用", amt: 60000, initSide: "cr", ansSide: "dr" },
+        { name: "銀行存款及現金", amt: 2561000, initSide: "dr", ansSide: "dr" }
+      ],
+      exp: "【課本第 67 頁「精確時計(4)」拆解】注意「租金按金（$160,000）」屬於資產（借方餘額），「提用（$60,000）」及「購貨（$3,600,000）」亦屬借方餘額；而「應付貨款（$1,280,000）」則屬負債（貸方餘額）。全部歸位後，借貸總額平衡於 $10,630,000！"
+    }
+  ];
+
+  // ==================== 模組 2：失蹤資本與試算表調整三步純數值挑戰（零洩密、無提示） ====================
+  let detectiveCases = [
+    {
+      title: "計算實戰 1：編製試算表並找出失蹤的「資本餘額」（課本第 71 頁題 4.12X 李女士企業）",
+      cardTitle: "📊 李女士的企業在 2022 年 3 月 31 日的帳冊帳戶餘額",
+      cardHtml: `
+        • 裝修及裝置：<strong>$66,400</strong> ｜ 辦公室設備：<strong>$28,300</strong> ｜ 銀行存款：<strong>$10,200</strong><br>
+        • 應收貨款：<strong>$9,100</strong> ｜ 應付貨款：<strong>$6,800</strong><br>
+        • 銷貨：<strong>$102,100</strong> ｜ 購貨：<strong>$34,500</strong><br>
+        • 租金：<strong>$18,000</strong> ｜ 薪金：<strong>$24,000</strong> ｜ 雜費：<strong>$2,900</strong> ｜ 資本：<strong>?</strong>
+      `,
+      q1: "1️⃣ 該試算表的「借方餘額總和」是多少？",
+      opts1: [
+        { text: "$184,300", ok: false },
+        { text: "$191,100", ok: false },
+        { text: "$193,400", ok: true },
+        { text: "$200,200", ok: false }
+      ],
+      q2: "2️⃣ 除資本外，已知的「貸方項目餘額總和」是多少？",
+      opts2: [
+        { text: "$95,300", ok: false },
+        { text: "$102,100", ok: false },
+        { text: "$108,900", ok: true },
+        { text: "$118,000", ok: false }
+      ],
+      q3: "3️⃣ 李女士的企業在 2022 年 3 月 31 日的「資本餘額」是多少？",
+      opts3: [
+        { text: "$75,400", ok: false },
+        { text: "$84,500", ok: true },
+        { text: "$91,300", ok: false },
+        { text: "$98,100", ok: false }
+      ],
+      exp: "【課本第 71 頁題 4.12X 標準拆解】<br>1. **借方餘額總和** ＝ 裝修及裝置 $66,400 ＋ 辦公室設備 $28,300 ＋ 銀行存款 $10,200 ＋ 應收貨款 $9,100 ＋ 購貨 $34,500 ＋ 租金 $18,000 ＋ 薪金 $24,000 ＋ 雜費 $2,900 ＝ **$193,400**。<br>2. **已知貸方項目總和** ＝ 應付貨款 $6,800 ＋ 銷貨 $102,100 ＝ **$108,900**。<br>3. 由於試算表借貸總額相等，**當日資本餘額** ＝ $193,400 － $108,900 ＝ **$84,500**！"
+    },
+    {
+      title: "計算實戰 2：含「提用」項目的試算表與資本計算（課本第 72 頁題 4.14X 文女士企業）",
+      cardTitle: "📊 文女士的企業在 2022 年 12 月 31 日的帳冊帳戶餘額",
+      cardHtml: `
+        • 辦公室家具：<strong>$48,200</strong> ｜ 汽車：<strong>$60,500</strong> ｜ 銀行存款：<strong>$4,900</strong><br>
+        • 應收貨款：<strong>$8,300</strong> ｜ 應付貨款：<strong>$7,400</strong><br>
+        • 銷貨：<strong>$151,910</strong> ｜ 購貨：<strong>$45,600</strong><br>
+        • 租金：<strong>$20,400</strong> ｜ 工資及薪金：<strong>$36,000</strong> ｜ 雜費：<strong>$3,110</strong> ｜ 提用：<strong>$10,000</strong>
+      `,
+      q1: "1️⃣ 該試算表的「借方餘額總和」是多少？",
+      opts1: [
+        { text: "$227,010", ok: false },
+        { text: "$236,110", ok: false },
+        { text: "$237,010", ok: true },
+        { text: "$244,410", ok: false }
+      ],
+      q2: "2️⃣ 除資本外，已知的「貸方項目餘額總和」是多少？",
+      opts2: [
+        { text: "$151,910", ok: false },
+        { text: "$159,310", ok: true },
+        { text: "$160,210", ok: false },
+        { text: "$169,310", ok: false }
+      ],
+      q3: "3️⃣ 文女士的企業在 2022 年 12 月 31 日的「資本餘額」是多少？",
+      opts3: [
+        { text: "$57,700", ok: false },
+        { text: "$67,700", ok: false },
+        { text: "$77,700", ok: true },
+        { text: "$85,100", ok: false }
+      ],
+      exp: "【課本第 72 頁題 4.14X 標準拆解】<br>1. 注意「提用 ($10,000)」屬於借方餘額！**借方餘額總和** ＝ 家具 $48,200 ＋ 汽車 $60,500 ＋ 銀行存款 $4,900 ＋ 應收貨款 $8,300 ＋ 購貨 $45,600 ＋ 租金 $20,400 ＋ 工資 $36,000 ＋ 雜費 $3,110 ＋ 提用 $10,000 ＝ **$237,010**。<br>2. **已知貸方項目總和** ＝ 應付貨款 $7,400 ＋ 銷貨 $151,910 ＝ **$159,310**。<br>3. **當日資本餘額** ＝ $237,010 － $159,310 ＝ **$77,700**（若誤將提用放在貸方，便會算錯成 $57,700）！"
+    },
+    {
+      title: "計算實戰 3：含「其他應付款」與「辦公室文具」的試算表計算（課本第 72 頁題 4.15 莉莉企業）",
+      cardTitle: "📊 莉莉企業在 2022 年 3 月 31 日的帳冊帳戶餘額",
+      cardHtml: `
+        • 現金：<strong>$35,100</strong> ｜ 銀行存款：<strong>$42,150</strong> ｜ 辦公室裝置：<strong>$6,850</strong><br>
+        • 購貨：<strong>$13,500</strong> ｜ 銷貨：<strong>$8,900</strong> ｜ 租金、工資及電話費：<strong>$35,800</strong><br>
+        • 辦公室文具：<strong>$600</strong> ｜ 提用：<strong>$2,000</strong><br>
+        • 應付貨款（莫先生及盧女士）：<strong>$6,700</strong> ｜ 其他應付款（陽光公司）：<strong>$2,800</strong> ｜ 應收貨款（嘉明公司）：<strong>$2,400</strong>
+      `,
+      q1: "1️⃣ 該試算表的「借方餘額總和」是多少？",
+      opts1: [
+        { text: "$136,000", ok: false },
+        { text: "$137,800", ok: false },
+        { text: "$138,400", ok: true },
+        { text: "$141,200", ok: false }
+      ],
+      q2: "2️⃣ 除資本外，已知的「貸方項目餘額總和」是多少？",
+      opts2: [
+        { text: "$15,600", ok: false },
+        { text: "$18,400", ok: true },
+        { text: "$20,400", ok: false },
+        { text: "$20,800", ok: false }
+      ],
+      q3: "3️⃣ 莉莉企業在 2022 年 3 月 31 日的「資本餘額」是多少？",
+      opts3: [
+        { text: "$116,000", ok: false },
+        { text: "$120,000", ok: true },
+        { text: "$122,800", ok: false },
+        { text: "$125,600", ok: false }
+      ],
+      exp: "【課本第 72 頁題 4.15 標準拆解】<br>1. 「辦公室文具 ($600)」屬費用（借方餘額）！**借方餘額總和** ＝ 現金 $35,100 ＋ 銀行存款 $42,150 ＋ 裝置 $6,850 ＋ 購貨 $13,500 ＋ 租金工資電話費 $35,800 ＋ 辦公室文具 $600 ＋ 提用 $2,000 ＋ 應收貨款 $2,400 ＝ **$138,400**。<br>2. 「其他應付款 ($2,800)」屬負債（貸方餘額）！**已知貸方總和** ＝ 銷貨 $8,900 ＋ 應付貨款 $6,700 ＋ 其他應付款 $2,800 ＝ **$18,400**。<br>3. **資本餘額** ＝ $138,400 － $18,400 ＝ **$120,000**！"
+    }
+  ];
+  let cStepPicks = [null, null, null];
+
+  // ==================== 模組 3：記帳錯誤「影響 vs 不影響平衡」X 光分類機（3 選 1 大小關係 ＋ 2 選 1 可否找出） ====================
+  let errorXrayCases = [
+    {
+      tag: "記帳錯誤個案 A（課本第 65 頁進階學堂：第一類錯誤）",
+      desc: "企業向楊先生賒購貨品 $500，會計人員已正確地把 $500 借記在「購貨帳戶」內，但忘記在「應付貨款：楊先生帳戶」內作貸方記帳。",
+      relAns: "dr_gt_cr",
+      findAns: "yes",
+      exp: "【課本第 65 頁第一類錯誤】由於只有借方分錄（+$500）而漏記了相應的貸方分錄（應付貨款少計 $500），導致試算表的**「借方餘額總和 ＞ 貸方餘額總和」**（不平衡），因此編製試算表**「可以找出」**這項錯誤！"
+    },
+    {
+      tag: "記帳錯誤個案 B（課本第 66 頁進階學堂：第二類錯誤）",
+      desc: "企業從客戶何先生收到一張 $600 支票，已正確貸記「應收貨款：何先生帳戶」，但誤將 $600 借記於「現金帳戶」而非「銀行存款帳戶」。",
+      relAns: "equal",
+      findAns: "no",
+      exp: "【課本第 66 頁第二類錯誤】雖然借記錯了帳戶（現金多計 $600、銀行存款少計 $600），但因為一借一貸的金額依然相等，試算表的**「借方餘額總和 ＝ 貸方餘額總和」**（仍然平衡），因此試算表**「無法找出」**這類入錯帳戶的錯誤！"
+    },
+    {
+      tag: "記帳錯誤個案 C（課本第 71 頁選擇題 4.10A）",
+      desc: "會計文員在記錄一宗現金銷貨 $2,000 時，除了貸記「銷貨帳戶」一次外，不小心在「現金帳戶」的借方重複記帳了兩次。",
+      relAns: "dr_gt_cr",
+      findAns: "yes",
+      exp: "【課本第 71 頁題 4.10A】在同一帳戶的借方重複記帳，會令借方金額比貸方金額多出 $2,000，直接導致試算表的**「借方餘額總和 ＞ 貸方餘額總和」**（不平衡），因此試算表**「可以找出」**此錯誤！"
+    },
+    {
+      tag: "記帳錯誤個案 D（單邊重複貸記錯誤）",
+      desc: "企業以現金償還尚欠供應商陳先生的貨款 $1,500，會計文員已正確借記「應付貨款：陳先生帳戶」，但誤在「現金帳戶」的貸方重複記帳了兩次。",
+      relAns: "dr_lt_cr",
+      findAns: "yes",
+      exp: "【影響試算表平衡的錯誤】在現金帳戶的貸方重複記帳兩次，會令現金的借方餘額少計 $1,500，導致試算表的**「借方餘額總和 ＜ 貸方餘額總和」**（不平衡），因此試算表**「可以找出」**此錯誤！"
+    },
+    {
+      tag: "記帳錯誤個案 E（課本第 71 頁選擇題 4.10B 及 4.10C）",
+      desc: "企業以支票支付租金 $8,500，但會計文員看錯支票存根，在「租金帳戶」的借方及「銀行存款帳戶」的貸方同時記錄了錯誤金額 $5,800（或完全漏記整宗交易）。",
+      relAns: "equal",
+      findAns: "no",
+      exp: "【課本第 71 頁題 4.10B、C】雖然金額寫錯（或整筆漏記），但因為借記與貸記同時少計相同的金額，試算表的**「借方餘額總和 ＝ 貸方餘額總和」**（仍然平衡），因此試算表**「無法找出」**此錯誤！"
+    },
+    {
+      tag: "記帳錯誤個案 F（課本第 71 頁選擇題 4.10D）",
+      desc: "企業向李先生賒購貨品 $3,200，會計文員已正確借記「購貨帳戶」，但誤將 $3,200 貸記在另一供應商「馬女士的應付貨款帳戶」內。",
+      relAns: "equal",
+      findAns: "no",
+      exp: "【課本第 71 頁題 4.10D】雖然一項貸記被記錄在錯誤的帳戶內，但由於仍然是一借一貸且金額同為 $3,200，試算表的**「借方餘額總和 ＝ 貸方餘額總和」**（仍然平衡），因此試算表**「無法找出」**此錯誤！"
+    }
+  ];
+  let errPick = { rel: null, find: null };
+
+  // ==================== 模組 4：磁力積木砌答案（三步積木字數與語氣完全對稱） ====================
+  const legoChallenges = [
+    {
+      title: "砌答案挑戰 1：解釋編製「試算表」的兩項主要功能（課本第 64、67 及 73 頁題 4.17b）",
+      q: "題目：試簡略解釋企業在會計期末編製「試算表」的兩項主要功能（目的）。（4 分）",
+      step0: [
+        { text: "🟦 第一項功能是檢查分類帳帳戶記帳的算術運算準確度，藉此找出在記錄日常商業交易及過帳過程中所出現的記帳錯誤", ok: true },
+        { text: "🟦 第一項功能是直接向企業東主及外部投資者報告企業在整個會計年度的財務表現，藉此計算企業在期內賺取的毛利與淨利", ok: false, err: "報告企業財務表現及計算毛利與淨利是「損益表」的功能，而非編製試算表的目的（見課本第 70 頁題 4.4A）！" },
+        { text: "🟦 第一項功能是作為企業在收集原始單據後首次記錄日常商業交易的帳簿，藉此取代分類帳內各個獨立的 T 字形帳戶", ok: false, err: "首次記錄日常交易是「原始分錄簿」的功能；而試算表只是一份期末餘額清單，並非分類帳帳戶（見課本第 61 頁及題 4.19）！" }
+      ],
+      step1: [
+        { text: "🟨 會計人員透過檢查從分類帳摘錄的所有「借方餘額總和」與「貸方餘額總和」是否相等，便可測試企業在記帳時有否正確運用複式記帳原則", ok: true },
+        { text: "🟨 會計人員透過將試算表內所有「實帳戶」與「虛帳戶」的期末餘額全數結清歸零，便可確保企業在下一個會計期不會出現任何銀行透支", ok: false, err: "試算表並不負責將實帳戶結清歸零，更不能確保企業不會出現銀行透支！" },
+        { text: "🟨 會計人員透過比較試算表的「借方餘額總和」與年初制定的「量化預算目標」，便可全面識別出所有整筆漏記或入錯帳戶的記帳錯誤", ok: false, err: "試算表是比較借方餘額總和與貸方餘額總和是否相等，且無法識別出整筆漏記或入錯帳戶等不影響平衡的錯誤！" }
+      ],
+      step2: [
+        { text: "🟩 第二項功能是將所有分類帳帳戶的借方和貸方期末餘額集中列示在同一份清單上，方便會計人員在會計期末編製財務報表（損益表和財務狀況表）。", ok: true },
+        { text: "🟩 第二項功能是將企業持有的所有非流動資產由歷史成本改按現行市場價值重新估值，方便銀行信貸經理直接評估企業抵押品的清盤價值。", ok: false, err: "試算表只摘錄分類帳帳戶的帳面期末餘額，不會將資產改按現行市值或清盤價值重新估值！" },
+        { text: "🟩 第二項功能是詳細列出每一筆應收貨款與應付貨款的信用期限及現金折扣期，方便管理層向逾期未還款的銷貨債務人採取法律追討行動。", ok: false, err: "試算表只列出各分類帳帳戶的期末餘額總數，不會列明每筆欠款的信用期限或現金折扣條款！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 2：評論「如果試算表平衡，即表示記帳時沒有出錯」（課本第 65 頁 P4-6 及第 74 頁題 4.18b）",
+      q: "題目：「如果試算表平衡，即表示記帳時沒有出錯。」你同意嗎？試解釋試算表的限制。（3 分）",
+      step0: [
+        { text: "🟦 不同意。即使試算表的借方餘額總和與貸方餘額總和相等（即試算表平衡），企業的分類帳冊中仍有可能存在尚未發現的記帳錯誤", ok: true },
+        { text: "🟦 同意。因為複式記帳法規定每項借記必有相等的貸記，只要試算表的借貸兩方總額完全相等，即證明分類帳冊內的記錄絕對準確無誤", ok: false, err: "忽略了試算表的核心限制——有許多「不影響試算表平衡」的錯誤是試算表無法查出的（見課本第 64–66 頁）！" },
+        { text: "🟦 不同意。因為當試算表的借方餘額總和與貸方餘額總和相等時，即代表帳冊內必定存在一些「影響試算表平衡」的嚴重記帳錯誤", ok: false, err: "邏輯顛倒！若存在「影響試算表平衡」的錯誤，試算表就會不平衡；當試算表平衡時，只可能存在「不影響試算表平衡」的錯誤（見課本題 4.8）！" }
+      ],
+      step1: [
+        { text: "🟨 這是因為編製試算表只能檢查複式記帳的算術運算及過帳金額是否借貸相等，只能找出「影響試算表平衡」的第一類錯誤（如單邊漏記或同方重複記帳）", ok: true },
+        { text: "🟨 這是因為編製試算表在會計循環中早於「收集原始單據」及「過帳到分類帳」，導致試算表未能涵蓋會計期內發生的所有賒購與賒銷交易", ok: false, err: "會計循環次序錯誤！編製試算表（第 3 步）是在過帳到分類帳（第 2 步）之後進行的！" },
+        { text: "🟨 這是因為試算表只摘錄「資產、負債和資本」三類實帳戶的期末餘額，而完全沒有包括「收益、費用和提用」三類帳戶的記帳數據", ok: false, err: "試算表會列出所有有期末餘額的分類帳帳戶（包括資產、負債、資本、收益、費用和提用全部六類帳戶）！" }
+      ],
+      step2: [
+        { text: "🟩 對於「不影響試算表平衡」的第二類錯誤（例如整筆交易完全漏記、借貸雙方同時記錯相同金額，或把分錄借記／貸記在錯誤帳戶），試算表是無法識別出來的。", ok: true },
+        { text: "🟩 對於「影響試算表平衡」的第一類錯誤（例如在同一帳戶的借方重複記帳，或賒購貨品時只借記購貨而漏記應付貨款），試算表是完全無法識別出來的。", ok: false, err: "同方重複記帳及單邊漏記會令借貸總額不等（屬第一類影響平衡的錯誤），試算表是「可以」找出這類錯誤的！" },
+        { text: "🟩 對於沒有把「零餘額帳戶」列示在試算表內的情況，會直接導致試算表的借方總額大於貸方總額，令會計人員誤以為企業在本年度錄得巨額虧損。", ok: false, err: "課本第 64 頁備註 2 指出：不須把零餘額的帳戶列於試算表內，這完全不會影響試算表的平衡！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 3：為何分類帳帳戶的「借方餘額總和」與「貸方餘額總和」應維持相等？（課本 P4-2 及題 4.20X）",
+      q: "題目：試解釋為甚麼分類帳帳戶的「借方餘額總和」與「貸方餘額總和」應維持相等；若借方結餘總和比貸方結餘總和大，這表示甚麼？（3 分）",
+      step0: [
+        { text: "🟦 因為企業在分類帳帳戶記錄每一宗日常商業交易時，都必須嚴格遵守「複式記帳原則（複式記帳法）」", ok: true },
+        { text: "🟦 因為企業在分類帳帳戶記錄每一宗日常商業交易時，都必須確保「資產帳戶的數目」與「負債帳戶的數目」完全相同", ok: false, err: "借貸餘額總和相等是因為每宗交易借記與貸記的「金額」相等，與資產或負債帳戶的「數目多少」無關！" },
+        { text: "🟦 因為企業在每個會計期間賺取的「銷貨收益總額」必定永遠等於期內招致的「營業費用總額」", ok: false, err: "銷貨收益通常高於或低於費用（從而產生利潤或虧損），兩者並不相等！" }
+      ],
+      step1: [
+        { text: "🟨 在複式記帳原則下，每項商業交易都會在最少兩個帳戶記帳兩次：每項借記必定有一項相應的貸記，而且兩項記帳的金額必定完全相等", ok: true },
+        { text: "🟨 在複式記帳原則下，每項商業交易都會在同一個帳戶的借方和貸方同時記帳一次，使每一個獨立帳戶在月底結平時都必定出現零餘額", ok: false, err: "交易是在最少「兩個不同帳戶」一借一貸記帳，而非在同一帳戶既借且貸！" },
+        { text: "🟨 在複式記帳原則下，所有借方分錄均代表現金流入，所有貸方分錄均代表現金流出，而企業每月的現金流入必定等於現金流出", ok: false, err: "借方與貸方並非代表現金流入與流出（例如賒購、賒銷均不涉及現金，且現金流入與流出亦不相等）！" }
+      ],
+      step2: [
+        { text: "🟩 因此期末結平各帳戶後，所有借方餘額總和與貸方餘額總和必然相等；若試算表的借方結餘總和比貸方結餘總和大（不平衡），這表示「複式記帳或算術運算有錯誤」。", ok: true },
+        { text: "🟩 因此期末結平各帳戶後，所有借方餘額總和與貸方餘額總和必然相等；若試算表的借方結餘總和比貸方結餘總和大，這表示「企業在本年度錄得營業虧損」。", ok: false, err: "高頻陷阱（見課本第 74 頁公開試題 4.20A vs B）！借方結餘總和大於貸方結餘總和只表示「複式記帳有錯誤」，並不表示本年度有虧損！" },
+        { text: "🟩 因此期末結平各帳戶後，所有借方餘額總和與貸方餘額總和必然相等；若試算表的借方結餘總和比貸方結餘總和大，這表示「企業的資產總額比負債總額大」。", ok: false, err: "高頻陷阱（見課本第 74 頁公開試題 4.20D）！正常企業的資產總額（等於資本＋負債）本來就比負債總額大，這並不會導致試算表不平衡！" }
+      ]
+    }
+  ];
+
+  // ==================== 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台（語氣對稱，1/2/3 正確數目齊備） ====================
+  const redPenCases = [
+    {
+      title: "紅筆捉錯挑戰 1：找出考生對「試算表定義、格式與零餘額處理」的錯句",
+      q: "試題：試說明「試算表」的定義，以及在會計期末編製試算表時的格式要求與注意事項。",
+      chips: [
+        { text: "試算表並不是分類帳帳戶，它只是一份列出所有分類帳帳戶在某特定日期的借方和貸方期末餘額的清單。", isFlaw: false },
+        { text: "在編製試算表時，標題必須寫作「截至（年結日）止年度的試算表」，而且必須將所有結平後出現「零餘額」的帳戶一併列示在試算表內。", isFlaw: true },
+        { text: "試算表內各帳戶的排列次序並沒有既定規則，但必須在上方清楚寫出企業名稱、試算表標題與日期，以及「借方」和「貸方」欄目名稱。", isFlaw: false }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 62、64 及 66 頁「答題錦囊」）：<br>1. 試算表是展示企業直至某日的帳戶餘額，因此標題應使用**「於（年結日）」**，誤把標題寫作「截至（年結日）止年度」屬於公開試常犯扣分錯誤！<br>2. 課本第 64 頁備註 2 明確指出：**「不須把零餘額的帳戶列於試算表內」**！"
+    },
+    {
+      title: "紅筆捉錯挑戰 2：找出考生對「試算表編製時間、步驟與現金帳戶餘額」的錯句",
+      q: "試題：試說明企業編製試算表的時間、正確步驟次序，以及「現金帳戶」可能出現的餘額類別。",
+      chips: [
+        { text: "試算表可按企業的管理需要不定時編製（例如在月底、季度終結時或年度終結時編製）。", isFlaw: false },
+        { text: "編製試算表的正確步驟次序是：(1) 結平分類帳帳戶 ➔ (2) 把借方和貸方餘額列在不同欄目內 ➔ (3) 分別計算借方和貸方餘額總和 ➔ (4) 檢查借方和貸方餘額總和是否相等。", isFlaw: false },
+        { text: "企業的「現金帳戶（手頭現金）」在月底結平時，可能會出現借方餘額、貸方餘額或零餘額三種情況；若試算表借方總額大於貸方總額，則代表企業沒有足夠資本營運。", isFlaw: true }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 70 頁選擇題 4.5、4.6、4.7 及第 74 頁公開試題 4.20）：<br>1. 企業的「現金帳戶（手頭現鈔）」最多只能用盡變成零餘額，絕不可能付出現鈔多於手頭擁有的現鈔，因此現金帳戶**只會出現「借方餘額」或「零餘額」（題 4.7 答案為 C），絕不會出現貸方餘額**！<br>2. 試算表借方總額大於貸方總額只代表**「複式記帳有錯誤」**（題 4.20B），與資本是否足夠無關！"
+    },
+    {
+      title: "紅筆捉錯挑戰 3：找出考生對「試算表平衡與不平衡推論」的錯句",
+      q: "試題：試分析當試算表「平衡」與「不平衡」時，會計人員可以對分類帳冊作出甚麼推論。",
+      chips: [
+        { text: "當試算表平衡時，代表帳冊內一定有一些「影響試算表平衡的錯誤」，但絕對不會有任何「不影響試算表平衡的錯誤」。", isFlaw: true },
+        { text: "當試算表平衡時，並不代表帳冊內完全沒有錯誤，因為帳冊內仍有可能出現一些「不影響試算表平衡的錯誤」（如整筆漏記或入錯帳戶）。", isFlaw: false },
+        { text: "當試算表不平衡時，代表帳冊內必定有尚未發現的錯誤，當中可能有一些影響試算表平衡的錯誤，亦可能同時存在一些不影響試算表平衡的錯誤。", isFlaw: false }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 70–71 頁選擇題 4.8 及 4.9）：<br>考生把兩類錯誤的性質完全搞混了！若帳冊內有「影響試算表平衡的錯誤」，試算表就會**不平衡**！因此當試算表**平衡**時，代表沒有影響平衡的錯誤，但「帳冊仍有可能出現（不影響試算表平衡的）錯誤」（題 4.8C）；而當試算表**不平衡**時，題 4.9 的陳述 (1)、(2) 和 (3) 皆正確（答案為 D）！"
+    }
+  ];
+
+  // 包含「只有 1 項正確」、「2 項正確」及「3 項全對」，徹底消除規律
+  let elimMCs = [
+    {
+      title: "消去法實戰 1：編製試算表的主要目的（課本第 74 頁公開試題 4.19X 題型）",
+      stem: "企業在會計期末編製「試算表」的主要目的是甚麼？",
+      rawStmts: [
+        { text: "首次記錄企業在會計期內發生的日常商業交易。", isTrue: false, exp: "錯誤！首次記錄日常交易是「原始分錄簿（日記簿）」的目的，而非試算表。" },
+        { text: "向外部持份者反映企業在該會計年度的整體財務表現及盈利能力。", isTrue: false, exp: "錯誤（見課本題 4.4A 及 4.19）！反映企業財務表現的是「損益表」，試算表只是一份內部餘額清單。" },
+        { text: "檢視分類帳簿記記帳的算術準確度，並方便在會計期末編製財務報表。", isTrue: true, exp: "正確（見課本第 64 及 74 頁題 4.19B）！這是編製試算表的核心目的。" }
+      ]
+    },
+    {
+      title: "消去法實戰 2：現金帳戶餘額與常見貸方餘額帳戶（課本第 70 頁題 4.1 及 4.7 題型）",
+      stem: "下列哪些有關「分類帳帳戶餘額」及「試算表欄目」的陳述是正確的？",
+      rawStmts: [
+        { text: "在正常情況下，「應付貨款」、「其他應付款」、「銀行貸款」及「資本」帳戶的餘額，均會出現在試算表的貸方欄。", isTrue: true, exp: "正確（見課本第 64 頁 P4-4B 及第 70 頁題 4.1D）！負債及資本帳戶通常出現貸方餘額。" },
+        { text: "企業的「現金帳戶（手頭現金）」在月底結平後，可能會出現借方餘額或零餘額，但不會出現貸方餘額。", isTrue: true, exp: "正確（見課本第 70 頁題 4.7C）！手頭現金不可能出現負數（透支），故只有借方餘額或零餘額。" },
+        { text: "「應收貨款」、「機器」、「汽車維修費」及「提用」帳戶的餘額，通常會出現在試算表的貸方欄。", isTrue: false, exp: "錯誤（見課本第 64 頁 P4-4 及第 70 頁題 4.1、4.2）！資產（應收貨款、機器）、費用（汽車維修費）及提用均屬於借方餘額，應列在試算表的【借方欄】！" }
+      ]
+    },
+    {
+      title: "消去法實戰 3：當試算表「不平衡」時的推論（課本第 71 頁題 4.9 題型）",
+      stem: "當企業在月底編製的試算表出現「不平衡（借方餘額總和不等於貸方餘額總和）」時，下列哪些陳述是正確的？",
+      rawStmts: [
+        { text: "代表企業的分類帳冊內有尚未發現的記帳或運算錯誤。", isTrue: true, exp: "正確（見課本第 71 頁題 4.9 陳述 1）！試算表不平衡直接證明複式記帳或結平計算出錯。" },
+        { text: "帳冊內可能有一些「影響試算表平衡」的錯誤（例如在同一帳戶的借方重複記帳，或單邊漏記）。", isTrue: true, exp: "正確（見課本第 71 頁題 4.9 陳述 2 及題 4.10A）！" },
+        { text: "帳冊內亦可能同時存在一些「不影響試算表平衡」的錯誤（例如某宗交易的借貸雙方同時記錯相同金額，或將某分錄記錯在另一同方向帳戶）。", isTrue: true, exp: "正確（見課本第 71 頁題 4.9 陳述 3，該題官方答案為 D：1、2 和 3 皆正確）！試算表不平衡時，除了有導致不平衡的錯誤外，帳冊亦可能同時藏有其他不影響平衡的錯誤。" }
+      ]
+    },
+    {
+      title: "消去法實戰 4：哪些記帳錯誤「不會」導致試算表不平衡？（課本第 66 及 71 頁題 4.10 題型）",
+      stem: "下列哪些記帳錯誤屬於「不影響試算表平衡的錯誤」（即試算表兩方餘額總和仍然相等，無法單憑試算表找出）？",
+      rawStmts: [
+        { text: "會計文員完全漏記了一整項商業交易的複式記帳（借方和貸方均沒有入帳）。", isTrue: true, exp: "正確（見課本第 71 頁題 4.10B）！整筆交易漏記不會破壞借貸總額相等的關係。" },
+        { text: "企業收到客戶還款支票 $600，已正確貸記該客戶的應收貨款帳戶，但誤將 $600 借記於「現金帳戶」而非「銀行存款帳戶」。", isTrue: true, exp: "正確（見課本第 66 頁進階學堂第二類錯誤及題 4.10D）！雖然借記錯了帳戶，但一借一貸金額同為 $600，試算表依然平衡。" },
+        { text: "企業向楊先生賒購貨品 $500，已正確借記於購貨帳戶，但漏記了楊先生應付貨款帳戶的貸方分錄。", isTrue: false, exp: "錯誤（見課本第 65 頁第一類錯誤）！單邊漏記會令借方總額比貸方總額多出 $500，屬於「影響試算表平衡的錯誤」！" }
+      ]
+    }
+  ];
+
+  const allComboDefs = [
+    { order: 1, reqTrue: [1], reqFalse: [2, 3], text: "只有 (1)" },
+    { order: 2, reqTrue: [2], reqFalse: [1, 3], text: "只有 (2)" },
+    { order: 3, reqTrue: [3], reqFalse: [1, 2], text: "只有 (3)" },
+    { order: 4, reqTrue: [1, 2], reqFalse: [3], text: "只有 (1) 及 (2)" },
+    { order: 5, reqTrue: [1, 3], reqFalse: [2], text: "只有 (1) 及 (3)" },
+    { order: 6, reqTrue: [2, 3], reqFalse: [1], text: "只有 (2) 及 (3)" },
+    { order: 7, reqTrue: [1, 2, 3], reqFalse: [], text: "(1)、(2) 及 (3)" }
+  ];
+
+  function prepareDynamicMC(mcItem) {
+    const shuffled = shuffle(mcItem.rawStmts);
+    mcItem.stmts = shuffled.map((s, idx) => ({
+      id: idx + 1,
+      text: `(${idx + 1}) ${s.text}`,
+      isTrue: s.isTrue,
+      exp: s.exp
+    }));
+    const trueIds = mcItem.stmts.filter(s => s.isTrue).map(s => s.id);
+    const correctCombo = allComboDefs.find(c =>
+      c.reqTrue.length === trueIds.length && c.reqTrue.every(id => trueIds.includes(id))
+    );
+    const wrongPool = shuffle(allComboDefs.filter(c => c !== correctCombo)).slice(0, 3);
+    const chosenCombos = [correctCombo, ...wrongPool].sort((a, b) => a.order - b.order);
+    const letters = ["A", "B", "C", "D"];
+    mcItem.options = chosenCombos.map((c, idx) => ({
+      label: `${letters[idx]}. ${c.text}`,
+      reqTrue: c.reqTrue,
+      reqFalse: c.reqFalse
+    }));
+    mcItem.ansIdx = chosenCombos.indexOf(correctCombo);
+  }
+
+  function randomizeAllData() {
+    tbFixCases.forEach(tc => {
+      tc.rows = shuffle(tc.rawRows.map(r => ({ ...r, curSide: r.initSide })));
+    });
+    detectiveCases.forEach(d => {
+      d.opts1 = shuffle(d.opts1);
+      d.opts2 = shuffle(d.opts2);
+      d.opts3 = shuffle(d.opts3);
+    });
+    errorXrayCases = shuffle(errorXrayCases);
+    legoChallenges.forEach(ch => {
+      ch.step0 = shuffle(ch.step0);
+      ch.step1 = shuffle(ch.step1);
+      ch.step2 = shuffle(ch.step2);
+    });
+    redPenCases.forEach(c => { c.chips = shuffle(c.chips); });
+    elimMCs = shuffle(elimMCs);
+    elimMCs.forEach(m => prepareDynamicMC(m));
+  }
+
+  let curMode = 0;
+  let subIdx = [0, 0, 0, 0, 0];
+  let mod5Sub = 0;
+  let doneMap = {};
+  let score = 0;
+  let combo = 0;
+  let isZoom = false;
+  let legoPicked = [null, null, null];
+  let elimState = { 1: null, 2: null, 3: null };
+
+  function reshuffleAll() {
+    randomizeAllData();
+    cStepPicks = [null, null, null];
+    errPick = { rel: null, find: null };
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function toggleZoom() {
+    isZoom = !isZoom;
+    document.documentElement.style.setProperty('--scale', isZoom ? '1.18' : '1');
+    document.getElementById("zoomBtn").innerText = isZoom ? "🔍 投影大字體：開" : "🔍 投影大字體：關";
+  }
+
+  function addScore(pts, key) {
+    combo++;
+    if (!doneMap[key]) { doneMap[key] = true; score += pts; }
+    updateTopBar();
+  }
+
+  function breakCombo() {
+    combo = 0;
+    updateTopBar();
+    const st = document.getElementById("mainStage");
+    st.classList.remove("shake");
+    void st.offsetWidth;
+    st.classList.add("shake");
+  }
+
+  function updateTopBar() {
+    document.getElementById("comboBadge").innerText = `🔥 連擊：${combo}`;
+    document.getElementById("scoreBadge").innerText = `⭐ 專業積分：${score}`;
+  }
+
+  function switchMode(m) {
+    curMode = m;
+    for (let i = 0; i < 5; i++) {
+      document.getElementById(`mTab${i}`).className = "mode-tab" + (i === m ? " active" : "");
+    }
+    cStepPicks = [null, null, null];
+    errPick = { rel: null, find: null };
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function goSub(idx) {
+    subIdx[curMode] = idx;
+    cStepPicks = [null, null, null];
+    errPick = { rel: null, find: null };
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function nextOrSwitch(maxLen, nextModeIdx) {
+    if (subIdx[curMode] < maxLen - 1) goSub(subIdx[curMode] + 1);
+    else switchMode(nextModeIdx);
+  }
+
+  function moveSub(delta, maxLen) {
+    let next = subIdx[curMode] + delta;
+    if (next >= 0 && next < maxLen) goSub(next);
+  }
+
+  function buildDots(total, customKeyPrefix) {
+    const prefix = customKeyPrefix || `${curMode}`;
+    let html = "";
+    for (let i = 0; i < total; i++) {
+      const k = `${prefix}_${i}`;
+      const cls = (i === subIdx[curMode]) ? "dot-btn active" : (doneMap[k] ? "dot-btn done" : "dot-btn");
+      html += `<button class="${cls}" onclick="goSub(${i})">${i + 1}</button>`;
+    }
+    return html;
+  }
+
+  function renderStage() {
+    const stage = document.getElementById("mainStage");
+    stage.classList.remove("pop");
+    void stage.offsetWidth;
+    stage.classList.add("pop");
+    if (curMode === 0) renderTbFixMode(stage);
+    else if (curMode === 1) renderDetectiveMode(stage);
+    else if (curMode === 2) renderErrorXrayMode(stage);
+    else if (curMode === 3) renderLegoMode(stage);
+    else if (curMode === 4) renderArenaMode(stage);
+  }
+
+  // ==================== 渲染模組 1：互動試算表「一鍵調欄」執錯平衡器 ====================
+  function renderTbFixMode(stage) {
+    const idx = subIdx[0];
+    const item = tbFixCases[idx];
+
+    let drSum = 0;
+    let crSum = 0;
+    let allCorrect = true;
+
+    const rowsHtml = item.rows.map((r, rIdx) => {
+      if (r.curSide === 'dr') drSum += r.amt;
+      else crSum += r.amt;
+      if (r.curSide !== r.ansSide) allCorrect = false;
+
+      return `
+        <tr class="tb-row" onclick="flipTbRow(${rIdx})" title="點擊此行將金額切換至另一欄">
+          <td>
+            <span>${r.name}</span>
+            <span class="flip-hint">⇄ 點擊調欄</span>
+          </td>
+          <td class="dr-cell">${r.curSide === 'dr' ? fmt(r.amt) : ''}</td>
+          <td class="cr-cell">${r.curSide === 'cr' ? fmt(r.amt) : ''}</td>
+        </tr>
+      `;
+    }).join("");
+
+    const isBalanced = (drSum === crSum && allCorrect);
+    if (isBalanced) addScore(25, `0_${idx}`);
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🛠️ 互動試算表執錯器（帳戶行序已隨機打亂，點擊錯位帳戶調欄）</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoFixTb()">💡 示範正確試算表</button>
+            ${buildDots(tbFixCases.length)}
+          </div>
+        </div>
+
+        <div class="status-bar ${isBalanced ? 'status-bal' : 'status-unbal'}">
+          ${isBalanced
+            ? `⚖️ 試算表完美平衡！借方總額 ($${fmt(drSum)}) ＝ 貸方總額 ($${fmt(crSum)})！（+25 分）`
+            : `⚠️ 目前試算表不平衡！借方總額 ($${fmt(drSum)}) ≠ 貸方總額 ($${fmt(crSum)})（請找出放錯欄目的帳戶並點擊調欄）`
+          }
+        </div>
+
+        <div class="tb-sheet">
+          <div class="tb-sheet-header">
+            ${item.firm} — 試算表
+            <small>${item.date}</small>
+          </div>
+          <table class="tb-table">
+            <thead>
+              <tr>
+                <th>分類帳帳戶名稱（點擊任何一行可切換借／貸欄）</th>
+                <th>借方 ($)</th>
+                <th>貸方 ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+              <tr class="tb-total-row">
+                <td>總額</td>
+                <td style="color:${isBalanced ? '#15803d' : '#b91c1c'};">$${fmt(drSum)}</td>
+                <td style="color:${isBalanced ? '#15803d' : '#b91c1c'};">$${fmt(crSum)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="feedback-pop ${isBalanced ? 'fb-ok' : ''}" style="display:${isBalanced ? 'block' : 'none'};">
+          🏆 <strong>更正完成！</strong> ${item.exp}
+        </div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${tbFixCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一份試算表</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${tbFixCases.length}, 1)">
+          ${idx === tbFixCases.length - 1 ? '進入「失蹤資本與調整」 →' : '下一份試算表 →'}
+        </button>
+      </div>
+    `;
+  }
+
+  function flipTbRow(rIdx) {
+    const item = tbFixCases[subIdx[0]];
+    item.rows[rIdx].curSide = (item.rows[rIdx].curSide === 'dr') ? 'cr' : 'dr';
+    renderTbFixMode(document.getElementById("mainStage"));
+  }
+
+  function autoFixTb() {
+    const item = tbFixCases[subIdx[0]];
+    item.rows.forEach(r => { r.curSide = r.ansSide; });
+    renderTbFixMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 2：失蹤資本三步純數值挑戰 ====================
+  function renderDetectiveMode(stage) {
+    const idx = subIdx[1];
+    const item = detectiveCases[idx];
+
+    const buildStepBox = (qTitle, optsArr, sIdx) => {
+      const btns = optsArr.map((o, oIdx) =>
+        `<button class="calc-opt-btn ${cStepPicks[sIdx] === oIdx ? 'picked' : ''}" onclick="pickDetStep(${sIdx}, ${oIdx})">${o.text}</button>`
+      ).join("");
+      return `
+        <div class="calc-step-box">
+          <div class="calc-step-q">${qTitle}</div>
+          ${btns}
+        </div>
+      `;
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🕵️ ${item.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoSolveDet()">💡 示範三步滿分計算</button>
+            ${buildDots(detectiveCases.length)}
+          </div>
+        </div>
+
+        <div class="invoice-card">
+          <div class="inv-title">${item.cardTitle}</div>
+          <div class="inv-body">${item.cardHtml}</div>
+        </div>
+
+        <div class="calc-steps-grid">
+          ${buildStepBox(item.q1, item.opts1, 0)}
+          ${buildStepBox(item.q2, item.opts2, 1)}
+          ${buildStepBox(item.q3, item.opts3, 2)}
+        </div>
+
+        <div class="feedback-pop" id="detFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${detectiveCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一檔案</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${detectiveCases.length}, 2)">
+          ${idx === detectiveCases.length - 1 ? '進入「錯誤影響 X 光機」 →' : '下一檔案 →'}
+        </button>
+      </div>
+    `;
+
+    if (cStepPicks[0] !== null && cStepPicks[1] !== null && cStepPicks[2] !== null) {
+      const fb = document.getElementById("detFb");
+      fb.style.display = "block";
+      const ok0 = item.opts1[cStepPicks[0]].ok;
+      const ok1 = item.opts2[cStepPicks[1]].ok;
+      const ok2 = item.opts3[cStepPicks[2]].ok;
+      if (ok0 && ok1 && ok2) {
+        addScore(25, `1_${idx}`);
+        fb.className = "feedback-pop fb-ok";
+        fb.innerHTML = `🏆 <strong>三步計算全數命中！（+25 分）</strong><br>${item.exp}`;
+      } else {
+        breakCombo();
+        fb.className = "feedback-pop fb-err";
+        fb.innerHTML = `⚠️ <strong>部分步驟計算有誤：</strong> 第 1 步 [${ok0 ? '✓' : '✗'}] ｜ 第 2 步 [${ok1 ? '✓' : '✗'}] ｜ 第 3 步 [${ok2 ? '✓' : '✗'}]<br>${item.exp}`;
+      }
+    }
+  }
+
+  function pickDetStep(sIdx, oIdx) {
+    cStepPicks[sIdx] = oIdx;
+    renderDetectiveMode(document.getElementById("mainStage"));
+  }
+
+  function autoSolveDet() {
+    const item = detectiveCases[subIdx[1]];
+    cStepPicks[0] = item.opts1.findIndex(o => o.ok);
+    cStepPicks[1] = item.opts2.findIndex(o => o.ok);
+    cStepPicks[2] = item.opts3.findIndex(o => o.ok);
+    renderDetectiveMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 3：記帳錯誤「影響 vs 不影響平衡」X 光分類機 ====================
+  function renderErrorXrayMode(stage) {
+    const idx = subIdx[2];
+    const item = errorXrayCases[idx];
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🔍 試算表的限制：記帳錯誤對借貸總額的影響 X 光機（個案已隨機洗牌）</span>
+          <div class="dots-nav">${buildDots(errorXrayCases.length)}</div>
+        </div>
+
+        <div class="error-case-box">
+          <span class="err-tag">📋 ${item.tag}</span>
+          <div class="err-desc">${item.desc}</div>
+        </div>
+
+        <div class="step-label">第一步：出現上述記帳錯誤後，試算表的「借方餘額總和」與「貸方餘額總和」會出現甚麼關係？</div>
+        <div class="three-col-btns">
+          <button class="xray-choice-btn ${errPick.rel === 'equal' ? 'picked' : ''}" onclick="setErrPick('rel','equal')">
+            ⚖️ 借方總和 ＝ 貸方總和
+          </button>
+          <button class="xray-choice-btn ${errPick.rel === 'dr_gt_cr' ? 'picked' : ''}" onclick="setErrPick('rel','dr_gt_cr')">
+            📐 借方總和 ＞ 貸方總和
+          </button>
+          <button class="xray-choice-btn ${errPick.rel === 'dr_lt_cr' ? 'picked' : ''}" onclick="setErrPick('rel','dr_lt_cr')">
+            📐 借方總和 ＜ 貸方總和
+          </button>
+        </div>
+
+        <div class="step-label">第二步：會計人員單憑編製試算表，能否找出這項記帳錯誤？</div>
+        <div class="two-col-btns">
+          <button class="xray-choice-btn ${errPick.find === 'yes' ? 'picked' : ''}" onclick="setErrPick('find','yes')">
+            ✅ 可以找出這類錯誤
+          </button>
+          <button class="xray-choice-btn ${errPick.find === 'no' ? 'picked' : ''}" onclick="setErrPick('find','no')">
+            🚫 不可以找出這類錯誤
+          </button>
+        </div>
+
+        <div class="feedback-pop" id="errFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${errorXrayCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一個案</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${errorXrayCases.length}, 3)">
+          ${idx === errorXrayCases.length - 1 ? '進入「磁力積木砌答案」 →' : '下一個案 →'}
+        </button>
+      </div>
+    `;
+
+    if (errPick.rel && errPick.find) {
+      const fb = document.getElementById("errFb");
+      fb.style.display = "block";
+      const rOk = (errPick.rel === item.relAns);
+      const fOk = (errPick.find === item.findAns);
+      if (rOk && fOk) {
+        addScore(20, `2_${idx}`);
+        fb.className = "feedback-pop fb-ok";
+        fb.innerHTML = `🎯 <strong>X 光診斷完全準確！（+20 分）</strong><br>${item.exp}`;
+      } else {
+        breakCombo();
+        fb.className = "feedback-pop fb-err";
+        fb.innerHTML = `⚠️ <strong>診斷有誤！</strong><br>• 第一步（借貸總和關係）：${rOk ? '✓ 正確' : '✗ 請仔細計算該錯誤令借方還是貸方多計／少計了'}<br>• 第二步（可否找出）：${fOk ? '✓ 正確' : '✗ 記住：只有當借貸總和不等（不平衡）時，試算表才可以找出錯誤！'}<br>${item.exp}`;
+      }
+    }
+  }
+
+  function setErrPick(key, val) {
+    errPick[key] = val;
+    renderErrorXrayMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 4：磁力積木砌答案 ====================
+  function renderLegoMode(stage) {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    let trayHtml = "";
+    if (legoPicked[0] === null && legoPicked[1] === null && legoPicked[2] === null) {
+      trayHtml = `<span class="tray-placeholder">👇 三步積木的字數與語氣均已對稱設計並隨機排列！請依序點擊「🟦 要點一」＋「🟨 要點二」＋「🟩 要點三」拼出滿分答案</span>`;
+    } else {
+      const colors = ["chip-step0", "chip-step1", "chip-step2"];
+      const stepLabels = ["🟦 要點一", "🟨 要點二", "🟩 要點三"];
+      legoPicked.forEach((pk, sIdx) => {
+        if (pk !== null) {
+          const obj = item[`step${sIdx}`][pk];
+          trayHtml += `<span class="slot-chip ${colors[sIdx]}" onclick="removeLego(${sIdx})">${stepLabels[sIdx]}：${obj.text} ✖</span>`;
+        }
+      });
+    }
+
+    const buildPool = (stepArr, sIdx, tagLabel, tagBg, tagColor) => {
+      return stepArr.map((blk, bIdx) => {
+        const isSel = (legoPicked[sIdx] === bIdx);
+        return `
+          <button class="mag-block ${isSel ? 'selected' : ''}" onclick="pickLego(${sIdx}, ${bIdx})">
+            <span class="block-tag" style="background:${tagBg}; color:${tagColor};">${tagLabel} ${isSel ? '✓ 已選' : ''}</span>
+            <div>${blk.text}</div>
+          </button>
+        `;
+      }).join("");
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🧲 ${item.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoFillCorrectLego()">💡 示範滿分拼法</button>
+            ${buildDots(legoChallenges.length)}
+          </div>
+        </div>
+        <div class="question-strip">${item.q}</div>
+        <div class="tray-header">
+          <span style="font-size:calc(13.5px * var(--scale)); font-weight:900;">📥 你的磁力答題槽（揀齊 3 塊積木即自動批改）：</span>
+          <button class="helper-btn" onclick="resetAndShuffleLego()">🔄 清空並重新隨機排列積木</button>
+        </div>
+        <div class="tray-box">${trayHtml}</div>
+        <div class="blocks-section-title">1️⃣ 第一步：點選「核心功能或立場結論積木」</div>
+        <div class="blocks-pool">${buildPool(item.step0, 0, "🟦 要點一", "#dbeafe", "#1e3a8a")}</div>
+        <div class="blocks-section-title">2️⃣ 第二步：點選「複式記帳或試算表檢查原理積木」</div>
+        <div class="blocks-pool">${buildPool(item.step1, 1, "🟨 要點二", "#fef3c7", "#92400e")}</div>
+        <div class="blocks-section-title">3️⃣ 第三步：點選「第二功能或具體限制推論積木」</div>
+        <div class="blocks-pool">${buildPool(item.step2, 2, "🟩 要點三", "#d1fae5", "#065f46")}</div>
+        <div class="feedback-pop" id="legoFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${legoChallenges.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${legoChallenges.length}, 4)">
+          ${idx === legoChallenges.length - 1 ? '進入「捉錯與消去擂台」 →' : '下一題 →'}
+        </button>
+      </div>
+    `;
+
+    if (legoPicked[0] !== null && legoPicked[1] !== null && legoPicked[2] !== null) evaluateLego();
+  }
+
+  function pickLego(sIdx, bIdx) { legoPicked[sIdx] = bIdx; renderLegoMode(document.getElementById("mainStage")); }
+  function removeLego(sIdx) { legoPicked[sIdx] = null; renderLegoMode(document.getElementById("mainStage")); }
+  function resetAndShuffleLego() {
+    const ch = legoChallenges[subIdx[3]];
+    ch.step0 = shuffle(ch.step0);
+    ch.step1 = shuffle(ch.step1);
+    ch.step2 = shuffle(ch.step2);
+    legoPicked = [null, null, null];
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+  function autoFillCorrectLego() {
+    const item = legoChallenges[subIdx[3]];
+    legoPicked[0] = item.step0.findIndex(b => b.ok);
+    legoPicked[1] = item.step1.findIndex(b => b.ok);
+    legoPicked[2] = item.step2.findIndex(b => b.ok);
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+
+  function evaluateLego() {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    const b0 = item.step0[legoPicked[0]], b1 = item.step1[legoPicked[1]], b2 = item.step2[legoPicked[2]];
+    const fb = document.getElementById("legoFb");
+    fb.style.display = "block";
+    if (b0.ok && b1.ok && b2.ok) {
+      addScore(20, `3_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🏆 <strong>磁力積木拼合完美！穩奪滿分！（+20 分）</strong><br>✨ <strong>合成標準答案</strong>：「<strong>${b0.text}</strong>。<strong>${b1.text}</strong>；<strong>${b2.text}</strong>」`;
+    } else {
+      breakCombo();
+      let errs = [];
+      if (!b0.ok) errs.push(`• 🟦 <strong>要點一積木有誤</strong>：${b0.err}`);
+      if (!b1.ok) errs.push(`• 🟨 <strong>要點二積木有誤</strong>：${b1.err}`);
+      if (!b2.ok) errs.push(`• 🟩 <strong>要點三積木有誤</strong>：${b2.err}`);
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⚠️ <strong>積木組合存在失分陷阱（請直接點擊下方正確積木替換）：</strong><br>${errs.join("<br>")}`;
+    }
+  }
+
+  // ==================== 渲染模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ====================
+  function switchMod5Sub(s) {
+    mod5Sub = s;
+    subIdx[4] = 0;
+    elimState = { 1: null, 2: null, 3: null };
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function renderArenaMode(stage) {
+    const idx = subIdx[4];
+    const topSwitch = `
+      <div class="sub-mode-bar">
+        <button class="sub-mode-btn ${mod5Sub === 0 ? 'active' : ''}" onclick="switchMod5Sub(0)">🖍️ 挑戰 A：紅筆捉錯（點擊答卷錯句）</button>
+        <button class="sub-mode-btn ${mod5Sub === 1 ? 'active' : ''}" onclick="switchMod5Sub(1)">🏆 挑戰 B：組合選擇題消去法神器</button>
+      </div>
+    `;
+
+    if (mod5Sub === 0) {
+      const item = redPenCases[idx];
+      const nums = ["①", "②", "③"];
+      const chipsHtml = item.chips.map((ch, cIdx) => `
+        <div class="sentence-chip" id="rpChip_${cIdx}" onclick="checkRedPen(${cIdx})">
+          <span>${nums[cIdx]} ${ch.text}</span>
+          <span style="font-size:calc(13px * var(--scale)); color:var(--rose); font-weight:900; white-space:nowrap;">🖍️ 點此捉錯</span>
+        </div>
+      `).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🖍️ ${item.title}</span>
+            <div class="dots-nav">${buildDots(redPenCases.length, "4_rp")}</div>
+          </div>
+          <div class="question-strip">${item.q}</div>
+          <div class="paper-sheet">
+            <div style="font-weight:900; color:var(--rose); margin-bottom:10px; font-size:calc(14px * var(--scale));">
+              🖍️ 句子次序已隨機洗牌，請點擊藏有嚴重試算表概念或格式錯誤的那一句：
+            </div>
+            <div class="sentence-chips-wrap">${chipsHtml}</div>
+          </div>
+          <div class="feedback-pop" id="rpFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${redPenCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="${idx === redPenCases.length - 1 ? 'switchMod5Sub(1)' : `moveSub(1, ${redPenCases.length})`}">
+            ${idx === redPenCases.length - 1 ? '進入「挑戰 B：選擇題消去法」 →' : '下一題 →'}
+          </button>
+        </div>
+      `;
+    } else {
+      const item = elimMCs[idx];
+      const stmtsHtml = item.stmts.map(st => {
+        const curVal = elimState[st.id];
+        return `
+          <div class="elim-stmt-row">
+            <div class="elim-stmt-text">${st.text}</div>
+            <div class="elim-toggles">
+              <button class="elim-btn ${curVal === true ? 't-true' : ''}" onclick="toggleElim(${st.id}, true)">⭕ 正確</button>
+              <button class="elim-btn ${curVal === false ? 't-false' : ''}" onclick="toggleElim(${st.id}, false)">❌ 錯誤</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const optsHtml = item.options.map((opt, oIdx) => {
+        let isElim = false;
+        [1, 2, 3].forEach(sId => {
+          if (elimState[sId] === true && opt.reqFalse.includes(sId)) isElim = true;
+          if (elimState[sId] === false && opt.reqTrue.includes(sId)) isElim = true;
+        });
+        return `<button class="mc-card-btn ${isElim ? 'eliminated' : ''}" onclick="checkElimMc(${oIdx})">${opt.label}</button>`;
+      }).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🏆 ${item.title}</span>
+            <div class="dots-nav">${buildDots(elimMCs.length, "4_mc")}</div>
+          </div>
+          <div class="question-strip">${item.stem}</div>
+          <p style="font-size:calc(14px * var(--scale)); font-weight:800; color:var(--teal); margin-bottom:8px;">
+            💡 消去法神器：本題可能只有 1 項、2 項或全部 3 項正確！請先在右方標記「⭕ 正確」或「❌ 錯誤」自動劃走錯項！
+          </p>
+          <div>${stmtsHtml}</div>
+          <div class="mc-options-row">${optsHtml}</div>
+          <div class="feedback-pop" id="elimFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${elimMCs.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="moveSub(1, ${elimMCs.length})" ${idx === elimMCs.length - 1 ? 'style="visibility:hidden"' : ''}>下一題 →</button>
+        </div>
+      `;
+    }
+  }
+
+  function checkRedPen(cIdx) {
+    const idx = subIdx[4];
+    const item = redPenCases[idx];
+    const ch = item.chips[cIdx];
+    const nums = ["①", "②", "③"];
+    const el = document.getElementById(`rpChip_${cIdx}`);
+    const fb = document.getElementById("rpFb");
+    fb.style.display = "block";
+    if (ch.isFlaw) {
+      el.className = "sentence-chip flaw-found";
+      addScore(20, `4_rp_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🖍️ 紅筆精準捉錯（第 ${nums[cIdx]} 句得 0 分）！</strong><br>${item.exp}`;
+    } else {
+      el.className = "sentence-chip good-clicked";
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⭕ <strong>第 ${nums[cIdx]} 句是完全正確的課本陳述！</strong> 請再檢查其餘句子找出真正的概念或格式陷阱！`;
+    }
+  }
+
+  function toggleElim(sId, val) {
+    elimState[sId] = (elimState[sId] === val) ? null : val;
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function checkElimMc(oIdx) {
+    const idx = subIdx[4];
+    const item = elimMCs[idx];
+    const fb = document.getElementById("elimFb");
+    fb.style.display = "block";
+    if (oIdx === item.ansIdx) {
+      addScore(20, `4_mc_${idx}`);
+      const breakdown = item.stmts.map(s => `• <strong>陳述 (${s.id}) ${s.isTrue ? '⭕ 正確' : '❌ 錯誤'}</strong>：${s.exp}`).join("<br>");
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🏆 答對了！標準答案：${item.options[item.ansIdx].label}</strong><br>${breakdown}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = "❌ <strong>選項不正確！</strong> 試試先在上方逐句判斷 (1)、(2)、(3) 的對錯，利用消去法鎖定答案！";
+    }
+  }
+
+  randomizeAllData();
+  renderStage();
+</script>
+</body>
+</html>

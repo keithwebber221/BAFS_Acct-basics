@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企會財會計互動工作台｜第 1 課：會計的目的及角色</title>
+  <style>
+    :root {
+      --bg: #06141b;
+      --panel: #11212d;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      --teal: #0d9488;
+      --blue: #2563eb;
+      --blue-light: #dbeafe;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --scale: 1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC", sans-serif; user-select: none; }
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      padding: 12px;
+      font-size: calc(16px * var(--scale));
+      line-height: 1.55;
+    }
+    .app { max-width: 1080px; margin: 0 auto; }
+
+    @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    .pop { animation: popIn 0.22s ease-out; }
+    .shake { animation: shake 0.3s ease-in-out; }
+
+    /* 頂部狀態列 */
+    .top-bar {
+      background: linear-gradient(135deg, #064e3b 0%, #0f766e 55%, #1e3a8a 100%);
+      border-radius: 16px;
+      padding: 14px 22px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+    .brand-title { font-size: calc(20px * var(--scale)); font-weight: 900; display: flex; align-items: center; gap: 10px; letter-spacing: 0.5px; }
+    .stat-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pill-stat { background: rgba(6, 20, 27, 0.65); border: 1px solid rgba(52, 211, 153, 0.4); padding: 6px 13px; border-radius: 30px; font-weight: 800; font-size: calc(13.5px * var(--scale)); color: #a7f3d0; }
+    .ctrl-btn { background: #fbbf24; color: #0f172a; border: none; padding: 7px 14px; border-radius: 30px; font-weight: 900; font-size: calc(13px * var(--scale)); cursor: pointer; transition: transform 0.15s; }
+    .ctrl-btn:hover { transform: scale(1.05); background: #fcd34d; }
+
+    /* 五大專屬會計互動模式導航 */
+    .mode-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+    @media (max-width: 820px) { .mode-nav { grid-template-columns: repeat(2, 1fr); } }
+    .mode-tab {
+      background: var(--panel);
+      border: 2px solid #1e3a4c;
+      border-radius: 14px;
+      padding: 12px 8px;
+      color: #94a3b8;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .mode-tab:hover { border-color: #34d399; color: #fff; transform: translateY(-2px); }
+    .mode-tab.active {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-color: #6ee7b7;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
+    }
+    .mode-icon { font-size: calc(24px * var(--scale)); display: block; margin-bottom: 4px; }
+    .mode-label { font-size: calc(14px * var(--scale)); font-weight: 900; display: block; }
+    .mode-sub { font-size: calc(11.5px * var(--scale)); opacity: 0.9; }
+
+    /* 主舞台 */
+    .stage {
+      background-color: var(--card);
+      background-image: linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+      border-radius: 20px;
+      padding: 24px;
+      min-height: 540px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid #cbd5e1;
+    }
+
+    .level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #e2e8f0; background: rgba(255,255,255,0.92); border-radius: 10px; padding: 10px 14px; }
+    .level-title { font-size: calc(18px * var(--scale)); font-weight: 900; color: #065f46; display: flex; align-items: center; gap: 8px; }
+    .dots-nav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .dot-btn {
+      width: calc(36px * var(--scale)); height: calc(36px * var(--scale));
+      border-radius: 10px; border: 2px solid #cbd5e1; background: #fff;
+      font-weight: 900; font-size: calc(14px * var(--scale)); cursor: pointer; color: var(--muted);
+    }
+    .dot-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .dot-btn.done { background: var(--emerald-light); color: #065f46; border-color: var(--emerald); }
+
+    /* ================= 模組 1：會計循環組裝流水線 ================= */
+    .pipeline-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 780px) { .pipeline-track { grid-template-columns: 1fr; } }
+    .pipe-slot {
+      background: #f8fafc;
+      border: 3px dashed #94a3b8;
+      border-radius: 14px;
+      padding: 12px;
+      min-height: 118px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .pipe-slot.active-target { border-color: var(--blue); background: #eff6ff; box-shadow: 0 0 0 3px rgba(37,99,235,0.2); }
+    .pipe-slot.filled { border-style: solid; border-color: var(--emerald); background: linear-gradient(145deg, #ecfdf5, #d1fae5); cursor: pointer; }
+    .pipe-step-num { font-size: calc(12px * var(--scale)); font-weight: 900; color: #fff; background: #475569; padding: 3px 10px; border-radius: 20px; align-self: center; }
+    .pipe-slot.filled .pipe-step-num { background: var(--emerald); }
+    .pipe-main-name { font-size: calc(15px * var(--scale)); font-weight: 900; color: #064e3b; margin: 6px 0; }
+    .pipe-func-tag { font-size: calc(11.5px * var(--scale)); font-weight: 800; background: #fff; color: var(--teal); border: 1px solid #5eead4; padding: 2px 6px; border-radius: 6px; }
+
+    .pool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+    @media (max-width: 680px) { .pool-grid { grid-template-columns: 1fr; } }
+    .step-card-btn {
+      padding: 12px 16px; border-radius: 12px; border: 2px solid #94a3b8; background: #fff;
+      font-size: calc(14.5px * var(--scale)); font-weight: 900; color: var(--text); cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05); transition: all 0.15s; text-align: left;
+    }
+    .step-card-btn:hover { border-color: var(--emerald); background: #ecfdf5; transform: translateY(-2px); }
+    .step-card-btn.used { opacity: 0.25; pointer-events: none; }
+
+    /* ================= 模組 2：數據與四項功能雙特訓分揀站 ================= */
+    .sub-mode-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+    .sub-mode-btn { flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #cbd5e1; background: #f8fafc; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: var(--muted); }
+    .sub-mode-btn.active { background: #065f46; color: #fff; border-color: #065f46; }
+
+    .voucher-box {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #fff;
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+      border-left: 8px solid #fbbf24;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .voucher-label { font-size: calc(12.5px * var(--scale)); font-weight: 900; color: #fbbf24; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+    .voucher-title { font-size: calc(19.5px * var(--scale)); font-weight: 900; }
+    .voucher-amount { font-size: calc(21px * var(--scale)); font-weight: 900; color: #34d399; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 12px; }
+
+    .sort-stage-title { font-size: calc(14.5px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 8px; }
+    .folders-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media (max-width: 720px) { .folders-grid { grid-template-columns: repeat(2, 1fr); } }
+    .folder-btn {
+      padding: 14px 10px; border-radius: 14px; border: 3px solid #cbd5e1; background: #fff;
+      cursor: pointer; text-align: center; transition: all 0.15s; font-weight: 900; font-size: calc(15px * var(--scale));
+    }
+    .folder-btn:hover { transform: translateY(-3px); border-color: var(--teal); }
+    .folder-btn.picked { border-color: var(--emerald); background: #d1fae5; box-shadow: 0 0 0 3px rgba(16,185,129,0.3); }
+
+    .statements-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 680px) { .statements-grid { grid-template-columns: 1fr; } }
+    .stmt-btn {
+      padding: 16px; border-radius: 14px; border: 3px solid #cbd5e1; background: #fff;
+      cursor: pointer; text-align: center; transition: all 0.15s; font-size: calc(16px * var(--scale)); font-weight: 900; color: var(--text);
+    }
+    .stmt-btn:hover { border-color: var(--emerald); background: #f0fdf4; }
+    .stmt-btn.picked { border-color: var(--emerald); background: #dcfce7; box-shadow: 0 0 0 3px rgba(16,185,129,0.3); }
+
+    /* ================= 模組 3：會計師諮詢室（對稱專業選項） ================= */
+    .client-card {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 2px solid #93c5fd;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .client-avatar { font-size: calc(48px * var(--scale)); background: #fff; width: calc(76px * var(--scale)); height: calc(76px * var(--scale)); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .client-info { flex: 1; min-width: 240px; }
+    .client-role-badge { display: inline-block; background: var(--blue); color: #fff; font-size: calc(12.5px * var(--scale)); font-weight: 900; padding: 3px 10px; border-radius: 20px; margin-bottom: 6px; }
+    .client-speech { font-size: calc(17.5px * var(--scale)); font-weight: 900; color: #1e3a8a; line-height: 1.5; }
+
+    .reply-options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .reply-btn {
+      padding: 14px 18px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff;
+      font-size: calc(15px * var(--scale)); font-weight: 800; color: var(--text); text-align: left;
+      cursor: pointer; transition: all 0.15s; line-height: 1.5;
+    }
+    .reply-btn:hover { border-color: var(--blue); background: #eff6ff; transform: translateX(4px); }
+
+    /* ================= 模組 4：磁力積木砌答案 ================= */
+    .question-strip { background: #fffbeb; border-left: 6px solid var(--amber); padding: 14px 18px; border-radius: 12px; font-size: calc(16px * var(--scale)); font-weight: 900; color: #78350f; margin-bottom: 14px; }
+    .tray-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+    .tray-box { background: #f1f5f9; border: 3px dashed #64748b; border-radius: 16px; padding: 14px 16px; min-height: 84px; margin-bottom: 16px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .tray-placeholder { color: var(--muted); font-weight: 800; font-size: calc(14.5px * var(--scale)); }
+    .slot-chip { padding: 9px 14px; border-radius: 10px; font-weight: 900; font-size: calc(14.5px * var(--scale)); color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+    .chip-step0 { background: var(--blue); }
+    .chip-step1 { background: var(--amber); }
+    .chip-step2 { background: var(--emerald); }
+    .blocks-section-title { font-size: calc(14px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 6px; }
+    .blocks-pool { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 720px) { .blocks-pool { grid-template-columns: 1fr; } }
+    .mag-block { padding: 12px 14px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(14px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; text-align: left; transition: all 0.15s; line-height: 1.5; }
+    .mag-block:hover { border-color: var(--emerald); background: #ecfdf5; transform: translateY(-2px); }
+    .mag-block.selected { background: #d1fae5; border-color: var(--emerald); box-shadow: inset 0 0 0 2px var(--emerald); }
+    .block-tag { display: inline-block; font-size: calc(11.5px * var(--scale)); font-weight: 900; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
+    .helper-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--emerald); background: #ecfdf5; color: #065f46; font-weight: 800; font-size: calc(13px * var(--scale)); cursor: pointer; }
+    .helper-btn:hover { background: var(--emerald); color: #fff; }
+
+    /* ================= 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ================= */
+    .paper-sheet { background: #fefce8; border: 2px solid #fde047; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+    .sentence-chips-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .sentence-chip { padding: 14px 16px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(15px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; line-height: 1.5; }
+    .sentence-chip:hover { border-color: var(--rose); background: #fff1f2; }
+    .sentence-chip.flaw-found { border-color: var(--rose); background: #ffe4e6; color: #9f1239; text-decoration: line-through; }
+    .sentence-chip.good-clicked { border-color: var(--emerald); background: #dcfce7; color: #14532d; }
+
+    .elim-stmt-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; }
+    .elim-stmt-text { font-size: calc(15px * var(--scale)); font-weight: 800; flex: 1; }
+    .elim-toggles { display: flex; gap: 6px; }
+    .elim-btn { padding: 6px 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(13.5px * var(--scale)); cursor: pointer; }
+    .elim-btn.t-true { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .elim-btn.t-false { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .mc-options-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 600px) { .mc-options-row { grid-template-columns: 1fr; } }
+    .mc-card-btn { padding: 14px 18px; border-radius: 12px; border: 2px solid #94a3b8; background: #fff; font-size: calc(16px * var(--scale)); font-weight: 900; text-align: left; cursor: pointer; }
+    .mc-card-btn:hover { border-color: var(--emerald); background: #ecfdf5; }
+    .mc-card-btn.eliminated { opacity: 0.3; text-decoration: line-through; background: #e2e8f0; border-color: #cbd5e1; }
+
+    .feedback-pop { margin-top: 14px; padding: 16px 18px; border-radius: 14px; font-size: calc(15px * var(--scale)); font-weight: 700; display: none; line-height: 1.6; }
+    .fb-ok { background: #dcfce7; border: 2px solid var(--emerald); color: #14532d; }
+    .fb-err { background: #ffe4e6; border: 2px solid var(--rose); color: #881337; }
+
+    .footer-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 12px; border-top: 2px solid #e2e8f0; }
+    .nav-btn { padding: 10px 20px; border-radius: 10px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: #065f46; }
+    .nav-btn:hover { background: #ecfdf5; border-color: var(--emerald); }
+    .primary-action { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .primary-action:hover { background: #047857; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- 頂部狀態列 -->
+  <div class="top-bar">
+    <div class="brand-title">📊 基礎會計第 1 課：會計的目的及角色｜數碼會計工作台</div>
+    <div class="stat-group">
+      <div class="pill-stat" id="comboBadge">🔥 連擊：0</div>
+      <div class="pill-stat" id="scoreBadge">⭐ 專業積分：0</div>
+      <button class="ctrl-btn" onclick="reshuffleAll()" title="重新隨機打亂所有題目與選項次序">🔀 隨機洗牌</button>
+      <button class="ctrl-btn" onclick="toggleZoom()" id="zoomBtn">🔍 投影大字體：關</button>
+    </div>
+  </div>
+
+  <!-- 五大專屬會計學習模組導航 -->
+  <div class="mode-nav">
+    <button class="mode-tab active" onclick="switchMode(0)" id="mTab0">
+      <span class="mode-icon">🔄</span>
+      <span class="mode-label">會計循環流水線</span>
+      <span class="mode-sub">6 步組裝與緊隨挑戰</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(1)" id="mTab1">
+      <span class="mode-icon">🗂️</span>
+      <span class="mode-label">數據與功能分揀</span>
+      <span class="mode-sub">報表歸位 ＋ 四大功能</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(2)" id="mTab2">
+      <span class="mode-icon">💼</span>
+      <span class="mode-label">會計師諮詢室</span>
+      <span class="mode-sub">使用者決策與策劃監控</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(3)" id="mTab3">
+      <span class="mode-icon">🧲</span>
+      <span class="mode-label">磁力積木砌答案</span>
+      <span class="mode-sub">對稱選項拼出滿分論述</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(4)" id="mTab4">
+      <span class="mode-icon">🏆</span>
+      <span class="mode-label">捉錯與消去擂台</span>
+      <span class="mode-sub">紅筆批改 ＋ 選擇題消去</span>
+    </button>
+  </div>
+
+  <!-- 主舞台 -->
+  <div class="stage" id="mainStage"></div>
+</div>
+
+<script>
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ==================== 模組 1：會計循環 6 步組裝流水線 ＆ 無提示緊隨步驟挑戰 ====================
+  const cycleMasterSteps = [
+    { order: 1, name: "收集和核對原始單據", func: "前置憑證核實", desc: "在記錄交易前，先收集及核對發票和收據等原始單據。" },
+    { order: 2, name: "把交易記錄在原始分錄簿", func: "對應功能：記錄", desc: "原始分錄簿（又稱日記簿）是用作首次記錄商業交易的帳簿。" },
+    { order: 3, name: "把原始分錄簿的記錄過帳到分類帳", func: "對應功能：分類", desc: "在分類帳中，交易會按複式記帳法分類記錄在不同的帳戶內。" },
+    { order: 4, name: "結平帳戶並編製試算表", func: "檢查算術準確度", desc: "試算表用作檢查分類帳帳戶的複式記帳運算是否準確。" },
+    { order: 5, name: "進行期末調整", func: "期末帳目修正", desc: "在編製試算表之後、編製財務報表之前進行的期末調整程序。" },
+    { order: 6, name: "在會計期末編製財務報表", func: "對應功能：歸納", desc: "編製損益表及財務狀況表，以匯報企業的財務表現和財務狀況。" }
+  ];
+
+  let cyclePool = [];
+  let pipelineSlots = [null, null, null, null, null, null];
+
+  // 移除選項內的括號提示，四個選項格式完全對稱
+  let cycleQuizzes = [
+    {
+      q: "快問快答 1：在會計循環中，企業在完成「把記錄過帳到分類帳」後，隨即應進行哪一個步驟？",
+      opts: [
+        { text: "結平帳戶並編製試算表", ok: true },
+        { text: "進行期末調整", ok: false },
+        { text: "編製損益表及財務狀況表", ok: false },
+        { text: "把交易記錄在原始分錄簿", ok: false }
+      ],
+      exp: "【課本第 8 及 13 頁題 1.7】把原始分錄簿的記錄過帳到分類帳後，緊隨的步驟是「結平帳戶並編製試算表」，以檢查分類帳帳戶的複式記帳運算是否準確，之後才進行期末調整！"
+    },
+    {
+      q: "快問快答 2：在會計循環中，下列哪個步驟緊隨「結平帳戶並編製試算表」之後？",
+      opts: [
+        { text: "進行期末調整", ok: true },
+        { text: "編製財務報表", ok: false },
+        { text: "過帳至分類帳帳戶", ok: false },
+        { text: "於原始分錄簿記錄交易", ok: false }
+      ],
+      exp: "【課本第 8 及 14 頁公開試題 1.15】編製試算表之後緊隨的步驟是「進行期末調整」；在完成期末調整後，最後一步才編製財務報表（課本題 1.8）！"
+    },
+    {
+      q: "快問快答 3：下列哪項工作並不是「會計循環」的一部分？",
+      opts: [
+        { text: "把分錄從日記簿直接過帳到財務報表", ok: true },
+        { text: "在原始分錄簿記錄日常商業交易", ok: false },
+        { text: "檢查分類帳帳戶記帳的運算準確性", ok: false },
+        { text: "在期末總結企業的財務表現和財務狀況", ok: false }
+      ],
+      exp: "【課本第 12 頁選擇題 1.4】日記簿（原始分錄簿）的記錄必須先過帳到「分類帳」，再經試算表及期末調整後才編製財務報表，絕不會從日記簿直接過帳到財務報表！"
+    },
+    {
+      q: "快問快答 4：會計循環包括：(1) 過帳到分類帳帳戶、(2) 在原始分錄簿記錄交易、(3) 編製財務報表、(4) 編製試算表。正確的完成次序是甚麼？",
+      opts: [
+        { text: "(2) ➔ (1) ➔ (4) ➔ (3)", ok: true },
+        { text: "(1) ➔ (2) ➔ (4) ➔ (3)", ok: false },
+        { text: "(2) ➔ (4) ➔ (1) ➔ (3)", ok: false },
+        { text: "(2) ➔ (1) ➔ (3) ➔ (4)", ok: false }
+      ],
+      exp: "【課本第 12 頁選擇題 1.5】正確次序為：(2) 在原始分錄簿首次記錄交易 ➔ (1) 過帳到分類帳帳戶 ➔ (4) 結平帳戶並編製試算表 ➔（進行期末調整）➔ (3) 編製財務報表。"
+    }
+  ];
+
+  // ==================== 模組 2：數據與四項功能雙特訓分揀站（無括號提示，隨機洗牌） ====================
+  let mod2Sub = 0; // 0: 數據與報表歸位, 1: 四項會計功能配對
+
+  let sortingItems = [
+    {
+      voucherNo: "單據 #01",
+      title: "貿易企業向客戶出售貨品所賺取的「銷貨款項」",
+      amount: "$128,000",
+      folderAns: "收益",
+      stmtAns: "損益表",
+      exp: "出售貨品所得屬於「收益」；而「損益表（又稱收益表）」負責歸納企業在某段期間的財務表現，展示企業的收益和費用。"
+    },
+    {
+      voucherNo: "單據 #02",
+      title: "企業為維持日常營運而支付的「店舖租金、水電費及電話費」",
+      amount: "$34,500",
+      folderAns: "費用",
+      stmtAns: "損益表",
+      exp: "日常營運開支屬於「費用」；費用與收益一同列示於「損益表」內，用以計算企業在該段期間的利潤或虧損。"
+    },
+    {
+      voucherNo: "單據 #03",
+      title: "企業擁有的「辦公室物業、送貨貨車及銀行存款」",
+      amount: "$1,500,000",
+      folderAns: "企業擁有的資源",
+      stmtAns: "財務狀況表",
+      exp: "「企業擁有的資源」即企業的「資產」；資產會展示於「財務狀況表（前稱資產負債表）」，反映企業在某段期間完結時的財務狀況。"
+    },
+    {
+      voucherNo: "單據 #04",
+      title: "企業向供應商賒購貨品後「尚欠供應商的貨款」及「尚欠銀行的貸款」",
+      amount: "$260,000",
+      folderAns: "企業尚欠的款項",
+      stmtAns: "財務狀況表",
+      exp: "「企業尚欠的款項」即企業的「負債」；負債會連同資產和資本展示於「財務狀況表」內。"
+    },
+    {
+      voucherNo: "單據 #05",
+      title: "企業存放於銀行的定期存款所賺取的「銀行存款利息」",
+      amount: "$6,200",
+      folderAns: "收益",
+      stmtAns: "損益表",
+      exp: "銀行存款利息屬於企業賺取的「收益（其他收益）」，在期末歸納於「損益表」內以計算淨利。"
+    },
+    {
+      voucherNo: "單據 #06",
+      title: "企業在會計期末點算貨倉內尚未售出的「期末存貨」及「應收客戶款項」",
+      amount: "$89,000",
+      folderAns: "企業擁有的資源",
+      stmtAns: "財務狀況表",
+      exp: "尚未售出的存貨及客戶尚欠款項均屬於「企業擁有的資源（資產）」，在會計期末展示於「財務狀況表」內。"
+    }
+  ];
+  let curFolderPick = null;
+  let curStmtPick = null;
+
+  let funcMatchItems = [
+    {
+      taskTitle: "工序案例 A：會計文員每天將企業向供應商購貨、向客戶銷貨及支付水電費的交易，逐一輸入電腦帳簿保存。",
+      ansFunc: "記錄",
+      exp: "【課本第 3–4 及 6 頁測試站 P1-1b】保存及記錄所有日常商業交易（使之成為會計數據），屬於會計的第一項基本功能——「記錄」（亦即簿記的核心工作）。"
+    },
+    {
+      taskTitle: "工序案例 B：會計人員將已記錄的會計數據，按照「收益、費用、資產及負債」的交易性質過帳至不同類別的獨立帳戶。",
+      ansFunc: "分類",
+      exp: "【課本第 3–4 及 6 頁測試站 P1-1a】按照會計數據的性質進行分類並保存獨立記錄，以便企業監察所有商業交易，屬於會計的「分類」功能。"
+    },
+    {
+      taskTitle: "工序案例 C：在財政年度完結時，會計師將各分類帳的數據匯總，編製出「損益表」及「財務狀況表」展示相關財務資料。",
+      ansFunc: "歸納",
+      exp: "【課本第 3–5 及 6 頁測試站 P1-1d】歸納會計數據並定期通過不同種類的財務報表（損益表和財務狀況表）匯報簡潔及適切的信息，屬於會計的「歸納」功能。"
+    },
+    {
+      taskTitle: "工序案例 D：會計師針對貸款銀行及投資者的不同關注點摘取報表重點，並以「企業擁有的長期資源」等簡潔用語、會計比率及圖表向他們解釋。",
+      ansFunc: "溝通",
+      exp: "【課本第 3、5 及 6 頁測試站 P1-1c】按不同財務報表使用者的需要摘取相關資料，並使用簡潔用語、比率及圖表向使用者解釋重要數字，屬於會計的「溝通」功能。"
+    }
+  ];
+
+  // ==================== 模組 3：會計師諮詢室（對稱專業選項，零搞笑干擾項） ====================
+  let clientCases = [
+    {
+      avatar: "👔",
+      role: "企業管理人員（策略制定階段）",
+      speech: "「我們打算在下年度透過提高鐘錶產品售價 10% 來增加整體利潤。在正式落實這項定價方案前，會計信息可以發揮甚麼管理作用？」",
+      opts: [
+        { text: "發揮「策劃」作用：利用過往銷量與成本數據，協助管理層預測提高售價這項方案對企業未來盈利的影響，從而制定合適的企業計劃。", ok: true },
+        { text: "發揮「監控」作用：將下年度執行加價後的實際財務業績與年初編製預算時設定的預定目標作比較，以評估各分部的營運表現。", ok: false },
+        { text: "發揮「分類」作用：把提高售價的計劃直接記錄在原始分錄簿及過帳至分類帳，以檢查複式記帳在算術運算上是否準確。", ok: false }
+      ],
+      exp: "【課本第 7 頁：策劃 vs 監控】「策劃」是指在行動前設定目標並為達成目標制定方案（如預測提高售價對未來盈利的影響）；而「監控」則是在執行計劃後，將實際業績與預算預定目標作比較以評估營運表現！"
+    },
+    {
+      avatar: "📋",
+      role: "企業管理人員（季度業績檢討階段）",
+      speech: "「我們在年初根據過往會計信息制定了量化預算。現在第三季完結了，我應該如何運用最新的會計信息來履行『監控』職能？」",
+      opts: [
+        { text: "將最新的實際財務業績（如實際收益、成本及利潤）與編製預算時所設定的預定目標作比較；若實際業績遠不及預期，便採取行動改善表現。", ok: true },
+        { text: "根據最新的會計信息重新計算企業在上一財政年度應繳付的利得稅款，並向香港會計師公會申請註冊成為法定專業會計師。", ok: false },
+        { text: "將所有非流動資產的專業會計詞彙改寫為簡潔用語，並將原始單據直接交予外部潛在投資者自行核對。", ok: false }
+      ],
+      exp: "【課本第 7 頁：監控】監控是指執行計劃後評估營運表現的過程。管理人員會將「實際業績（最新的會計信息）」和「預定目標（編製量化預算時所設定）」作比較，以確保企業活動按計劃完成！"
+    },
+    {
+      avatar: "🏦",
+      role: "貸款提供者（銀行）及 貨品供應商",
+      speech: "「『精確時計』向我們銀行申請一筆商業貸款，同時要求手錶供應商提供 60 天賒帳信用期。我們在審閱該企業的會計信息時，核心決策目的為何？」",
+      opts: [
+        { text: "評估該企業的流動資金狀況與償債能力，以判斷借款人或賒購客戶能否準時償還貸款本息及依時清償到期貨款。", ok: true },
+        { text: "評估該企業管理人員制定的內部預算是否合理，並決定該企業應如何分配內部資源予各個銷售分部。", ok: false },
+        { text: "評估該企業僱員的薪酬福利水平與晉升前景是否理想，以判斷該企業能否維持穩定的員工留任率。", ok: false }
+      ],
+      exp: "【課本第 5、7 及 13 頁題 1.13】貸款提供者（銀行）及供應商在作出批出貸款或提供賒帳期的決策前，最關注「這家企業能準時還款嗎？」，因此會利用會計信息評估該企業的還款能力及信用狀況。"
+    },
+    {
+      avatar: "🙋‍♂️",
+      role: "潛在投資者 及 非會計專業的報表使用者",
+      speech: "「我們正考慮投資這家企業，但普羅大眾未必理解財務報表上諸如『非流動資產』等眾多專業會計詞彙和計算過程。會計人員在履行『溝通』功能時應怎樣做？」",
+      opts: [
+        { text: "從財務報表中摘取投資者關注的回報與前景信息，並採用較簡單的用語（如以『企業擁有的長期資源』取代『非流動資產』）、會計比率及圖表來解釋。", ok: true },
+        { text: "向潛在投資者提供整套未經歸納的原始分錄簿及日常發票正本，讓投資者自行按照複式記帳法計算企業的投資回報。", ok: false },
+        { text: "在編製損益表及財務狀況表時，完全省略所有非流動資產及負債項目，只匯報企業的手頭現金餘額以簡化報表。", ok: false }
+      ],
+      exp: "【課本第 5 頁圖 1.4 及 1.5】會計人員在與使用者溝通時，應先摘取該使用者關注的信息（如投資者關注合理回報），並使用簡潔的用語（如以「企業擁有的長期資源」取代「非流動資產」）、會計比率及圖表來解釋！"
+    },
+    {
+      avatar: "🎗️",
+      role: "非牟利慈善機構的董事會成員",
+      speech: "「有人認為：『由於非牟利機構並非通過售賣貨品以賺取利潤的企業個體，其持份者無須知道機構是否錄得利潤，因此非牟利機構無須進行會計工作。』這說法對嗎？」",
+      opts: [
+        { text: "不正確。雖然非牟利機構不以賺取利潤為目標，但仍須進行會計工作以記錄及向捐款者、政府及管理層匯報資金收支與財務狀況，協助策劃及監控機構運作。", ok: true },
+        { text: "正確。因為會計的唯一目的是計算企業應向稅務局繳納的利得稅，非牟利機構獲豁免利得稅，因此無須保存任何會計記錄。", ok: false },
+        { text: "不正確。非牟利機構只需進行『簿記』以保存捐款收據，但無須進行數據分類、歸納編製財務報表或與持份者溝通。", ok: false }
+      ],
+      exp: "【課本第 6 頁測試站 P1-2b】該陳述不正確！雖然非牟利機構不以牟利為目的，但其管理層及持份者（如捐款者、政府資助部門）仍須掌握機構的收支表現與財務狀況，以進行資源策劃、預算監控及確保資金妥善運用，故必須進行會計工作！"
+    }
+  ];
+
+  // ==================== 模組 4：磁力積木砌答案（三塊積木長度與語氣對稱，隨機位置） ====================
+  const legoChallenges = [
+    {
+      title: "砌答案挑戰 1：分辨「簿記」與「會計」的範疇（課本第 6 頁 P1-2a 及第 13 頁題 1.11）",
+      q: "題目：「會計純粹是指有系統地記錄某個體進行的財務交易並保存財務記錄的過程。」你同意嗎？試解釋你的答案。（3 分）",
+      step0: [
+        { text: "🟦 不同意。因為有系統地記錄日常商業交易並保存財務記錄（無論在帳簿或電子檔案）的過程稱為「簿記」，這只屬於會計的第一項基本功能（記錄功能）", ok: true },
+        { text: "🟦 同意。因為會計與簿記在定義上完全相同，兩者皆純粹指將發票與收據等原始單據按日期先後次序記入原始分錄簿及分類帳的過程", ok: false, err: "混淆了「簿記」與「會計」！記錄交易及保存記錄只是「簿記」，會計的涵蓋範圍比簿記廣泛得多！" },
+        { text: "🟦 不同意。因為自從現代商業社會改用電腦系統處理財務數據後，企業已完全無須記錄日常交易，會計只負責預測未來五年的盈利表現", ok: false, err: "即使使用電腦系統以電子檔案保存記錄，企業仍須進行「簿記（記錄交易）」，這是會計循環不可或缺的基礎！" }
+      ],
+      step1: [
+        { text: "🟨 「會計」是指為企業個體記錄及匯報財務信息的整個過程；除了「記錄」交易外，會計還包含「分類」、「歸納」和「溝通」三項重要功能", ok: true },
+        { text: "🟨 「會計」是指由外部銀行及稅務局直接代企業制定產品定價策略的過程；除了「記錄」交易外，還包含「採購」、「生產」和「市場營銷」三項功能", ok: false, err: "採購、生產與營銷屬於一般商業營運功能；會計的四項基本功能是「記錄、分類、歸納、溝通」！" },
+        { text: "🟨 「會計」是指在會計期末只檢查分類帳算術準確度的過程；會計人員只須編製「試算表」以確保借貸相等，而無須編製任何對外財務報表", ok: false, err: "檢查算術準確度只是會計循環的第 3 步（試算表），會計人員必須在期末編製財務報表（歸納功能）！" }
+      ],
+      step2: [
+        { text: "🟩 會計人員須將數據按性質分類、歸納編製成損益表及財務狀況表，並摘取及解釋相關信息與使用者溝通，以幫助他們作出明智的決策。", ok: true },
+        { text: "🟩 會計人員須將所有原始單據直接交予外部潛在投資者及客戶自行核對，確保企業無須在期末進行任何帳目調整或披露財務狀況。", ok: false, err: "會計人員必須先歸納數據編製財務報表，並使用簡潔用語、比率及圖表向使用者解釋信息（溝通功能）！" },
+        { text: "🟩 會計人員須確保企業在每個會計期都毋須重複會計循環的步驟，從而完全消除所有商業經營風險並保證企業每年錄得巨額利潤。", ok: false, err: "企業須在每個會計期重複整個會計循環的步驟；而會計的作用是提供財務信息協助決策，並非保證必賺利潤！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 2：解釋「供應商」及「客戶」如何使用會計信息作決策（課本第 13 頁題 1.13）",
+      q: "題目：試解釋某企業的「供應商」及「客戶」在作出商業決策時，會如何使用該企業的會計信息。（4 分）",
+      step0: [
+        { text: "🟦 對「供應商」而言，在決定是否以賒帳形式向該企業出售貨品前，須使用其會計信息來評估該企業的財務狀況、流動資金及短期償債能力", ok: true },
+        { text: "🟦 對「供應商」而言，在決定是否向該企業購買貨品前，須使用其會計信息來計算該企業應向特區政府繳納的利得稅款及員工薪俸稅款", ok: false, err: "供應商是向企業「出售」而非購買貨品；且計算應繳利得稅是「稅務局」而非供應商的目的！" },
+        { text: "🟦 對「供應商」而言，主要使用該企業的會計信息來設定該企業內部的量化預算目標，並決定如何分配該企業各部門的營運資金", ok: false, err: "制定內部預算及分配內部資源是「企業管理人員」的工作，外部供應商無權干預！" }
+      ],
+      step1: [
+        { text: "🟨 透過了解該企業是否有足夠資源依時清償欠款，供應商便可決定是否向該企業提供貿易信貸，以及釐定合適的信用期限（賒帳期）與信貸額度", ok: true },
+        { text: "🟨 透過了解該企業的複式記帳運算是否準確，供應商便可直接修改該企業原始分錄簿內的購貨金額，並要求攤分該企業的年度純利", ok: false, err: "外部供應商無權修改企業帳簿，亦無權攤分企業純利（只有東主／股東才享有純利）！" },
+        { text: "🟨 透過了解該企業員工的士氣及晉升前景，供應商便可決定是否繼續在該企業任職，抑或轉投其他薪酬福利更佳的競爭對手工作", ok: false, err: "評估薪酬及決定是否繼續留任是「企業員工（僱員）」的決策需要，而非供應商！" }
+      ],
+      step2: [
+        { text: "🟩 對「客戶」而言，則可透過閱讀該企業的財務報表評估其盈利表現及財務穩健程度，以判斷該企業能否持續營運並穩定地向客戶供應所需貨品及售後服務，從而決定是否向其購貨。", ok: true },
+        { text: "🟩 對「客戶」而言，則可透過閱讀該企業的財務報表直接檢驗產品的原材料安全標準與製造工藝水平，從而確保所購買的貨品完全沒有任何物理品質缺陷。", ok: false, err: "財務報表只提供以貨幣計算的量化財務信息，無法直接反映「產品質素或工藝水平（質化信息）」！" },
+        { text: "🟩 對「客戶」而言，則可透過閱讀該企業的財務報表評估其向銀行借貸的利息成本，從而決定是否向該企業批出一筆為期五年的長期按揭貸款。", ok: false, err: "決定是否批出長期貸款是「銀行／貸款提供者」的決策，而非一般購買貨品的客戶！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 3：解釋「員工」及「潛在投資者」如何使用會計信息作決策（課本第 7 及 13 頁題 1.14）",
+      q: "題目：試解釋某企業的「員工」及「潛在投資者」在作出決策時，會如何使用該企業的會計信息。（4 分）",
+      step0: [
+        { text: "🟦 對「員工（僱員）」而言，他們會利用僱主的會計信息了解企業的盈利狀況、現有資金是否足以償還債務，以及企業的長遠發展前景", ok: true },
+        { text: "🟦 對「員工（僱員）」而言，他們會利用僱主的會計信息評估各個銷售客戶的信貸紀錄，以決定個人是否向該些客戶提供免息貸款", ok: false, err: "員工閱讀僱主財務報表是關注自身的薪酬與就業保障，並非向客戶提供個人貸款！" },
+        { text: "🟦 對「員工（僱員）」而言，他們主要是透過審閱原始單據來核實企業有否遵守《稅務條例》，以決定是否代表法院向企業提出商業罪案起訴", ok: false, err: "提出起訴或裁決商業罪案是「警察及法院（政府機構）」的職能，而非企業員工！" }
+      ],
+      step1: [
+        { text: "🟨 掌握上述財務資料後，員工便可評估自己現時的薪酬福利水平是否合理以及工作職位是否有保障，從而決定應繼續留任還是尋找其他工作機會", ok: true },
+        { text: "🟨 掌握上述財務資料後，員工便可直接從企業的銀行往來帳戶中提取資金作私人消費，並在財務狀況表的資本部分列作東主提用", ok: false, err: "只有「企業東主」提取企業資源自用才稱為提用，一般受僱員工無權私自動用企業資金！" },
+        { text: "🟨 掌握上述財務資料後，員工便可代替會計師在會計期末進行期末調整，並決定企業在下一個會計年度應採用哪一種存貨計價政策", ok: false, err: "這屬於專業會計人員與管理層的職責，並非一般員工使用財務報表的決策目的！" }
+      ],
+      step2: [
+        { text: "🟩 對「潛在投資者」而言，他們會細閱企業的財務報表以了解其過往業績、財務狀況及是否有足夠資本落實商業計劃，藉此預測未來的投資回報與風險，決定該企業是否值得投資。", ok: true },
+        { text: "🟩 對「潛在投資者」而言，他們會利用財務報表比較各部門的實際開支與年初預算目標的差異，藉此直接執行日常的內部成本監控及人事調配工作。", ok: false, err: "潛在投資者尚未成為企業內部成員（屬於外部使用者），不會直接執行企業內部的日常預算監控與人事調配！" },
+        { text: "🟩 對「潛在投資者」而言，他們會利用財務報表確定企業本年度的應評稅利潤金額，藉此向企業發出利得稅繳款通知書以增加公共財政收入。", ok: false, err: "評定及徵收利得稅是「稅務局」的職能，潛在投資者是關注投資回報與前景！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 4：會計與企業「策劃及監控（擴充規模決策）」的關係（課本第 7 及 9 頁個案）",
+      q: "題目：陳祖銘剛成立鐘錶店「精確時計」，將來或須決定是否擴充業務規模。試從管理人員「策劃」與「監控」兩方面，解釋會計信息與這項決策的關係。（4 分）",
+      step0: [
+        { text: "🟦 會計能提供有關企業個體財務表現與財務狀況的重要信息，對管理人員（及東主）進行「策劃」與「監控」工作尤其重要", ok: true },
+        { text: "🟦 會計能完全取代企業的市場營銷與人力資源管理工作，只要編製了試算表，鐘錶店便能自動獲得無限的外部銀行貸款以擴充店舖", ok: false, err: "會計的功能是提供財務信息協助決策，並不能取代其他管理工作或保證自動獲批無限貸款！" },
+        { text: "🟦 會計只負責在擴充業務完成後把裝修收據鎖入夾萬保存，在陳祖銘決定是否擴充規模的策劃階段，會計信息並無任何參考作用", ok: false, err: "會計信息在事前「策劃（制定擴充計劃與預算）」及事後「監控」階段均極為重要！" }
+      ],
+      step1: [
+        { text: "🟨 在「策劃」方面（設定目標並制定達成方案）：會計信息有助祖銘了解現有盈利能力與資金狀況，預測擴充店舖對未來盈利及現金流的影響，並根據過往會計信息及未來需求估計來制定量化預算", ok: true },
+        { text: "🟨 在「策劃」方面：會計信息主要用來在擴充計劃完成三年後，將歷史成本強制改為清盤價值，以確保鐘錶店無須向供應商償還任何到期貨款", ok: false, err: "持續經營並擴充業務的企業應按歷史成本而非清盤價值計價，且必須依時償還供應商貨款！" },
+        { text: "🟨 在「策劃」方面：會計信息規定祖銘必須把個人的私人儲蓄與鐘錶店的業務帳目合併記錄在同一本原始分錄簿內，以簡化擴充前的記帳程序", ok: false, err: "這嚴重違反了企業個體概念！東主私人交易與企業業務帳目必須分開處理！" }
+      ],
+      step2: [
+        { text: "🟩 在「監控」方面（執行計劃後評估營運表現）：在落實擴充後，祖銘可將最新的實際業績（如實際收益、成本及利潤）與編製預算時設定的預定目標作比較，若實際表現不及預期便及時採取行動改善。", ok: true },
+        { text: "🟩 在「監控」方面：在落實擴充後，祖銘可利用會計信息免除此後每個會計期重複進行會計循環步驟的需要，直接以口頭估算代替財務報表。", ok: false, err: "課本第 8 頁強調：企業須在每個會計期重複整個會計循環的每個步驟！" },
+        { text: "🟩 在「監控」方面：在落實擴充後，祖銘可要求香港會計師公會派員接管鐘錶店的日常售貨工作，並由公會全數承擔擴充分店的租金費用。", ok: false, err: "香港會計師公會是為專業會計師註冊的法定組織（課本第 2 頁），不會接管私營商號的售貨工作或承擔租金！" }
+      ]
+    }
+  ];
+
+  // ==================== 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台（1/2/3 正確數目齊備） ====================
+  const redPenCases = [
+    {
+      title: "紅筆捉錯挑戰 1：找出考生對「會計循環步驟與帳簿功能」的錯句",
+      q: "試題：試描述企業在一個會計期內進行「會計循環」的標準流程及各帳簿的作用。",
+      chips: [
+        { text: "在把商業交易記錄在原始分錄簿（又稱日記簿，即首次記錄交易的帳簿）之前，會計人員須先收集和核對發票及收據等原始單據。", isFlaw: false },
+        { text: "在分類帳中，交易會按複式記帳法記錄在不同帳戶內；當完成過帳到分類帳後，會計人員會隨即進行期末調整，最後才編製試算表以檢查運算準確性。", isFlaw: true },
+        { text: "會計循環通常為期一年（如有需要可縮短至半年、一季或一個月），而企業須在每個會計期重複整個會計循環的每個步驟。", isFlaw: false }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 8、13 頁題 1.7 及第 14 頁公開試題 1.15、1.16）：<br>把原始分錄簿的記錄過帳到分類帳（第 2 步）之後，必須先進行第 3 步**「結平帳戶並編製試算表」**，緊接著才進行第 4 步**「期末調整」**，最後第 5 步**「編製財務報表」**！考生將「編製試算表」與「期末調整」的先後次序顛倒了！"
+    },
+    {
+      title: "紅筆捉錯挑戰 2：找出考生對「會計四大功能與兩份財務報表」的錯句",
+      q: "試題：試說明會計的「歸納」與「溝通」功能，以及兩份主要財務報表的內容。",
+      chips: [
+        { text: "在「歸納」功能中，損益表（又稱收益表）用作歸納企業在某段期間完結時的資產、負債和資本；而財務狀況表則展示企業在某段期間的收益和費用。", isFlaw: true },
+        { text: "由於不同的財務報表使用者（如貸款提供者與投資者）所關注的事項並不一樣，會計人員在與他們溝通時，應從報表中摘取該使用者關注的相關信息。", isFlaw: false },
+        { text: "為確保普羅大眾能理解報表內容，會計人員在履行「溝通」功能時宜採用較簡潔的用語（如以「企業擁有的長期資源」取代「非流動資產」）、會計比率及圖表來解釋。", isFlaw: false }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 4–5 頁）：<br>考生將兩份財務報表的定義與展示內容完全對調了！**「損益表（又稱收益表）」**是歸納企業在某段期間的**財務表現（展示收益和費用）**；而**「財務狀況表（前稱資產負債表）」**則是歸納企業在某段期間完結時的**財務狀況（展示資產、負債和資本）**！"
+    },
+    {
+      title: "紅筆捉錯挑戰 3：找出考生對「香港會計行業、簿記及管理功能」的錯句",
+      q: "試題：試說明香港會計行業的法定組織、簿記的形式，以及會計信息在管理上的功能。",
+      chips: [
+        { text: "香港會計師公會（HKICPA）是為香港專業會計師註冊的唯一法定組織；而企業個體則是指通過售賣貨品或提供服務以賺取利潤的個體。", isFlaw: false },
+        { text: "複式記帳法源於十五世紀的意大利；時至今日，雖然大部分財務記錄已改由電腦處理並以電子檔案保存，但我們仍以「簿記」來形容記錄交易和保存財務記錄的過程。", isFlaw: false },
+        { text: "會計信息除了有助管理人員預測財務業績（策劃）及評估營運表現（監控）外，其另一項直接功能是改善全體前線員工的工作士氣。", isFlaw: true }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 2、3、7 頁及第 12 頁選擇題 1.3B）：<br>會計信息的功能包括為企業保存財務記錄、協助制定擴充計劃及預測財務業績（策劃），以及評估企業的營運表現（監控）；但**「改善員工的士氣」並不是會計信息的功能**（見課本第 12 頁題 1.3B）！"
+    }
+  ];
+
+  // 包含「只有 1 項正確」、「2 項正確」及「3 項全對」的題型，徹底打破答案規律
+  let elimMCs = [
+    {
+      title: "消去法實戰 1：會計循環的先後流程描述（課本第 14 頁公開試題 1.16X 題型）",
+      stem: "下列哪項有關「會計循環」流程的描述是正確的？",
+      rawStmts: [
+        { text: "把原始分錄簿的記錄過帳至分類帳後，隨即進行期末調整。", isTrue: false, exp: "錯誤！過帳至分類帳後，必須先「結平帳戶並編製試算表」，之後才作期末調整。" },
+        { text: "結平帳戶並編製試算表後，隨即編製損益表及財務狀況表。", isTrue: false, exp: "錯誤！編製試算表後，必須先「進行期末調整」，最後才編製財務報表。" },
+        { text: "確認商業交易並核對原始單據後，隨即把交易首次記錄在原始分錄簿（日記簿）。", isTrue: true, exp: "正確（見課本第 8 及 14 頁題 1.16）！原始分錄簿是用作首次記錄商業交易的帳簿。" }
+      ]
+    },
+    {
+      title: "消去法實戰 2：會計工序與四大會計功能的對應（課本第 13 頁題 1.9 及 1.10 題型）",
+      stem: "在會計期完結時，會計師負責為企業匯總分類帳數據以編製財務報表，並利用會計比率及圖表向不同持份者解釋報表的重點。上述工作涉及哪些會計功能？",
+      rawStmts: [
+        { text: "記錄（在原始分錄簿首次記錄日常商業交易）", isTrue: false, exp: "錯誤！題目描述的是會計期末編製財務報表及向持份者解釋重點，並不涉及日常首次記錄交易的「記錄」功能。" },
+        { text: "歸納（歸納會計數據並以財務報表的形式定期匯報資料）", isTrue: true, exp: "正確（見課本第 4 及 13 頁題 1.10）！編製財務報表屬於「歸納」功能。" },
+        { text: "溝通（按不同財務報表使用者的需要摘取並解釋相關資料）", isTrue: true, exp: "正確（見課本第 5 及 13 頁題 1.10）！向不同持份者解釋報表重點屬於「溝通」功能。" }
+      ]
+    },
+    {
+      title: "消去法實戰 3：簿記的範疇與會計信息的使用者（課本第 12 頁題 1.2 及 1.6 題型）",
+      stem: "下列哪些有關「簿記」及「會計信息使用者」的陳述是正確的？",
+      rawStmts: [
+        { text: "簿記涉及在實體帳簿記錄交易、以電腦電子方式記錄交易，以及為企業保存財務記錄。", isTrue: true, exp: "正確（見課本第 3 及 12 頁題 1.6D）！不論以傳統帳簿或現代電子檔案記錄及保存財務記錄，均屬於簿記的範疇。" },
+        { text: "企業東主、管理人員、員工、貸款銀行、供應商及稅務局在進行決策時，均可能需要使用會計信息。", isTrue: true, exp: "正確（見課本第 6–7 及 12 頁題 1.2D）！各類內外部持份者均須依賴會計信息作出明智決策。" },
+        { text: "在日常會計工作中，會計人員在原始分錄簿記錄交易，然後把記錄過帳到分類帳不同帳戶內，這涉及「記錄」與「分類」兩項會計功能。", isTrue: true, exp: "正確（見課本第 13 頁題 1.9B）！在原始分錄簿記帳屬「記錄」，過帳到分類帳不同帳戶屬「分類」。" }
+      ]
+    },
+    {
+      title: "消去法實戰 4：會計信息在管理決策中的功能與限制（課本第 7 及 12 頁題 1.3 題型）",
+      stem: "下列哪些有關「會計信息的功能與重要性」的陳述是正確的？",
+      rawStmts: [
+        { text: "會計信息有助管理人員預測新定價策略對企業盈利的影響（策劃），並透過比較實際業績與預算目標來評估營運表現（監控）。", isTrue: true, exp: "正確（見課本第 7 及 12 頁題 1.3）！這正是會計信息在管理人員策劃及監控工作上的兩大核心作用。" },
+        { text: "由於非牟利機構並非以賺取利潤為目的之企業個體，因此非牟利機構完全無須進行任何會計工作或編製財務報表。", isTrue: false, exp: "錯誤（見課本第 6 頁測試站 P1-2b）！非牟利機構同樣需要會計工作以記錄及向捐款者、政府及管理層匯報資金收支與財務狀況。" },
+        { text: "編製試算表及保存會計記錄的直接功能，是自動改善全體員工的士氣並保證企業銷量上升。", isTrue: false, exp: "錯誤（見課本第 12 頁題 1.3B）！改善員工士氣並非會計信息的功能；試算表是用作檢查分類帳複式記帳的運算準確性。" }
+      ]
+    }
+  ];
+
+  const allComboDefs = [
+    { order: 1, reqTrue: [1], reqFalse: [2, 3], text: "只有 (1)" },
+    { order: 2, reqTrue: [2], reqFalse: [1, 3], text: "只有 (2)" },
+    { order: 3, reqTrue: [3], reqFalse: [1, 2], text: "只有 (3)" },
+    { order: 4, reqTrue: [1, 2], reqFalse: [3], text: "只有 (1) 及 (2)" },
+    { order: 5, reqTrue: [1, 3], reqFalse: [2], text: "只有 (1) 及 (3)" },
+    { order: 6, reqTrue: [2, 3], reqFalse: [1], text: "只有 (2) 及 (3)" },
+    { order: 7, reqTrue: [1, 2, 3], reqFalse: [], text: "(1)、(2) 及 (3)" }
+  ];
+
+  function prepareDynamicMC(mcItem) {
+    const shuffled = shuffle(mcItem.rawStmts);
+    mcItem.stmts = shuffled.map((s, idx) => ({
+      id: idx + 1,
+      text: `(${idx + 1}) ${s.text}`,
+      isTrue: s.isTrue,
+      exp: s.exp
+    }));
+    const trueIds = mcItem.stmts.filter(s => s.isTrue).map(s => s.id);
+    const correctCombo = allComboDefs.find(c =>
+      c.reqTrue.length === trueIds.length && c.reqTrue.every(id => trueIds.includes(id))
+    );
+    const wrongPool = shuffle(allComboDefs.filter(c => c !== correctCombo)).slice(0, 3);
+    const chosenCombos = [correctCombo, ...wrongPool].sort((a, b) => a.order - b.order);
+    const letters = ["A", "B", "C", "D"];
+    mcItem.options = chosenCombos.map((c, idx) => ({
+      label: `${letters[idx]}. ${c.text}`,
+      reqTrue: c.reqTrue,
+      reqFalse: c.reqFalse
+    }));
+    mcItem.ansIdx = chosenCombos.indexOf(correctCombo);
+  }
+
+  function randomizeAllData() {
+    cyclePool = shuffle(cycleMasterSteps);
+    pipelineSlots = [null, null, null, null, null, null];
+    cycleQuizzes = shuffle(cycleQuizzes);
+    cycleQuizzes.forEach(q => { q.opts = shuffle(q.opts); });
+    sortingItems = shuffle(sortingItems);
+    funcMatchItems = shuffle(funcMatchItems);
+    clientCases = shuffle(clientCases);
+    clientCases.forEach(c => { c.opts = shuffle(c.opts); });
+    legoChallenges.forEach(ch => {
+      ch.step0 = shuffle(ch.step0);
+      ch.step1 = shuffle(ch.step1);
+      ch.step2 = shuffle(ch.step2);
+    });
+    redPenCases.forEach(c => { c.chips = shuffle(c.chips); });
+    elimMCs = shuffle(elimMCs);
+    elimMCs.forEach(m => prepareDynamicMC(m));
+  }
+
+  let curMode = 0;
+  let subIdx = [0, 0, 0, 0, 0];
+  let mod5Sub = 0;
+  let doneMap = {};
+  let score = 0;
+  let combo = 0;
+  let isZoom = false;
+  let legoPicked = [null, null, null];
+  let elimState = { 1: null, 2: null, 3: null };
+
+  function reshuffleAll() {
+    randomizeAllData();
+    curFolderPick = null;
+    curStmtPick = null;
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function toggleZoom() {
+    isZoom = !isZoom;
+    document.documentElement.style.setProperty('--scale', isZoom ? '1.18' : '1');
+    document.getElementById("zoomBtn").innerText = isZoom ? "🔍 投影大字體：開" : "🔍 投影大字體：關";
+  }
+
+  function addScore(pts, key) {
+    combo++;
+    if (!doneMap[key]) { doneMap[key] = true; score += pts; }
+    updateTopBar();
+  }
+
+  function breakCombo() {
+    combo = 0;
+    updateTopBar();
+    const st = document.getElementById("mainStage");
+    st.classList.remove("shake");
+    void st.offsetWidth;
+    st.classList.add("shake");
+  }
+
+  function updateTopBar() {
+    document.getElementById("comboBadge").innerText = `🔥 連擊：${combo}`;
+    document.getElementById("scoreBadge").innerText = `⭐ 專業積分：${score}`;
+  }
+
+  function switchMode(m) {
+    curMode = m;
+    for (let i = 0; i < 5; i++) {
+      document.getElementById(`mTab${i}`).className = "mode-tab" + (i === m ? " active" : "");
+    }
+    curFolderPick = null;
+    curStmtPick = null;
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function goSub(idx) {
+    subIdx[curMode] = idx;
+    curFolderPick = null;
+    curStmtPick = null;
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function nextOrSwitch(maxLen, nextModeIdx) {
+    if (subIdx[curMode] < maxLen - 1) goSub(subIdx[curMode] + 1);
+    else switchMode(nextModeIdx);
+  }
+
+  function moveSub(delta, maxLen) {
+    let next = subIdx[curMode] + delta;
+    if (next >= 0 && next < maxLen) goSub(next);
+  }
+
+  function buildDots(total, customKeyPrefix) {
+    const prefix = customKeyPrefix || `${curMode}`;
+    let html = "";
+    for (let i = 0; i < total; i++) {
+      const k = `${prefix}_${i}`;
+      const cls = (i === subIdx[curMode]) ? "dot-btn active" : (doneMap[k] ? "dot-btn done" : "dot-btn");
+      html += `<button class="${cls}" onclick="goSub(${i})">${i + 1}</button>`;
+    }
+    return html;
+  }
+
+  function renderStage() {
+    const stage = document.getElementById("mainStage");
+    stage.classList.remove("pop");
+    void stage.offsetWidth;
+    stage.classList.add("pop");
+    if (curMode === 0) renderCycleMode(stage);
+    else if (curMode === 1) renderSortMode(stage);
+    else if (curMode === 2) renderClientMode(stage);
+    else if (curMode === 3) renderLegoMode(stage);
+    else if (curMode === 4) renderArenaMode(stage);
+  }
+
+  // ==================== 渲染模組 1：會計循環 6 步組裝流水線 ====================
+  function renderCycleMode(stage) {
+    const idx = subIdx[0];
+    const totalLevels = 1 + cycleQuizzes.length;
+
+    if (idx === 0) {
+      const nextEmptyIdx = pipelineSlots.findIndex(s => s === null);
+      const stepTitles = ["前置準備", "循環第 1 步", "循環第 2 步", "循環第 3 步", "循環第 4 步", "循環第 5 步"];
+      const slotsHtml = pipelineSlots.map((slotObj, sIdx) => {
+        if (slotObj) {
+          return `
+            <div class="pipe-slot filled" onclick="removePipeSlot(${sIdx})" title="點擊退回重排">
+              <span class="pipe-step-num">${stepTitles[sIdx]} ✓</span>
+              <div class="pipe-main-name">${slotObj.name}</div>
+              <div style="font-size:calc(12px * var(--scale)); color:#047857; margin-bottom:4px;">${slotObj.desc}</div>
+              <span class="pipe-func-tag">${slotObj.func}</span>
+            </div>
+          `;
+        } else {
+          const isTarget = (sIdx === nextEmptyIdx);
+          return `
+            <div class="pipe-slot ${isTarget ? 'active-target' : ''}">
+              <span class="pipe-step-num">${stepTitles[sIdx]}</span>
+              <div style="color:var(--muted); font-weight:800; font-size:calc(13.5px * var(--scale)); margin:auto 0;">
+                ${isTarget ? '👈 請點選下方工序卡放入此位置' : '等待組裝'}
+              </div>
+              <span></span>
+            </div>
+          `;
+        }
+      }).join("");
+
+      const poolHtml = cyclePool.map((stepObj, pIdx) => {
+        const isUsed = pipelineSlots.some(s => s && s.order === stepObj.order);
+        return `<button class="step-card-btn ${isUsed ? 'used' : ''}" onclick="pickCycleStep(${pIdx})">📌 ${stepObj.name}</button>`;
+      }).join("");
+
+      const allFilled = pipelineSlots.every(s => s !== null);
+
+      stage.innerHTML = `
+        <div>
+          <div class="level-header">
+            <span class="level-title">🔄 會計循環完整流程：6 步互動組裝流水線（工序卡已隨機洗牌）</span>
+            <div class="dots-nav">
+              <button class="helper-btn" onclick="autoCompleteCycle()">💡 示範完整流程</button>
+              ${buildDots(totalLevels)}
+            </div>
+          </div>
+          <div class="pipeline-track">${slotsHtml}</div>
+          <div style="font-weight:900; color:#065f46; margin-bottom:8px; font-size:calc(14px * var(--scale));">
+            👇 請按會計循環的正確先後次序，依序點擊以下 6 張工序卡裝入上方軌道：
+          </div>
+          <div class="pool-grid">${poolHtml}</div>
+          <div class="feedback-pop ${allFilled ? 'fb-ok' : ''}" id="cycFb" style="display:${allFilled ? 'block' : 'none'};">
+            ${allFilled ? '🎉 <strong>會計循環完整組裝成功！（+25 分）</strong> 請留意每一步自動顯示的「帳簿用途」與「對應會計功能」，接著點擊右下角挑戰 4 條無提示「緊隨步驟與次序」實戰題！' : ''}
+          </div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="resetCycleTrack()">🔄 清空並重新隨機排列工序卡</button>
+          <button class="nav-btn primary-action" onclick="nextOrSwitch(${totalLevels}, 1)">進入「緊隨步驟實戰題」 →</button>
+        </div>
+      `;
+    } else {
+      const qObj = cycleQuizzes[idx - 1];
+      const optsHtml = qObj.opts.map((o, oIdx) =>
+        `<button class="reply-btn" onclick="checkCycleQuiz(${oIdx})">👉 ${o.text}</button>`
+      ).join("");
+
+      stage.innerHTML = `
+        <div>
+          <div class="level-header">
+            <span class="level-title">⚡ 會計循環「緊隨步驟與流程排序」無提示實戰挑戰</span>
+            <div class="dots-nav">${buildDots(totalLevels)}</div>
+          </div>
+          <div class="question-strip">${qObj.q}</div>
+          <div class="reply-options">${optsHtml}</div>
+          <div class="feedback-pop" id="cycQuizFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${totalLevels})">← 上一關</button>
+          <button class="nav-btn primary-action" onclick="nextOrSwitch(${totalLevels}, 1)">
+            ${idx === totalLevels - 1 ? '進入「數據與功能分揀」 →' : '下一題 →'}
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function pickCycleStep(pIdx) {
+    const stepObj = cyclePool[pIdx];
+    const targetSlotIdx = pipelineSlots.findIndex(s => s === null);
+    if (targetSlotIdx === -1) return;
+
+    if (stepObj.order === targetSlotIdx + 1) {
+      pipelineSlots[targetSlotIdx] = stepObj;
+      if (pipelineSlots.every(s => s !== null)) addScore(25, "0_0");
+      renderCycleMode(document.getElementById("mainStage"));
+    } else {
+      breakCombo();
+      const fb = document.getElementById("cycFb");
+      fb.style.display = "block";
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⚠️ <strong>先後次序不對！</strong> 「${stepObj.name}」並不是這一步驟！請仔細回想會計數據由單據、日記簿、分類帳、試算表、調整至編製報表的流向。`;
+    }
+  }
+
+  function removePipeSlot(sIdx) {
+    for (let i = sIdx; i < 6; i++) pipelineSlots[i] = null;
+    renderCycleMode(document.getElementById("mainStage"));
+  }
+
+  function resetCycleTrack() {
+    pipelineSlots = [null, null, null, null, null, null];
+    cyclePool = shuffle(cycleMasterSteps);
+    renderCycleMode(document.getElementById("mainStage"));
+  }
+
+  function autoCompleteCycle() {
+    pipelineSlots = [...cycleMasterSteps];
+    addScore(25, "0_0");
+    renderCycleMode(document.getElementById("mainStage"));
+  }
+
+  function checkCycleQuiz(oIdx) {
+    const idx = subIdx[0];
+    const qObj = cycleQuizzes[idx - 1];
+    const fb = document.getElementById("cycQuizFb");
+    fb.style.display = "block";
+    if (qObj.opts[oIdx].ok) {
+      addScore(15, `0_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🎯 <strong>答對了！（+15 分）</strong><br>${qObj.exp}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `❌ <strong>次序判斷有誤！</strong><br>${qObj.exp}`;
+    }
+  }
+
+  // ==================== 渲染模組 2：數據與四項功能雙特訓分揀站 ====================
+  function switchMod2Sub(s) {
+    mod2Sub = s;
+    subIdx[1] = 0;
+    curFolderPick = null;
+    curStmtPick = null;
+    renderSortMode(document.getElementById("mainStage"));
+  }
+
+  function renderSortMode(stage) {
+    const idx = subIdx[1];
+    const topSwitch = `
+      <div class="sub-mode-bar">
+        <button class="sub-mode-btn ${mod2Sub === 0 ? 'active' : ''}" onclick="switchMod2Sub(0)">🗂️ 特訓 A：交易數據性質分類與財務報表歸位（課本第 4–5 頁）</button>
+        <button class="sub-mode-btn ${mod2Sub === 1 ? 'active' : ''}" onclick="switchMod2Sub(1)">⚙️ 特訓 B：日常會計工作配對四項會計功能（課本第 3–6 頁 P1-1）</button>
+      </div>
+    `;
+
+    if (mod2Sub === 0) {
+      const item = sortingItems[idx];
+      const folders = ["收益", "費用", "企業擁有的資源", "企業尚欠的款項"];
+      const folderBtns = folders.map(fName => `
+        <button class="folder-btn ${curFolderPick === fName ? 'picked' : ''}" onclick="pickSortFolder('${fName}')">
+          📁 ${fName}
+        </button>
+      `).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🗂️ 會計數據性質分揀與財務報表歸位（無提示挑戰）</span>
+            <div class="dots-nav">${buildDots(sortingItems.length, "1_s")}</div>
+          </div>
+          <div class="voucher-box">
+            <div>
+              <span class="voucher-label">🧾 待處理商業交易數據（${item.voucherNo}）</span>
+              <div class="voucher-title">${item.title}</div>
+            </div>
+            <div class="voucher-amount">${item.amount}</div>
+          </div>
+
+          <div class="sort-stage-title">第一步（分類功能）：請點選此項數據按性質應歸入哪個檔案夾？</div>
+          <div class="folders-grid">${folderBtns}</div>
+
+          <div class="sort-stage-title">第二步（歸納功能）：請點選此項數據最終應匯報於哪份財務報表？</div>
+          <div class="statements-grid">
+            <button class="stmt-btn ${curStmtPick === '損益表' ? 'picked' : ''}" onclick="pickSortStmt('損益表')">
+              📊 損益表
+            </button>
+            <button class="stmt-btn ${curStmtPick === '財務狀況表' ? 'picked' : ''}" onclick="pickSortStmt('財務狀況表')">
+              🏛️ 財務狀況表
+            </button>
+          </div>
+
+          <div class="feedback-pop" id="sortFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${sortingItems.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一張單據</button>
+          <button class="nav-btn primary-action" onclick="${idx === sortingItems.length - 1 ? 'switchMod2Sub(1)' : `moveSub(1, ${sortingItems.length})`}">
+            ${idx === sortingItems.length - 1 ? '進入「特訓 B：四項會計功能配對」 →' : '下一張單據 →'}
+          </button>
+        </div>
+      `;
+
+      if (curFolderPick && curStmtPick) evaluateSort();
+    } else {
+      const item = funcMatchItems[idx];
+      const funcs = ["記錄", "分類", "歸納", "溝通"];
+      const funcBtns = funcs.map(fn => `
+        <button class="folder-btn" onclick="checkFuncMatch('${fn}')">
+          ⚙️ ${fn}
+        </button>
+      `).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">⚙️ 辨識會計的四項基本功能（課本第 6 頁測試站 P1-1）</span>
+            <div class="dots-nav">${buildDots(funcMatchItems.length, "1_f")}</div>
+          </div>
+          <div class="voucher-box">
+            <div>
+              <span class="voucher-label">🔍 待辨識的會計工作描述：</span>
+              <div class="voucher-title">${item.taskTitle}</div>
+            </div>
+          </div>
+          <div class="sort-stage-title">請點選上述工作屬於哪一項會計基本功能：</div>
+          <div class="folders-grid">${funcBtns}</div>
+          <div class="feedback-pop" id="funcFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${funcMatchItems.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一工序</button>
+          <button class="nav-btn primary-action" onclick="nextOrSwitch(${funcMatchItems.length}, 2)">
+            ${idx === funcMatchItems.length - 1 ? '進入「會計師諮詢室」 →' : '下一工序 →'}
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function pickSortFolder(fName) { curFolderPick = fName; renderSortMode(document.getElementById("mainStage")); }
+  function pickSortStmt(sName) { curStmtPick = sName; renderSortMode(document.getElementById("mainStage")); }
+
+  function evaluateSort() {
+    const idx = subIdx[1];
+    const item = sortingItems[idx];
+    const fb = document.getElementById("sortFb");
+    fb.style.display = "block";
+    const fOk = (curFolderPick === item.folderAns);
+    const sOk = (curStmtPick === item.stmtAns);
+
+    if (fOk && sOk) {
+      addScore(20, `1_s_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🎯 <strong>雙重分揀完全正確！（+20 分）</strong><br>• 性質檔案夾：<strong>${item.folderAns}</strong> ｜ 歸入報表：<strong>${item.stmtAns}</strong><br>• 解析：${item.exp}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⚠️ <strong>分揀有誤！</strong><br>• 性質檔案夾：${fOk ? '✓ 正確' : '✗ 應為「' + item.folderAns + '」'}<br>• 歸入財務報表：${sOk ? '✓ 正確' : '✗ 應為「' + item.stmtAns + '」'}<br>${item.exp}`;
+    }
+  }
+
+  function checkFuncMatch(chosenFn) {
+    const idx = subIdx[1];
+    const item = funcMatchItems[idx];
+    const fb = document.getElementById("funcFb");
+    fb.style.display = "block";
+    if (chosenFn === item.ansFunc) {
+      addScore(15, `1_f_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🎯 <strong>功能配對正確：${item.ansFunc}！（+15 分）</strong><br>${item.exp}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `❌ <strong>你選了「${chosenFn}」，再想一想！</strong><br>${item.exp}`;
+    }
+  }
+
+  // ==================== 渲染模組 3：會計師諮詢室 ====================
+  function renderClientMode(stage) {
+    const idx = subIdx[2];
+    const item = clientCases[idx];
+    const optsHtml = item.opts.map((o, oIdx) =>
+      `<button class="reply-btn" onclick="checkClientReply(${oIdx})">💬 ${o.text}</button>`
+    ).join("");
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">💼 會計師諮詢室：使用者決策支援與策劃監控（對稱選項已隨機洗牌）</span>
+          <div class="dots-nav">${buildDots(clientCases.length)}</div>
+        </div>
+        <div class="client-card">
+          <div class="client-avatar">${item.avatar}</div>
+          <div class="client-info">
+            <span class="client-role-badge">諮詢對象：${item.role}</span>
+            <div class="client-speech">${item.speech}</div>
+          </div>
+        </div>
+        <div style="font-weight:900; color:#065f46; margin-bottom:8px; font-size:calc(14.5px * var(--scale));">
+          👇 身為專業會計師，請從以下三個專業方案中選出唯一正確的解答：
+        </div>
+        <div class="reply-options">${optsHtml}</div>
+        <div class="feedback-pop" id="cliFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${clientCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一位訪客</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${clientCases.length}, 3)">
+          ${idx === clientCases.length - 1 ? '進入「磁力積木砌答案」 →' : '下一位訪客 →'}
+        </button>
+      </div>
+    `;
+  }
+
+  function checkClientReply(oIdx) {
+    const idx = subIdx[2];
+    const item = clientCases[idx];
+    const fb = document.getElementById("cliFb");
+    fb.style.display = "block";
+    if (item.opts[oIdx].ok) {
+      addScore(20, `2_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🎉 <strong>專業解答完全正確！（+20 分）</strong><br>${item.exp}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `❌ <strong>解答存有概念混淆！</strong><br>${item.exp}`;
+    }
+  }
+
+  // ==================== 渲染模組 4：磁力積木砌答案 ====================
+  function renderLegoMode(stage) {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    let trayHtml = "";
+    if (legoPicked[0] === null && legoPicked[1] === null && legoPicked[2] === null) {
+      trayHtml = `<span class="tray-placeholder">👇 三步積木的字數與語氣均已對稱設計並隨機排列！請依序點擊「🟦 要點一」＋「🟨 要點二」＋「🟩 要點三」拼出滿分答案</span>`;
+    } else {
+      const colors = ["chip-step0", "chip-step1", "chip-step2"];
+      const stepLabels = ["🟦 要點一", "🟨 要點二", "🟩 要點三"];
+      legoPicked.forEach((pk, sIdx) => {
+        if (pk !== null) {
+          const obj = item[`step${sIdx}`][pk];
+          trayHtml += `<span class="slot-chip ${colors[sIdx]}" onclick="removeLego(${sIdx})">${stepLabels[sIdx]}：${obj.text} ✖</span>`;
+        }
+      });
+    }
+
+    const buildPool = (stepArr, sIdx, tagLabel, tagBg, tagColor) => {
+      return stepArr.map((blk, bIdx) => {
+        const isSel = (legoPicked[sIdx] === bIdx);
+        return `
+          <button class="mag-block ${isSel ? 'selected' : ''}" onclick="pickLego(${sIdx}, ${bIdx})">
+            <span class="block-tag" style="background:${tagBg}; color:${tagColor};">${tagLabel} ${isSel ? '✓ 已選' : ''}</span>
+            <div>${blk.text}</div>
+          </button>
+        `;
+      }).join("");
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🧲 ${item.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoFillCorrectLego()">💡 示範滿分拼法</button>
+            ${buildDots(legoChallenges.length)}
+          </div>
+        </div>
+        <div class="question-strip">${item.q}</div>
+        <div class="tray-header">
+          <span style="font-size:calc(13.5px * var(--scale)); font-weight:900;">📥 你的磁力答題槽（揀齊 3 塊積木即自動批改）：</span>
+          <button class="helper-btn" onclick="resetAndShuffleLego()">🔄 清空並重新隨機排列積木</button>
+        </div>
+        <div class="tray-box">${trayHtml}</div>
+        <div class="blocks-section-title">1️⃣ 第一步：點選「第一部分核心概念或立場積木」</div>
+        <div class="blocks-pool">${buildPool(item.step0, 0, "🟦 要點一", "#dbeafe", "#1e3a8a")}</div>
+        <div class="blocks-section-title">2️⃣ 第二步：點選「第二部分會計功能或機制闡釋積木」</div>
+        <div class="blocks-pool">${buildPool(item.step1, 1, "🟨 要點二", "#fef3c7", "#92400e")}</div>
+        <div class="blocks-section-title">3️⃣ 第三步：點選「第三部分使用者決策或監控影響積木」</div>
+        <div class="blocks-pool">${buildPool(item.step2, 2, "🟩 要點三", "#d1fae5", "#065f46")}</div>
+        <div class="feedback-pop" id="legoFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${legoChallenges.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${legoChallenges.length}, 4)">
+          ${idx === legoChallenges.length - 1 ? '進入「捉錯與消去擂台」 →' : '下一題 →'}
+        </button>
+      </div>
+    `;
+
+    if (legoPicked[0] !== null && legoPicked[1] !== null && legoPicked[2] !== null) evaluateLego();
+  }
+
+  function pickLego(sIdx, bIdx) { legoPicked[sIdx] = bIdx; renderLegoMode(document.getElementById("mainStage")); }
+  function removeLego(sIdx) { legoPicked[sIdx] = null; renderLegoMode(document.getElementById("mainStage")); }
+  function resetAndShuffleLego() {
+    const ch = legoChallenges[subIdx[3]];
+    ch.step0 = shuffle(ch.step0);
+    ch.step1 = shuffle(ch.step1);
+    ch.step2 = shuffle(ch.step2);
+    legoPicked = [null, null, null];
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+  function autoFillCorrectLego() {
+    const item = legoChallenges[subIdx[3]];
+    legoPicked[0] = item.step0.findIndex(b => b.ok);
+    legoPicked[1] = item.step1.findIndex(b => b.ok);
+    legoPicked[2] = item.step2.findIndex(b => b.ok);
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+
+  function evaluateLego() {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    const b0 = item.step0[legoPicked[0]], b1 = item.step1[legoPicked[1]], b2 = item.step2[legoPicked[2]];
+    const fb = document.getElementById("legoFb");
+    fb.style.display = "block";
+    if (b0.ok && b1.ok && b2.ok) {
+      addScore(20, `3_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🏆 <strong>磁力積木拼合完美！穩奪滿分！（+20 分）</strong><br>✨ <strong>合成標準答案</strong>：「<strong>${b0.text}</strong>。<strong>${b1.text}</strong>；<strong>${b2.text}</strong>」`;
+    } else {
+      breakCombo();
+      let errs = [];
+      if (!b0.ok) errs.push(`• 🟦 <strong>要點一積木有誤</strong>：${b0.err}`);
+      if (!b1.ok) errs.push(`• 🟨 <strong>要點二積木有誤</strong>：${b1.err}`);
+      if (!b2.ok) errs.push(`• 🟩 <strong>要點三積木有誤</strong>：${b2.err}`);
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⚠️ <strong>積木組合存在失分陷阱（請直接點擊下方正確積木替換）：</strong><br>${errs.join("<br>")}`;
+    }
+  }
+
+  // ==================== 渲染模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ====================
+  function switchMod5Sub(s) {
+    mod5Sub = s;
+    subIdx[4] = 0;
+    elimState = { 1: null, 2: null, 3: null };
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function renderArenaMode(stage) {
+    const idx = subIdx[4];
+    const topSwitch = `
+      <div class="sub-mode-bar">
+        <button class="sub-mode-btn ${mod5Sub === 0 ? 'active' : ''}" onclick="switchMod5Sub(0)">🖍️ 挑戰 A：紅筆捉錯（點擊答卷錯句）</button>
+        <button class="sub-mode-btn ${mod5Sub === 1 ? 'active' : ''}" onclick="switchMod5Sub(1)">🏆 挑戰 B：組合選擇題消去法神器</button>
+      </div>
+    `;
+
+    if (mod5Sub === 0) {
+      const item = redPenCases[idx];
+      const nums = ["①", "②", "③"];
+      const chipsHtml = item.chips.map((ch, cIdx) => `
+        <div class="sentence-chip" id="rpChip_${cIdx}" onclick="checkRedPen(${cIdx})">
+          <span>${nums[cIdx]} ${ch.text}</span>
+          <span style="font-size:calc(13px * var(--scale)); color:var(--rose); font-weight:900; white-space:nowrap;">🖍️ 點此捉錯</span>
+        </div>
+      `).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🖍️ ${item.title}</span>
+            <div class="dots-nav">${buildDots(redPenCases.length, "4_rp")}</div>
+          </div>
+          <div class="question-strip">${item.q}</div>
+          <div class="paper-sheet">
+            <div style="font-weight:900; color:var(--rose); margin-bottom:10px; font-size:calc(14px * var(--scale));">
+              🖍️ 句子次序已隨機洗牌，請點擊藏有嚴重會計概念錯誤的那一句：
+            </div>
+            <div class="sentence-chips-wrap">${chipsHtml}</div>
+          </div>
+          <div class="feedback-pop" id="rpFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${redPenCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="${idx === redPenCases.length - 1 ? 'switchMod5Sub(1)' : `moveSub(1, ${redPenCases.length})`}">
+            ${idx === redPenCases.length - 1 ? '進入「挑戰 B：選擇題消去法」 →' : '下一題 →'}
+          </button>
+        </div>
+      `;
+    } else {
+      const item = elimMCs[idx];
+      const stmtsHtml = item.stmts.map(st => {
+        const curVal = elimState[st.id];
+        return `
+          <div class="elim-stmt-row">
+            <div class="elim-stmt-text">${st.text}</div>
+            <div class="elim-toggles">
+              <button class="elim-btn ${curVal === true ? 't-true' : ''}" onclick="toggleElim(${st.id}, true)">⭕ 正確</button>
+              <button class="elim-btn ${curVal === false ? 't-false' : ''}" onclick="toggleElim(${st.id}, false)">❌ 錯誤</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const optsHtml = item.options.map((opt, oIdx) => {
+        let isElim = false;
+        [1, 2, 3].forEach(sId => {
+          if (elimState[sId] === true && opt.reqFalse.includes(sId)) isElim = true;
+          if (elimState[sId] === false && opt.reqTrue.includes(sId)) isElim = true;
+        });
+        return `<button class="mc-card-btn ${isElim ? 'eliminated' : ''}" onclick="checkElimMc(${oIdx})">${opt.label}</button>`;
+      }).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🏆 ${item.title}</span>
+            <div class="dots-nav">${buildDots(elimMCs.length, "4_mc")}</div>
+          </div>
+          <div class="question-strip">${item.stem}</div>
+          <p style="font-size:calc(14px * var(--scale)); font-weight:800; color:var(--teal); margin-bottom:8px;">
+            💡 消去法神器：本題可能只有 1 項、2 項或全部 3 項正確！請先在右方標記「⭕ 正確」或「❌ 錯誤」自動劃走錯項！
+          </p>
+          <div>${stmtsHtml}</div>
+          <div class="mc-options-row">${optsHtml}</div>
+          <div class="feedback-pop" id="elimFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${elimMCs.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="moveSub(1, ${elimMCs.length})" ${idx === elimMCs.length - 1 ? 'style="visibility:hidden"' : ''}>下一題 →</button>
+        </div>
+      `;
+    }
+  }
+
+  function checkRedPen(cIdx) {
+    const idx = subIdx[4];
+    const item = redPenCases[idx];
+    const ch = item.chips[cIdx];
+    const nums = ["①", "②", "③"];
+    const el = document.getElementById(`rpChip_${cIdx}`);
+    const fb = document.getElementById("rpFb");
+    fb.style.display = "block";
+    if (ch.isFlaw) {
+      el.className = "sentence-chip flaw-found";
+      addScore(20, `4_rp_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🖍️ 紅筆精準捉錯（第 ${nums[cIdx]} 句得 0 分）！</strong><br>${item.exp}`;
+    } else {
+      el.className = "sentence-chip good-clicked";
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⭕ <strong>第 ${nums[cIdx]} 句是完全正確的課本陳述！</strong> 請再檢查其餘句子找出真正的概念陷阱！`;
+    }
+  }
+
+  function toggleElim(sId, val) {
+    elimState[sId] = (elimState[sId] === val) ? null : val;
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function checkElimMc(oIdx) {
+    const idx = subIdx[4];
+    const item = elimMCs[idx];
+    const fb = document.getElementById("elimFb");
+    fb.style.display = "block";
+    if (oIdx === item.ansIdx) {
+      addScore(20, `4_mc_${idx}`);
+      const breakdown = item.stmts.map(s => `• <strong>陳述 (${s.id}) ${s.isTrue ? '⭕ 正確' : '❌ 錯誤'}</strong>：${s.exp}`).join("<br>");
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🏆 答對了！標準答案：${item.options[item.ansIdx].label}</strong><br>${breakdown}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = "❌ <strong>選項不正確！</strong> 試試先在上方逐句判斷 (1)、(2)、(3) 的對錯，利用消去法鎖定答案！";
+    }
+  }
+
+  randomizeAllData();
+  renderStage();
+</script>
+</body>
+</html>

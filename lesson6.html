@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企會財會計互動工作台｜第 6 課：獨資企業的財務報表（二）財務狀況表</title>
+  <style>
+    :root {
+      --bg: #06141b;
+      --panel: #11212d;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --emerald: #059669;
+      --emerald-light: #d1fae5;
+      --teal: #0d9488;
+      --blue: #2563eb;
+      --blue-light: #dbeafe;
+      --amber: #d97706;
+      --amber-light: #fef3c7;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --scale: 1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC", sans-serif; user-select: none; }
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      padding: 12px;
+      font-size: calc(16px * var(--scale));
+      line-height: 1.55;
+    }
+    .app { max-width: 1080px; margin: 0 auto; }
+
+    @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    .pop { animation: popIn 0.22s ease-out; }
+    .shake { animation: shake 0.3s ease-in-out; }
+
+    /* 頂部狀態列 */
+    .top-bar {
+      background: linear-gradient(135deg, #064e3b 0%, #0f766e 50%, #1e3a8a 100%);
+      border-radius: 16px;
+      padding: 14px 22px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+    .brand-title { font-size: calc(20px * var(--scale)); font-weight: 900; display: flex; align-items: center; gap: 10px; }
+    .stat-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pill-stat { background: rgba(6, 20, 27, 0.65); border: 1px solid rgba(52, 211, 153, 0.4); padding: 6px 13px; border-radius: 30px; font-weight: 800; font-size: calc(13.5px * var(--scale)); color: #a7f3d0; }
+    .ctrl-btn { background: #fbbf24; color: #0f172a; border: none; padding: 7px 14px; border-radius: 30px; font-weight: 900; font-size: calc(13px * var(--scale)); cursor: pointer; transition: transform 0.15s; }
+    .ctrl-btn:hover { transform: scale(1.05); background: #fcd34d; }
+
+    /* 五大互動模式導航 */
+    .mode-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+    @media (max-width: 820px) { .mode-nav { grid-template-columns: repeat(2, 1fr); } }
+    .mode-tab {
+      background: var(--panel);
+      border: 2px solid #1e3a4c;
+      border-radius: 14px;
+      padding: 12px 8px;
+      color: #94a3b8;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .mode-tab:hover { border-color: #34d399; color: #fff; transform: translateY(-2px); }
+    .mode-tab.active {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      border-color: #6ee7b7;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
+    }
+    .mode-icon { font-size: calc(24px * var(--scale)); display: block; margin-bottom: 4px; }
+    .mode-label { font-size: calc(14px * var(--scale)); font-weight: 900; display: block; }
+    .mode-sub { font-size: calc(11.5px * var(--scale)); opacity: 0.9; }
+
+    /* 主舞台 */
+    .stage {
+      background-color: var(--card);
+      background-image: linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+      border-radius: 20px;
+      padding: 24px;
+      min-height: 540px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid #cbd5e1;
+    }
+
+    .level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #e2e8f0; background: rgba(255,255,255,0.92); border-radius: 10px; padding: 10px 14px; }
+    .level-title { font-size: calc(18px * var(--scale)); font-weight: 900; color: #065f46; }
+    .dots-nav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .dot-btn {
+      width: calc(36px * var(--scale)); height: calc(36px * var(--scale));
+      border-radius: 10px; border: 2px solid #cbd5e1; background: #fff;
+      font-weight: 900; font-size: calc(14px * var(--scale)); cursor: pointer; color: var(--muted);
+    }
+    .dot-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .dot-btn.done { background: var(--emerald-light); color: #065f46; border-color: var(--emerald); }
+
+    /* ================= 模組 1：財務狀況表「診症執錯與排序」實驗室 ================= */
+    .doctor-grid { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 18px; margin-bottom: 12px; }
+    @media (max-width: 860px) { .doctor-grid { grid-template-columns: 1fr; } }
+
+    .flaw-list-box { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 14px; padding: 14px; }
+    .flaw-card {
+      background: #fff; border: 2px solid #cbd5e1; border-radius: 10px; padding: 10px 12px;
+      margin-bottom: 9px; transition: all 0.15s;
+    }
+    .flaw-card.fixed { border-color: var(--emerald); background: #f0fdf4; }
+    .flaw-card.wrong-picked { border-color: var(--rose); background: #fff1f2; }
+    .flaw-card-head { display: flex; justify-content: space-between; font-weight: 900; font-size: calc(14px * var(--scale)); margin-bottom: 7px; gap: 6px; }
+    .zone-btns { display: grid; grid-template-columns: 1fr; gap: 6px; }
+    .z-btn {
+      padding: 7px 10px; border-radius: 7px; border: 1px solid #94a3b8; background: #f8fafc;
+      font-size: calc(13px * var(--scale)); font-weight: 800; cursor: pointer; text-align: left; transition: all 0.15s;
+    }
+    .z-btn:hover { border-color: var(--blue); background: #eff6ff; }
+    .z-btn.active-ok { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .z-btn.active-err { background: var(--rose); color: #fff; border-color: var(--rose); }
+
+    .sfp-preview-sheet {
+      background: #fff; border: 2px solid #1e293b; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08); font-size: calc(13px * var(--scale));
+    }
+    .sfp-header { background: #1e293b; color: #fff; text-align: center; padding: 10px; font-weight: 900; font-size: calc(15px * var(--scale)); }
+    .sfp-header small { display: block; color: #fbbf24; font-size: calc(12.5px * var(--scale)); }
+    .sfp-body { padding: 12px 16px; font-weight: 800; }
+    .sfp-line { display: flex; justify-content: space-between; padding: 2.5px 0; }
+    .sfp-sec-head { color: #065f46; font-weight: 900; margin-top: 6px; text-decoration: underline; }
+    .sfp-sub-line { border-top: 1px solid #334155; padding: 3px 0; font-weight: 900; color: #1e3a8a; margin-top: 2px; }
+    .sfp-total-line { border-top: 2px solid #0f172a; border-bottom: 4px double #0f172a; padding: 5px 0; font-weight: 900; font-size: calc(14.5px * var(--scale)); margin: 6px 0; }
+
+    /* ================= 模組 2：資產負債邊界 ＆ 帳戶雙維度分類快篩站 ================= */
+    .sub-mode-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+    .sub-mode-btn { flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #cbd5e1; background: #f8fafc; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: var(--muted); }
+    .sub-mode-btn.active { background: #065f46; color: #fff; border-color: #065f46; }
+
+    .item-spotlight {
+      background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff;
+      border-radius: 16px; padding: 20px 24px; margin-bottom: 16px;
+      border-left: 8px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .sp-tag { font-size: calc(12.5px * var(--scale)); color: #38bdf8; font-weight: 900; display: block; margin-bottom: 4px; }
+    .sp-title { font-size: calc(19.5px * var(--scale)); font-weight: 900; }
+
+    .step-label { font-size: calc(14.5px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 8px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    @media (max-width: 680px) { .grid-2 { grid-template-columns: 1fr; } }
+    .opt-tile {
+      padding: 14px 16px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff;
+      font-size: calc(15px * var(--scale)); font-weight: 900; cursor: pointer; text-align: left; transition: all 0.15s;
+    }
+    .opt-tile:hover { border-color: var(--teal); background: #f0fdfa; transform: translateY(-2px); }
+    .opt-tile.picked { border-color: var(--emerald); background: #d1fae5; box-shadow: 0 0 0 3px rgba(5,150,105,0.25); }
+
+    /* ================= 模組 3：營運資金與資本計算機（純數字無提示） ================= */
+    .invoice-card {
+      background: #fffbeb; border: 2px solid #f59e0b; border-radius: 14px; padding: 16px 20px;
+      margin-bottom: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+    .inv-title { font-size: calc(16.5px * var(--scale)); font-weight: 900; color: #92400e; margin-bottom: 8px; border-bottom: 2px dashed #fcd34d; padding-bottom: 6px; }
+    .inv-body { font-size: calc(14.5px * var(--scale)); font-weight: 800; color: #451a03; line-height: 1.6; }
+    .calc-steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+    @media (max-width: 780px) { .calc-steps-grid { grid-template-columns: 1fr; } }
+    .calc-step-box { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; }
+    .calc-step-q { font-size: calc(13.5px * var(--scale)); font-weight: 900; color: var(--blue); margin-bottom: 8px; min-height: 42px; }
+    .calc-opt-btn {
+      display: block; width: 100%; text-align: center; padding: 10px; margin-bottom: 6px;
+      border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; transition: all 0.15s;
+    }
+    .calc-opt-btn:hover { border-color: var(--blue); background: #eff6ff; }
+    .calc-opt-btn.picked { background: #dbeafe; border-color: var(--blue); color: #1e3a8a; }
+
+    /* ================= 模組 4：磁力積木砌答案 ================= */
+    .question-strip { background: #fffbeb; border-left: 6px solid var(--amber); padding: 14px 18px; border-radius: 12px; font-size: calc(16px * var(--scale)); font-weight: 900; color: #78350f; margin-bottom: 14px; }
+    .tray-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+    .tray-box { background: #f1f5f9; border: 3px dashed #64748b; border-radius: 16px; padding: 14px 16px; min-height: 84px; margin-bottom: 16px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .tray-placeholder { color: var(--muted); font-weight: 800; font-size: calc(14.5px * var(--scale)); }
+    .slot-chip { padding: 9px 14px; border-radius: 10px; font-weight: 900; font-size: calc(14.5px * var(--scale)); color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+    .chip-step0 { background: var(--blue); }
+    .chip-step1 { background: var(--amber); }
+    .chip-step2 { background: var(--emerald); }
+    .blocks-section-title { font-size: calc(14px * var(--scale)); font-weight: 900; color: #065f46; margin-bottom: 6px; }
+    .blocks-pool { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 720px) { .blocks-pool { grid-template-columns: 1fr; } }
+    .mag-block { padding: 12px 14px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(14px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; text-align: left; transition: all 0.15s; line-height: 1.5; }
+    .mag-block:hover { border-color: var(--emerald); background: #ecfdf5; transform: translateY(-2px); }
+    .mag-block.selected { background: #d1fae5; border-color: var(--emerald); box-shadow: inset 0 0 0 2px var(--emerald); }
+    .block-tag { display: inline-block; font-size: calc(11.5px * var(--scale)); font-weight: 900; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
+    .helper-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--emerald); background: #ecfdf5; color: #065f46; font-weight: 800; font-size: calc(13px * var(--scale)); cursor: pointer; }
+    .helper-btn:hover { background: var(--emerald); color: #fff; }
+
+    /* ================= 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ================= */
+    .paper-sheet { background: #fefce8; border: 2px solid #fde047; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+    .sentence-chips-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .sentence-chip { padding: 14px 16px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: calc(15px * var(--scale)); font-weight: 800; color: var(--text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .sentence-chip:hover { border-color: var(--rose); background: #fff1f2; }
+    .sentence-chip.flaw-found { border-color: var(--rose); background: #ffe4e6; color: #9f1239; text-decoration: line-through; }
+    .sentence-chip.good-clicked { border-color: var(--emerald); background: #dcfce7; color: #14532d; }
+
+    .elim-stmt-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; }
+    .elim-stmt-text { font-size: calc(15px * var(--scale)); font-weight: 800; flex: 1; }
+    .elim-toggles { display: flex; gap: 6px; }
+    .elim-btn { padding: 6px 12px; border-radius: 8px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(13.5px * var(--scale)); cursor: pointer; }
+    .elim-btn.t-true { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .elim-btn.t-false { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .mc-options-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 600px) { .mc-options-row { grid-template-columns: 1fr; } }
+    .mc-card-btn { padding: 14px 18px; border-radius: 12px; border: 2px solid #94a3b8; background: #fff; font-size: calc(16px * var(--scale)); font-weight: 900; text-align: left; cursor: pointer; }
+    .mc-card-btn:hover { border-color: var(--emerald); background: #ecfdf5; }
+    .mc-card-btn.eliminated { opacity: 0.3; text-decoration: line-through; background: #e2e8f0; border-color: #cbd5e1; }
+
+    .feedback-pop { margin-top: 14px; padding: 16px 18px; border-radius: 14px; font-size: calc(15px * var(--scale)); font-weight: 700; display: none; line-height: 1.6; }
+    .fb-ok { background: #dcfce7; border: 2px solid var(--emerald); color: #14532d; }
+    .fb-err { background: #ffe4e6; border: 2px solid var(--rose); color: #881337; }
+
+    .footer-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 12px; border-top: 2px solid #e2e8f0; }
+    .nav-btn { padding: 10px 20px; border-radius: 10px; border: 2px solid #cbd5e1; background: #fff; font-weight: 900; font-size: calc(14.5px * var(--scale)); cursor: pointer; color: #065f46; }
+    .nav-btn:hover { background: #ecfdf5; border-color: var(--emerald); }
+    .primary-action { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+    .primary-action:hover { background: #047857; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- 頂部狀態列 -->
+  <div class="top-bar">
+    <div class="brand-title">🏛️ 基礎會計第 6 課：獨資企業的財務報表（二）財務狀況表</div>
+    <div class="stat-group">
+      <div class="pill-stat" id="comboBadge">🔥 連擊：0</div>
+      <div class="pill-stat" id="scoreBadge">⭐ 專業積分：0</div>
+      <button class="ctrl-btn" onclick="reshuffleAll()" title="重新隨機打亂所有題目與選項次序">🔀 隨機洗牌</button>
+      <button class="ctrl-btn" onclick="toggleZoom()" id="zoomBtn">🔍 投影大字體：關</button>
+    </div>
+  </div>
+
+  <!-- 五大專屬會計學習模組導航 -->
+  <div class="mode-nav">
+    <button class="mode-tab active" onclick="switchMode(0)" id="mTab0">
+      <span class="mode-icon">🛠️</span>
+      <span class="mode-label">狀況表診症室</span>
+      <span class="mode-sub">3 選 1 隨機修正報表</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(1)" id="mTab1">
+      <span class="mode-icon">🗂️</span>
+      <span class="mode-label">資產與帳戶快篩</span>
+      <span class="mode-sub">按金訂金 ＋ 虛實人名帳戶</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(2)" id="mTab2">
+      <span class="mode-icon">🧮</span>
+      <span class="mode-label">營運資金計算機</span>
+      <span class="mode-sub">純數值實戰計算挑戰</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(3)" id="mTab3">
+      <span class="mode-icon">🧲</span>
+      <span class="mode-label">磁力積木砌答案</span>
+      <span class="mode-sub">對稱選項拼出滿分論述</span>
+    </button>
+    <button class="mode-tab" onclick="switchMode(4)" id="mTab4">
+      <span class="mode-icon">🏆</span>
+      <span class="mode-label">捉錯與消去擂台</span>
+      <span class="mode-sub">紅筆批改 ＋ 選擇題消去</span>
+    </button>
+  </div>
+
+  <!-- 主舞台 -->
+  <div class="stage" id="mainStage"></div>
+</div>
+
+<script>
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function fmt(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // ==================== 模組 1：財務狀況表「診症執錯與排序」實驗室（每項 3 個對稱選項，隨機洗牌） ====================
+  const sfpDoctorCases = [
+    {
+      title: "診症個案 1：潘女士的財務狀況表（課本第 65 頁題 6.22：修正標題、分類、淨損失與排序）",
+      firm: "潘女士",
+      flaws: [
+        {
+          id: 0,
+          label: "1. 財務狀況表的日期標題格式",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "截至 2022 年 12 月 31 日止年度", ok: false },
+            { k: "ok", t: "於 2022 年 12 月 31 日", ok: true },
+            { k: "w2", t: "2022 年 1 月 1 日至 12 月 31 日期間", ok: false }
+          ]
+        },
+        {
+          id: 1,
+          label: "2. 非流動資產的項目範圍與排列次序（已知設備比家具及裝置耐用）",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "家具及裝置 ($68,600) ➔ 設備 ($34,800) ➔ 存貨 ($9,200)", ok: false },
+            { k: "ok", t: "設備 ($34,800) ➔ 家具及裝置 ($68,600)；存貨移至流動資產", ok: true },
+            { k: "w2", t: "家具及裝置 ($68,600) ➔ 設備 ($34,800)；存貨移至流動負債", ok: false }
+          ]
+        },
+        {
+          id: 2,
+          label: "3. 流動資產的變現能力排列次序",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "現金 ($2,300) ➔ 銀行存款 ($6,800) ➔ 應收貨款 ($7,400) ➔ 存貨 ($9,200)", ok: false },
+            { k: "ok", t: "存貨 ($9,200) ➔ 應收貨款 ($7,400) ➔ 銀行存款 ($6,800) ➔ 現金 ($2,300)", ok: true },
+            { k: "w2", t: "應收貨款 ($7,400) ➔ 存貨 ($9,200) ➔ 現金 ($2,300) ➔ 銀行存款 ($6,800)", ok: false }
+          ]
+        },
+        {
+          id: 3,
+          label: "4. 資本部分的期初日期標示與「年度淨損失 ($10,500)」處理",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "餘額 (2022年12月31日) $78,500 ＋ 年度淨損失 $10,500 － 提用 $8,000", ok: false },
+            { k: "ok", t: "餘額 (2022年1月1日) $78,500 － 年度淨損失 $10,500 － 提用 $8,000", ok: true },
+            { k: "w2", t: "餘額 (2022年1月1日) $78,500 － 年度淨損失 $10,500 ＋ 提用 $8,000", ok: false }
+          ]
+        }
+      ],
+      renderPreview: (flaws) => {
+        const f0 = flaws[0].curVal === "ok";
+        const f1 = flaws[1].curVal === "ok";
+        const f2 = flaws[2].curVal === "ok";
+        const f3 = flaws[3].curVal === "ok";
+
+        const ncaTotal = f1 ? 103400 : 112600;
+        const caTotal = (f1 && f2) ? 25700 : 16500;
+        const totalAssets = ncaTotal + caTotal; // 129,100
+        const capEnd = f3 ? 60000 : 81000;
+        const totalLiab = 60000 + 9100; // 69,100
+        const totalCapLiab = capEnd + totalLiab;
+
+        return `
+          <div class="sfp-header">
+            潘女士 — 財務狀況表
+            <small>${f0 ? '於 2022 年 12 月 31 日' : '截至 2022 年 12 月 31 日止年度（待修正）'}</small>
+          </div>
+          <div class="sfp-body">
+            <div class="sfp-sec-head">資產 — 非流動資產：</div>
+            ${f1
+              ? `<div class="sfp-line"><span>設備 ($34,800) ➔ 家具及裝置 ($68,600)</span><span>$103,400</span></div>`
+              : `<div class="sfp-line" style="color:#b91c1c;"><span>家具及裝置 ($68,600) ＋ 設備 ($34,800) ＋ 存貨 ($9,200)</span><span>$112,600</span></div>`
+            }
+            <div class="sfp-sec-head">流動資產：</div>
+            ${(f1 && f2)
+              ? `<div class="sfp-line"><span>存貨 ➔ 應收貨款 ➔ 銀行存款 ➔ 現金</span><span>$25,700</span></div>`
+              : `<div class="sfp-line" style="color:#b91c1c;"><span>現金 ($2,300) ➔ 銀行存款 ($6,800) ➔ 應收貨款 ($7,400)</span><span>$${fmt(caTotal)}</span></div>`
+            }
+            <div class="sfp-total-line"><div class="sfp-line"><span>資產總額</span><span>$${fmt(totalAssets)}</span></div></div>
+
+            <div class="sfp-sec-head">資本及負債 — 資本：</div>
+            <div class="sfp-line" style="color:${f3 ? '#065f46' : '#b91c1c'};">
+              <span>${f3 ? '期初 (1月1日) $78,500 － 淨損失 $10,500 － 提用 $8,000' : '原草算：期初 $78,500 ＋ 淨損失 $10,500 － 提用 $8,000'}</span>
+              <span>$${fmt(capEnd)}</span>
+            </div>
+
+            <div class="sfp-sec-head">非流動負債 及 流動負債：</div>
+            <div class="sfp-line"><span>非流動負債：銀行貸款 ($60,000) ＋ 流動負債：應付貨款 ($9,100)</span><span>$69,100</span></div>
+            <div class="sfp-total-line" style="color:${(f0 && f1 && f2 && f3) ? '#15803d' : '#b91c1c'};">
+              <div class="sfp-line">
+                <span>資本及負債總額</span>
+                <span>$${fmt(totalCapLiab)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+      exp: "【課本第 65 頁題 6.22 滿分拆解】① 財務狀況表屬存量概念，標題須用「於 2022 年 12 月 31 日」；② 非流動資產按耐用性降序排列（設備 $34,800 ➔ 家具及裝置 $68,600，共 $103,400）；③ 存貨 $9,200 移回流動資產並按變現能力升序排列（存貨 ➔ 應收貨款 ➔ 銀行存款 ➔ 現金，共 $25,700）；④ 期初資本減去年度淨損失 $10,500 及提用 $8,000 得出期末資本 $60,000，使資產總額與資本及負債總額同時平衡於 **$129,100**！"
+    },
+    {
+      title: "診症個案 2：梁女士的財務狀況表（課本第 68 頁題 6.25：銀行透支、應收應付對調與貸款分類）",
+      firm: "梁女士",
+      flaws: [
+        {
+          id: 0,
+          label: "1. 「銀行透支 ($5,200)」及「應付貨款 ($10,100)」的歸類",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "兩者均列於「流動資產」部分", ok: false },
+            { k: "ok", t: "兩者均列於「流動負債」部分", ok: true },
+            { k: "w2", t: "銀行透支列於「流動資產」，應付貨款列於「非流動負債」", ok: false }
+          ]
+        },
+        {
+          id: 1,
+          label: "2. 「應收貨款 ($11,200)」的歸類與流動資產排列次序",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "應收貨款列於流動資產，排序：現金 ($4,600) ➔ 應收貨款 ($11,200) ➔ 存貨 ($14,200)", ok: false },
+            { k: "ok", t: "應收貨款列於流動資產，排序：存貨 ($14,200) ➔ 應收貨款 ($11,200) ➔ 現金 ($4,600)", ok: true },
+            { k: "w2", t: "應收貨款保留在「流動負債」部分，流動資產只列存貨及現金", ok: false }
+          ]
+        },
+        {
+          id: 2,
+          label: "3. 資本部分（年結日為 2023 年 3 月 31 日）的期初日期與提用處理",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "餘額 (2023年4月1日) $72,200 ＋ 年度淨利 $2,500 ＋ 提用 $10,000", ok: false },
+            { k: "ok", t: "餘額 (2022年4月1日) $72,200 ＋ 年度淨利 $2,500 － 提用 $10,000", ok: true },
+            { k: "w2", t: "餘額 (2022年4月1日) $72,200 － 年度淨利 $2,500 － 提用 $10,000", ok: false }
+          ]
+        },
+        {
+          id: 3,
+          label: "4. 兩筆貸款（2026年3月31日償還 $60,000 及 2023年12月31日償還 $30,000）的分類",
+          curVal: null,
+          opts: [
+            { k: "w1", t: "兩筆貸款合共 $90,000 全數列於「非流動負債」", ok: false },
+            { k: "ok", t: "2026年償還貸款 ($60,000) 列非流動負債；2023年12月償還貸款 ($30,000) 列流動負債", ok: true },
+            { k: "w2", t: "2026年償還貸款 ($60,000) 列流動負債；2023年12月償還貸款 ($30,000) 列非流動負債", ok: false }
+          ]
+        }
+      ],
+      renderPreview: (flaws) => {
+        const f0 = flaws[0].curVal === "ok";
+        const f1 = flaws[1].curVal === "ok";
+        const f2 = flaws[2].curVal === "ok";
+        const f3 = flaws[3].curVal === "ok";
+
+        const ncaTotal = 140000;
+        const caTotal = (f0 && f1) ? 30000 : 34100;
+        const totalAssets = ncaTotal + caTotal; // 170,000 vs 174,100
+        const capEnd = f2 ? 64700 : 84700;
+        const totalLiab = (f0 && f1 && f3) ? 105300 : 101200;
+        const totalCapLiab = capEnd + totalLiab;
+
+        return `
+          <div class="sfp-header">
+            梁女士 — 財務狀況表
+            <small>於 2023 年 3 月 31 日</small>
+          </div>
+          <div class="sfp-body">
+            <div class="sfp-sec-head">非流動資產（裝修及裝置 $74,000 ＋ 家具及設備 $66,000）：</div>
+            <div class="sfp-sub-line"><div class="sfp-line"><span>非流動資產總額</span><span>$140,000</span></div></div>
+
+            <div class="sfp-sec-head">流動資產：</div>
+            ${(f0 && f1)
+              ? `<div class="sfp-line"><span>存貨 ($14,200) ➔ 應收貨款 ($11,200) ➔ 現金 ($4,600)</span><span>$30,000</span></div>`
+              : `<div class="sfp-line" style="color:#b91c1c;"><span>原草算流動資產（含錯位項目）</span><span>$${fmt(caTotal)}</span></div>`
+            }
+            <div class="sfp-total-line"><div class="sfp-line"><span>資產總額</span><span>$${fmt(totalAssets)}</span></div></div>
+
+            <div class="sfp-sec-head">資本及負債 — 資本：</div>
+            <div class="sfp-line" style="color:${f2 ? '#065f46' : '#b91c1c'};">
+              <span>${f2 ? '期初 (2022年4月1日) $72,200 ＋ 淨利 $2,500 － 提用 $10,000' : '原草算：期初 $72,200 ＋ 淨利 $2,500 ＋ 提用 $10,000'}</span>
+              <span>$${fmt(capEnd)}</span>
+            </div>
+
+            <div class="sfp-sec-head">非流動負債 及 流動負債：</div>
+            ${(f0 && f1 && f3)
+              ? `<div class="sfp-line"><span>非流動負債：$60,000 ｜ 流動負債：$45,300</span><span>$105,300</span></div>`
+              : `<div class="sfp-line" style="color:#b91c1c;"><span>原草算負債總額（含錯位項目）</span><span>$${fmt(totalLiab)}</span></div>`
+            }
+            <div class="sfp-total-line" style="color:${(f0 && f1 && f2 && f3) ? '#15803d' : '#b91c1c'};">
+              <div class="sfp-line">
+                <span>資本及負債總額</span>
+                <span>$${fmt(totalCapLiab)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+      exp: "【課本第 68 頁題 6.25 滿分拆解】① 銀行透支 ($5,200) 及應付貨款 ($10,100) 屬流動負債，應收貨款 ($11,200) 屬流動資產，修正後流動資產為 $30,000，**資產總額為 $170,000**；② 期初資本日期為 2022 年 4 月 1 日，加上淨利 $2,500 並減去提用 $10,000 得出**期末資本 $64,700**；③ 2026 年償還貸款 ($60,000) 列非流動負債，2023 年 12 月償還貸款 ($30,000) 列流動負債（流動負債共 $45,300，負債總額 $105,300）；④ **資本及負債總額平衡於 $170,000**！"
+    }
+  ];
+
+  // ==================== 模組 2：資產負債邊界 ＆ 帳戶雙維度分類快篩站（選項對稱，四大組合齊備） ====================
+  let mod2Sub = 0;
+
+  let boundaryItems = [
+    {
+      tag: "邊界案例 #01（課本第 38 頁 P6-2a、b 及第 71 頁題 6.28X）",
+      title: "「第一家具（辦公室家具貿易商）」在年結日持有：(A) 作轉售用途但尚未售出的桌椅；(B) 供公司行政部門員工使用的桌椅。",
+      ans: "(A) 流動資產｜(B) 非流動資產",
+      opts: [
+        "(A) 流動資產｜(B) 非流動資產",
+        "(A) 非流動資產｜(B) 流動資產",
+        "(A) 流動資產｜(B) 流動資產",
+        "(A) 非流動資產｜(B) 非流動資產"
+      ],
+      exp: "【課本第 37–38 頁 P6-2 及題 6.28A】對家具貿易商而言，**(A) 待售的桌椅屬於「存貨（流動資產）」**；而 **(B) 供員工自用的桌椅則是耐用、不打算轉售且使用期多於一年的「非流動資產」**！"
+    },
+    {
+      tag: "邊界案例 #02（課本第 45–46 頁進階學堂及第 62 頁題 6.16）",
+      title: "企業在年結日有兩項按金：(A) 作為租客向業主繳付的店舖租金按金（租約於 8 個月後完結）；(B) 作為業主向租客收取的租金按金（租約於兩年後完結）。",
+      ans: "(A) 流動資產｜(B) 非流動負債",
+      opts: [
+        "(A) 流動資產｜(B) 非流動負債",
+        "(A) 非流動資產｜(B) 流動負債",
+        "(A) 流動負債｜(B) 非流動資產",
+        "(A) 流動資產｜(B) 流動負債"
+      ],
+      exp: "【課本第 45–46 頁及題 6.16】**(A) 租客繳付的租金按金**屬資產，因租約在一年內完結退還，故列為**「流動資產」**；**(B) 業主收取的租金按金**將來須退還租客，屬負債，因租約在兩年後（一年後）才退還，故列為**「非流動負債」**！"
+    },
+    {
+      tag: "邊界案例 #03（課本第 46–47 頁進階學堂：客戶訂金 vs 供應商訂金）",
+      title: "在年結日有兩筆未完成交易的訂金：(A) 酒樓向預訂下月婚宴的客人收取的「客戶訂金」；(B) 貿易商向供應商預先繳付下月入貨的「供應商訂金」。",
+      ans: "(A) 流動負債｜(B) 流動資產",
+      opts: [
+        "(A) 流動負債｜(B) 流動資產",
+        "(A) 流動資產｜(B) 流動負債",
+        "(A) 非流動負債｜(B) 非流動資產",
+        "(A) 流動負債｜(B) 非流動負債"
+      ],
+      exp: "【課本第 46–47 頁進階學堂】**(A) 供應商（酒樓）從客戶收取的「客戶訂金」**，代表在一年內有責任提供服務或退回訂金，屬**「流動負債」**；**(B) 作為客戶向供應商繳付的「供應商訂金」**，將在一年內收到貨品，屬**「流動資產」**！"
+    },
+    {
+      tag: "邊界案例 #04（課本第 62 頁題 6.14 及第 66 頁題 6.23X）",
+      title: "企業在銀行存放了兩筆定期存款：(A) 兩年期銀行定期存款；(B) 將於 6 個月後到期的銀行定期存款。",
+      ans: "(A) 非流動資產｜(B) 流動資產",
+      opts: [
+        "(A) 非流動資產｜(B) 流動資產",
+        "(A) 流動資產｜(B) 非流動資產",
+        "(A) 流動資產｜(B) 流動資產",
+        "(A) 非流動資產｜(B) 非流動資產"
+      ],
+      exp: "【課本第 62 頁題 6.14 及第 66 頁題 6.23X】**(A) 兩年期銀行定期存款**在一年內不能提取變現，應列作**「非流動資產」**；而 **(B) 將於半年內（一年內）到期的定期存款**則會在短期內變現，應列作**「流動資產」**！"
+    },
+    {
+      tag: "邊界案例 #05（課本第 38 及 45 頁答題錦囊：銀行透支與貸款到期日）",
+      title: "企業在 2022 年 12 月 31 日（年結日）有：(A) 銀行透支及須於 2023 年 12 月 30 日償還的債項；(B) 須於 2024 年 1 月 2 日償還的銀行貸款。",
+      ans: "(A) 流動負債｜(B) 非流動負債",
+      opts: [
+        "(A) 流動負債｜(B) 非流動負債",
+        "(A) 非流動負債｜(B) 流動負債",
+        "(A) 流動資產｜(B) 非流動負債",
+        "(A) 流動負債｜(B) 流動負債"
+      ],
+      exp: "【課本第 38 頁 P6-2c、d 及第 45 頁】**(A) 銀行透支及一年內（2023 年 12 月 30 日）到期償還的債項**屬於**「流動負債」**；**(B) 超過一年後（2024 年 1 月 2 日）才償還的貸款**屬於**「非流動負債」**！"
+    }
+  ];
+
+  // 涵蓋不同分類組合，徹底打破重複答案規律
+  let ledgerClassItems = [
+    {
+      acctName: "「東主的資本（Capital）」帳戶 及 「銀行透支（Bank Overdraft）」帳戶",
+      pAns: "非人名帳戶",
+      rAns: "實帳戶（永久性帳戶）",
+      exp: "【課本第 47–48 頁及第 61 頁題 6.7、6.9】人名帳戶只包括債務人（應收帳款）及債權人（應付帳款）帳戶，因此**東主的資本**及**銀行透支**均屬**「非人名帳戶」**！同時資本與負債的期末餘額會移後至下一會計期，故屬**「實帳戶」**。"
+    },
+    {
+      acctName: "「購貨折扣（Discounts Received）」帳戶 及 「汽車維修費」帳戶",
+      pAns: "非人名帳戶",
+      rAns: "虛帳戶（臨時帳戶）",
+      exp: "【課本第 48 頁圖 6.6 及第 61 頁題 6.9】「購貨折扣（其他收益）」與「汽車維修費（費用）」屬於**「非人名帳戶」**；而所有**收益和費用帳戶**均須在會計期末結清轉入損益表，因此屬於**「虛帳戶（臨時帳戶）」**！"
+    },
+    {
+      acctName: "「應收貨款：何女士」帳戶 及 「其他應付款：胡先生」帳戶",
+      pAns: "人名帳戶",
+      rAns: "實帳戶（永久性帳戶）",
+      exp: "【課本第 47–48 頁圖 6.5 及 6.6】應收帳款（應收貨款及其他應收款）與應付帳款（應付貨款及其他應付款）是記錄與企業交易的個人或機構的帳戶，屬於**「人名帳戶」**；同時它們分別屬於資產和負債，期末餘額會移後至下一會計期，故屬**「實帳戶」**！"
+    },
+    {
+      acctName: "「員工薪金」帳戶 及 「銷貨運費」帳戶",
+      pAns: "非人名帳戶",
+      rAns: "虛帳戶（臨時帳戶）",
+      exp: "【課本第 48 頁及第 61 頁題 6.7】「員工薪金」及「銷貨運費」並非債務人或債權人帳戶，故屬**「非人名帳戶」**；兩者皆為營業費用，須在會計期末結清，故屬**「虛帳戶（臨時帳戶）」**！"
+    },
+    {
+      acctName: "「應付貨款：陳先生」帳戶 及 「其他應收款：韋先生」帳戶",
+      pAns: "人名帳戶",
+      rAns: "實帳戶（永久性帳戶）",
+      exp: "【課本第 47–48 頁】購貨債權人（應付貨款）及非銷貨債務人（其他應收款）均為與企業進行交易的個人或機構帳戶，屬於**「人名帳戶」**；而負債與資產帳戶餘額均會移後至下一會計期，故屬**「實帳戶」**！"
+    }
+  ];
+  let lcPick = { p: null, r: null };
+
+  // ==================== 模組 3：「流動資產淨值（營運資金）」與資本計算機（純數值無提示選項） ====================
+  let wcCalcCases = [
+    {
+      title: "計算實戰 1：計算「流動資產淨值（營運資金）」與評估變現能力（課本第 41 頁測試站 P6-3）",
+      cardTitle: "📊 某企業在年結日的資產和負債資料",
+      cardHtml: `
+        • 廠房和機器：<strong>$2,500,000</strong> ｜ 辦公室設備：<strong>$620,000</strong><br>
+        • 存貨：<strong>$75,000</strong> ｜ 應收貨款：<strong>$48,000</strong> ｜ 銀行存款：<strong>$29,000</strong><br>
+        • 銀行貸款（於五年後償還）：<strong>$120,000</strong> ｜ 應付貨款：<strong>$88,000</strong>
+      `,
+      q1: "1️⃣ 該企業在年結日的「流動資產總額」是多少？",
+      opts1: [
+        { text: "$123,000", ok: false },
+        { text: "$152,000", ok: true },
+        { text: "$772,000", ok: false },
+        { text: "$3,272,000", ok: false }
+      ],
+      q2: "2️⃣ 該企業在年結日的「流動負債總額」是多少？",
+      opts2: [
+        { text: "$88,000", ok: true },
+        { text: "$120,000", ok: false },
+        { text: "$208,000", ok: false },
+        { text: "$296,000", ok: false }
+      ],
+      q3: "3️⃣ 該企業的「流動資產淨值」或「淨流動負債」是多少？",
+      opts3: [
+        { text: "流動資產淨值 $64,000", ok: true },
+        { text: "淨流動負債 $(56,000)", ok: false },
+        { text: "流動資產淨值 $32,000", ok: false },
+        { text: "淨流動負債 $(64,000)", ok: false }
+      ],
+      exp: "【課本第 41 頁測試站 P6-3 標準拆解】<br>1. **流動資產總額** ＝ 存貨 $75,000 ＋ 應收貨款 $48,000 ＋ 銀行存款 $29,000 ＝ **$152,000**（廠房機器及辦公室設備屬非流動資產）。<br>2. **流動負債總額** ＝ 應付貨款 **$88,000**（五年後償還的銀行貸款 $120,000 屬非流動負債）。<br>3. **流動資產淨值（營運資金）** ＝ 流動資產 $152,000 － 流動負債 $88,000 ＝ **$64,000**（正數代表流動資產大於流動負債，具足夠變現能力償還短期債務）！"
+    },
+    {
+      title: "計算實戰 2：出現「淨流動負債」與求取資本額（課本第 42–43 頁示例 6.1）",
+      cardTitle: "📊 九龍製衣企業於 2022 年 3 月 31 日的資料",
+      cardHtml: `
+        • 家具及裝置：<strong>$90,600</strong> ｜ 辦公室設備：<strong>$220,000</strong><br>
+        • 存貨：<strong>$16,850</strong> ｜ 應收貨款：<strong>$53,920</strong> ｜ 現金：<strong>$9,390</strong><br>
+        • 長期銀行貸款：<strong>$200,000</strong> ｜ 應付貨款：<strong>$59,310</strong> ｜ 銀行透支：<strong>$38,260</strong>
+      `,
+      q1: "1️⃣ 九龍製衣企業的「流動資產淨值」或「淨流動負債」是多少？",
+      opts1: [
+        { text: "流動資產淨值 $17,410", ok: false },
+        { text: "淨流動負債 $(17,410)", ok: true },
+        { text: "流動資產淨值 $59,110", ok: false },
+        { text: "淨流動負債 $(59,110)", ok: false }
+      ],
+      q2: "2️⃣ 該企業在 2022 年 3 月 31 日的「資產總額」是多少？",
+      opts2: [
+        { text: "$310,600", ok: false },
+        { text: "$390,760", ok: true },
+        { text: "$429,020", ok: false },
+        { text: "$449,870", ok: false }
+      ],
+      q3: "3️⃣ 該企業在 2022 年 3 月 31 日的「期末資本額」是多少？",
+      opts3: [
+        { text: "$93,190", ok: true },
+        { text: "$110,600", ok: false },
+        { text: "$131,450", ok: false },
+        { text: "$293,190", ok: false }
+      ],
+      exp: "【課本第 42–43 頁示例 6.1 核心拆解】<br>1. 流動資產 ＝ 存貨 $16,850 ＋ 應收貨款 $53,920 ＋ 現金 $9,390 ＝ $80,160；流動負債 ＝ 應付貨款 $59,310 ＋ 銀行透支 $38,260 ＝ $97,570。由於流動資產少於流動負債，出現**「淨流動負債 $(17,410)」**。<br>2. **資產總額** ＝ 非流動資產 ($90,600 ＋ $220,000) ＋ 流動資產 $80,160 ＝ **$390,760**（注意：銀行透支屬流動負債，切勿計入資產）。<br>3. 負債總額 ＝ 長期貸款 $200,000 ＋ 流動負債 $97,570 ＝ $297,570；**期末資本額** ＝ 資產總額 $390,760 － 負債總額 $297,570 ＝ **$93,190**！"
+    },
+    {
+      title: "計算實戰 3：公開試題型——篩選相關項目計算財務狀況表總額（課本第 71 頁題 6.30X 區氏商號）",
+      cardTitle: "📊 區氏商號於 2018 年 12 月 31 日的帳戶結餘摘錄",
+      cardHtml: `
+        • 銷貨：<strong>$2,300,000</strong> ｜ 本年度毛利：<strong>$1,495,000</strong> ｜ 本年度淨利：<strong>$345,000</strong><br>
+        • 存貨（2018 年 12 月 31 日）：<strong>$100,000</strong> ｜ 機器：<strong>$2,182,500</strong><br>
+        • 銀行存款：<strong>$140,000</strong> ｜ 應付貨款：<strong>$250,000</strong> ｜ 資本（2018 年 1 月 1 日）：<strong>$1,827,500</strong>
+      `,
+      q1: "1️⃣ 區氏商號於 2018 年 12 月 31 日的「流動資產淨值（營運資金）」是多少？",
+      opts1: [
+        { text: "流動資產淨值 $10,000", ok: false },
+        { text: "淨流動負債 $(10,000)", ok: true },
+        { text: "流動資產淨值 $240,000", ok: false },
+        { text: "淨流動負債 $(110,000)", ok: false }
+      ],
+      q2: "2️⃣ 區氏商號於 2018 年 12 月 31 日的「資產總額」是多少？",
+      opts2: [
+        { text: "$2,322,500", ok: false },
+        { text: "$2,422,500", ok: true },
+        { text: "$3,917,500", ok: false },
+        { text: "$4,722,500", ok: false }
+      ],
+      q3: "3️⃣ 區氏商號於 2018 年 12 月 31 日的「期末資本額」是多少？",
+      opts3: [
+        { text: "$1,827,500", ok: false },
+        { text: "$2,172,500", ok: true },
+        { text: "$2,422,500", ok: false },
+        { text: "$3,667,500", ok: false }
+      ],
+      exp: "【課本第 71 頁公開試題 6.30X 滿分拆解】<br>1. 流動資產 ＝ 存貨 $100,000 ＋ 銀行存款 $140,000 ＝ $240,000；流動負債 ＝ 應付貨款 $250,000。因此出現**淨流動負債 $(10,000)**。<br>2. **資產總額** ＝ 機器 $2,182,500 ＋ 流動資產 $240,000 ＝ **$2,422,500**（銷貨與毛利屬損益表項目，不入財務狀況表）。<br>3. **期末資本額** ＝ 期初資本 $1,827,500 ＋ 本年度淨利 $345,000 ＝ **$2,172,500**（加上應付貨款 $250,000 後，資本及負債總額同為 $2,422,500）！"
+    }
+  ];
+  let cStepPicks = [null, null, null];
+
+  // ==================== 模組 4：磁力積木砌答案（三塊積木長度與專業語氣完全對稱） ====================
+  const legoChallenges = [
+    {
+      title: "砌答案挑戰 1：比較「損益表」與「財務狀況表」的用途及量度概念（課本第 35–36、49 及 57 頁）",
+      q: "題目：試從（i）匯報目的與用途 及（ii）所採用的量度概念 兩方面，分辨「損益表」與「財務狀況表」。（4 分）",
+      step0: [
+        { text: "📊 損益表匯報企業在某會計期間的財務表現，讓使用者了解營運業績、成本控制及盈利能力；財務狀況表則匯報企業在某日的財務狀況，讓使用者得知變現能力及償債能力", ok: true },
+        { text: "📊 損益表匯報企業在某特定日期的資產與負債結構，讓使用者了解變現能力及短期償債能力；財務狀況表則匯報企業在某會計期間的成本控制及整體盈利能力", ok: false, err: "將「損益表（財務表現／盈利能力）」與「財務狀況表（財務狀況／變現及償債能力）」的用途完全對調了！" },
+        { text: "📊 損益表匯報企業在某會計期間的現金流入與現金流出淨額，以評估日常現金周轉能力；財務狀況表則匯報企業在某會計期間的所有虛帳戶與實帳戶交易明細", ok: false, err: "損益表是按應計基礎匯報收益與費用而非純現金流；且財務狀況表只展示實帳戶餘額，不展示虛帳戶！" }
+      ],
+      step1: [
+        { text: "🌊 在量度概念方面，損益表採用「流量概念」，量度並匯報企業在某段時間內（如一年或半年）所賺取的收益和招致的費用流量", ok: true },
+        { text: "🌊 在量度概念方面，損益表採用「存量概念」，量度並匯報企業在會計期末當日所累積的收益和費用結餘", ok: false, err: "概念混淆！損益表採用的是「流量概念（某段時間內的流量）」，而非存量概念！" },
+        { text: "🌊 在量度概念方面，損益表採用「歷史成本概念」，量度並匯報企業在會計期末當日所持有的非流動資產與流動資產市值", ok: false, err: "資產計價屬於財務狀況表範疇，損益表是採用「流量概念」量度期內收益與費用！" }
+      ],
+      step2: [
+        { text: "🏞️ 相反，財務狀況表採用「存量概念」，量度並匯報企業在某特定日期（會計期末當日）的資產、負債和資本餘額。", ok: true },
+        { text: "🏞️ 相反，財務狀況表採用「流量概念」，量度並匯報企業在整個會計年度內所有資產、負債和資本的變動總流量。", ok: false, err: "財務狀況表採用的是「存量概念（某特定日期的餘額）」，而非流量概念！" },
+        { text: "🏞️ 相反，財務狀況表採用「變現淨值概念」，量度並匯報企業在某特定日期所有資產按現行市場價格計算的清算價值。", ok: false, err: "在繼續經營下，財務狀況表的資產是按歷史成本計價，並採用「存量概念」展示當日餘額！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 2：解釋「銀行（貸款人）」如何運用企業的財務報表作貸款決策（課本第 51、67 及 71 頁題 6.31X）",
+      q: "題目：陳氏商號為籌集資金擴充業務，向銀行申請商業貸款。銀行要求商號提交過去三年的財務報表。試解釋銀行會如何使用這兩份財務報表以決定是否批出貸款。（4 分）",
+      step0: [
+        { text: "🏦 銀行作為外部貸款人，審閱財務報表的核心目的是評估商號的盈利能力與財務狀況是否健全，以判斷其支付貸款利息及依時償還本金的能力", ok: true },
+        { text: "🏦 銀行作為內部管理層，審閱財務報表的核心目的是決定如何更有效地分配商號的內部資源，並精確計算商號在本年度應向政府繳納的利得稅款", ok: false, err: "銀行屬於「外部使用者」；分配內部資源是管理層的目的，計算利得稅則是稅務局的目的！" },
+        { text: "🏦 銀行作為外部投資者，審閱財務報表的核心目的是評核商號所售賣產品的品質水平與員工晉升前景，以決定是否向商號提供原材料賒銷信貸期", ok: false, err: "財務報表不提供產品質素或晉升前景等質化信息；且提供原材料賒銷期是「供應商」的決策！" }
+      ],
+      step1: [
+        { text: "📈 銀行會利用「損益表」了解商號過去三年的營運業績與盈利趨勢，評估商號是否有穩定及足夠的利潤去支付定期的貸款利息", ok: true },
+        { text: "📈 銀行會利用「損益表」查核商號在年結日當日所持有的非流動資產歷史成本及手頭現金餘額，以評估商號是否有足夠抵押品", ok: false, err: "非流動資產與手頭現金餘額是展示在「財務狀況表」內，而非損益表！" },
+        { text: "📈 銀行會利用「損益表」查核商號每筆應付貨款的詳細欠帳期及東主個人的私人投資回報，以評估商號的短期變現能力", ok: false, err: "財務報表不會披露每筆欠款的詳細欠帳期（報表限制），亦不包含東主私人投資回報！" }
+      ],
+      step2: [
+        { text: "🏛️ 同時，銀行會利用「財務狀況表」分析商號持有的資產規模、流動資產淨值（變現能力）及現有負債水平（償債能力），從而決定是否批出貸款。", ok: true },
+        { text: "🏛️ 同時，銀行會利用「財務狀況表」分析商號在期內各項營業費用的控制成效及毛利率高低，從而決定是否與商號建立長期採購關係。", ok: false, err: "營業費用控制與毛利屬於「損益表」資訊；而建立長期採購關係是「客戶」的決策目的！" },
+        { text: "🏛️ 同時，銀行會利用「財務狀況表」分析商號所有虛帳戶在期末結清後的現行市場價值，以確保商號的僱員士氣及客戶關係維持良好。", ok: false, err: "財務狀況表只展示實帳戶的歷史成本，且無法提供僱員士氣或客戶關係等質化信息！" }
+      ]
+    },
+    {
+      title: "砌答案挑戰 3：解釋「財務報表的限制」（課本第 53–56、60、63 頁題 6.19 及 6.23b）",
+      q: "題目：「會計信息並不如我們想像般那麼標準化、客觀和全面，且未必完全反映資產的真正現值與企業未來表現。」試根據財務報表的限制，從三方面解釋上述說法。（4 分）",
+      step0: [
+        { text: "⏳ 首先，財務報表只能匯報企業過往的財務業績（過去表現未必延續至未來）；而且資產通常按歷史成本而非現行市值計價，可能無法反映資產的真正現值", ok: true },
+        { text: "⏳ 首先，財務報表主要匯報企業對未來五年的財務預測數據（缺乏過往實際業績支持）；而且資產一律按清盤價值計價，導致資產帳面值往往被嚴重低估", ok: false, err: "財務報表是匯報「過去的業績」而非未來預測；且繼續經營下資產是按「歷史成本」而非清盤價值計價！" },
+        { text: "⏳ 首先，財務報表只能在會計年度開始前預先編製，無法反映期內的實際交易；而且負債項目全部按現行市場利率折現計價，令計算過程過於繁複", ok: false, err: "財務報表是在會計期完結後才編製以匯報過往業績，並非在年度開始前預先編製！" }
+      ],
+      step1: [
+        { text: "⚖️ 其次，不同企業處理同一項目時可選擇不同的會計政策和方法（如不同存貨計價法），影響跨企業比較；同時報表包含會計師與管理層的估計與個人判斷，未必完全客觀", ok: true },
+        { text: "⚖️ 其次，會計準則強制所有企業對同一項目必須採用完全相同的唯一會計方法，缺乏彈性；同時報表數字全由電腦按收付現金自動生成，不牽涉任何專業判斷", ok: false, err: "企業可就同一項目選擇不同會計政策（如加權平均法或先進先出法），且報表包含估計與個人判斷！" },
+        { text: "⚖️ 其次，同一企業必須在每年轉換不同的會計政策以配合市場變化，導致前後年度無法比較；同時報表由外部債權人負責編製，容易偏向保守估計", ok: false, err: "根據一貫原則，同一企業應持續採用同一會計政策；且財務報表是由企業內部負責編製！" }
+      ],
+      step2: [
+        { text: "🧩 再者，財務報表只能提供以貨幣為計算單位的量化信息，欠缺質化信息（如客戶關係、僱員關係、機器效能），且只總結小計與總額而不披露所有交易詳情。", ok: true },
+        { text: "🧩 再者，財務報表主要提供非貨幣的質化描述（如管理層能力及員工晉升前景），欠缺可量化的財務數據，且列出了每筆欠款的詳細欠帳期而令重點模糊。", ok: false, err: "顛倒了！財務報表只提供「量化信息」而欠缺「質化信息」，且不會列出每筆欠款的詳細欠帳期！" },
+        { text: "🧩 再者，財務報表只記錄已收付現金的交易而忽略所有賒帳買賣，無法反映完整的資源流量，且只供稅務局內部審閱而不會向東主或債權人披露。", ok: false, err: "財務報表是按應計基礎編製（已包含賒帳買賣），並會向東主及債權人等使用者提供！" }
+      ]
+    }
+  ];
+
+  // ==================== 模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台（語氣對稱，1/2/3 正確數目混合） ====================
+  const redPenCases = [
+    {
+      title: "紅筆捉錯挑戰 1：找出考生對「內部使用者 vs 外部使用者及其目的」的錯句",
+      q: "試題：試區分企業財務報表的「內部使用者」與「外部使用者」，並說明他們閱讀財務報表的目的。",
+      chips: [
+        { text: "財務報表的「內部使用者」包括企業東主（現有投資者）、管理層和僱員；營運經理研讀報表是為了決定如何有效地分配資源及評估營運表現。", isFlaw: false },
+        { text: "「潛在投資者」與「供應商」均屬於企業的內部使用者；而客戶閱讀供應商財務報表的主要目的，是直接評核該供應商所提供的產品品質。", isFlaw: true },
+        { text: "僱員閱讀僱主的財務報表，是為了了解僱主的盈利狀況及資金是否足以償債，從而評估現時薪酬水平及工作保障。", isFlaw: false }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 51–53 頁測試站 P6-5D 及第 62 頁題 6.10）：<br>1. **潛在投資者、貸款人、供應商、客戶及政府機構**均屬於企業以外的**「外部使用者」**（現有投資者／東主、管理層和僱員才是內部使用者）！<br>2. 客戶閱讀供應商財務報表的目的是評估供應商能否**持續穩定供應貨品或服務**；財務報表無法反映「產品質素（質化信息）」（見測試站 P6-5D）！"
+    },
+    {
+      title: "紅筆捉錯挑戰 2：找出考生對「財務報表的限制（量化 vs 質化、歷史成本）」的錯句",
+      q: "試題：試說明企業財務報表所提供的信息有甚麼限制。",
+      chips: [
+        { text: "財務報表只能匯報企業過往的財務業績，由於過去發生的事情未必延續下去，決策者不應過分依賴過往的財務信息來預測未來趨勢。", isFlaw: false },
+        { text: "在財務報表中，企業的資產可按現行市值或歷史成本計價；而且財務報表能展示僱員關係、機器效能及員工晉升前景等質化信息。", isFlaw: true },
+        { text: "由於不同企業在處理同一項目時可能採用不同的會計政策和方法（如不同的存貨計價法），比較不同企業業績時須先了解其採用的會計政策。", isFlaw: false }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 54–56 頁 P6-6、P6-7 及第 61–62 頁題 6.3D、6.12B）：<br>1. 在財務報表中，資產通常按**歷史成本（購買成本）**計價，**不會展示其現行市值**（見題 6.3D）！<br>2. 財務報表只能提供以貨幣為單位的**量化信息**（如員工薪酬、機器成本），**無法展示質化信息**（如客戶關係、僱員關係、機器效能、員工晉升前景，見 P6-6 及題 6.12B）！"
+    },
+    {
+      title: "紅筆捉錯挑戰 3：找出考生對「財務狀況表結構與營運資金」的錯句",
+      q: "試題：試說明獨資企業財務狀況表的結構特點以及營運資金（流動資產淨值）的計算方法。",
+      chips: [
+        { text: "財務狀況表的標題應使用「於（年結日）」，並須為各個類別列明分類名稱（非流動資產、流動資產、資本、非流動負債、流動負債）及展示小計總額。", isFlaw: false },
+        { text: "如果企業同時有非流動負債和流動負債，須在報表中展示「負債總額」，並在最底展示「資本及負債總額」。", isFlaw: false },
+        { text: "財務狀況表會同時顯示該商號的「虛帳戶」和「實帳戶」期末結餘，而且營運資金（流動資產淨值）是非流動資產與非流動負債的差額。", isFlaw: true }
+      ],
+      exp: "<strong>• 失分原因</strong>（見課本第 41、48 及 71 頁公開試題 6.28C、D）：<br>1. 虛帳戶（收益及費用）在會計期末已結清，因此財務狀況表**只會顯示「實帳戶（資產、負債及資本）」的期末結餘**！<br>2. **營運資金（即流動資產淨值）**是**「流動資產」與「流動負債」的差額**（而非非流動資產與非流動負債的差額）！"
+    }
+  ];
+
+  // 涵蓋「只有 1 項正確」、「2 項正確」及「3 項全對」，消除「永遠選 2 項」的規律
+  let elimMCs = [
+    {
+      title: "消去法實戰 1：辦公室設備商號的財務狀況表特點（課本第 71 頁公開試題 6.28X 題型）",
+      stem: "對一家專門銷售辦公室設備的獨資商號來說，下列哪項有關它的「財務狀況表」的陳述是正確的？",
+      rawStmts: [
+        { text: "商號持有作轉售用途（待售）的辦公室設備，在財務狀況表中應分類為「流動資產」。", isTrue: true, exp: "正確（見課本題 6.28A）！待售的辦公室設備屬於該貿易商的「存貨」，應列為流動資產。" },
+        { text: "這份財務狀況表會同時顯示該商號的「虛帳戶」和「實帳戶」結餘，並列出本年度每宗交易的詳細資料。", isTrue: false, exp: "錯誤（見課本題 6.28B、C）！財務狀況表只顯示實帳戶結餘，且只列出總額和小計，不會披露所有交易詳情。" },
+        { text: "在財務狀況表中，營運資金（流動資產淨值）是指「非流動資產」與「非流動負債」的差額。", isTrue: false, exp: "錯誤（見課本題 6.28D）！營運資金是「流動資產」減去「流動負債」的差額。" }
+      ]
+    },
+    {
+      title: "消去法實戰 2：人名帳戶 vs 非人名帳戶、虛帳戶 vs 實帳戶（課本第 61 頁題 6.7 及 6.9 題型）",
+      stem: "下列哪些有關「分類帳帳戶分類」的陳述是正確的？",
+      rawStmts: [
+        { text: "「應收貨款」及「其他應付款」屬於人名帳戶；而「東主的資本」及「員工薪金」則屬於非人名帳戶。", isTrue: true, exp: "正確（見課本第 48 頁及第 61 頁題 6.7D）！只有應收帳款（債務人）及應付帳款（債權人）屬於人名帳戶，東主的資本及員工薪金均屬非人名帳戶。" },
+        { text: "「購貨折扣」及「汽車維修費」屬於須在會計期末結清的虛帳戶（臨時帳戶）。", isTrue: true, exp: "正確（見課本第 48 頁及第 61 頁題 6.9C）！所有收益和費用帳戶均屬於虛帳戶。" },
+        { text: "「銀行透支」及「存貨」屬於須在會計期末結清的虛帳戶。", isTrue: false, exp: "錯誤（見題 6.9）！銀行透支（流動負債）及存貨（流動資產）的期末餘額會移後至下一會計期，屬於【實帳戶（永久性帳戶）】！" }
+      ]
+    },
+    {
+      title: "消去法實戰 3：財務報表的使用者、限制與交易影響（課本第 52–56 頁及第 62、71 頁綜合）",
+      stem: "下列哪些有關獨資企業「財務報表」的陳述是正確的？",
+      rawStmts: [
+        { text: "企業的現有投資者（東主）、管理層和僱員均屬於財務報表的「內部使用者」；而潛在投資者、貸款人及供應商則屬於「外部使用者」。", isTrue: true, exp: "正確（見課本第 52 頁及第 62 頁題 6.10B）！" },
+        { text: "財務報表只能提供以貨幣計算的量化信息（如員工薪酬、機器成本），無法展示質化信息（如員工晉升前景、僱員關係、機器效能）。", isTrue: true, exp: "正確（見課本第 55–56 頁 P6-6 及第 62 頁題 6.12B）！" },
+        { text: "在財務狀況表中，非流動資產應按「耐用性」作降序排列，而流動資產則應按「變現能力」作升序排列（存貨 ➔ 應收貨款 ➔ 銀行存款 ➔ 現金）。", isTrue: true, exp: "正確（見課本第 39–40 頁及第 61–62 頁題 6.4D、6.11C）！" }
+      ]
+    },
+    {
+      title: "消去法實戰 4：定期存款、租金按金與賒銷對財務狀況表的影響（課本題 6.14、6.16 及 6.29X）",
+      stem: "下列哪些有關「財務狀況表項目分類及交易影響」的陳述是正確的？",
+      rawStmts: [
+        { text: "在財務狀況表中，租客繳付的租金按金（租約將於一年內完結）應列作「流動資產」；而兩年期銀行定期存款則應列作「非流動資產」。", isTrue: true, exp: "正確（見課本第 62 頁題 6.14B 及 6.16A）！" },
+        { text: "當商號按高於成本的售價「賒銷貨品」予客戶時，商號的總流動資產會減少，而總流動負債則會增加。", isTrue: false, exp: "錯誤（見課本第 71 頁公開試題 6.29C）！賒銷貨品令應收貨款增加、存貨減少（若售價高於成本則總流動資產增加），且完全不涉及負債（總流動負債不變）！" },
+        { text: "在財務狀況表中，所有資產均可由企業自由選擇按歷史成本或現行市場價值計價。", isTrue: false, exp: "錯誤（見課本第 54 頁及第 61 頁題 6.3D）！在繼續經營下，資產按歷史成本計價，不會展示現行市值。" }
+      ]
+    }
+  ];
+
+  const allComboDefs = [
+    { order: 1, reqTrue: [1], reqFalse: [2, 3], text: "只有 (1)" },
+    { order: 2, reqTrue: [2], reqFalse: [1, 3], text: "只有 (2)" },
+    { order: 3, reqTrue: [3], reqFalse: [1, 2], text: "只有 (3)" },
+    { order: 4, reqTrue: [1, 2], reqFalse: [3], text: "只有 (1) 及 (2)" },
+    { order: 5, reqTrue: [1, 3], reqFalse: [2], text: "只有 (1) 及 (3)" },
+    { order: 6, reqTrue: [2, 3], reqFalse: [1], text: "只有 (2) 及 (3)" },
+    { order: 7, reqTrue: [1, 2, 3], reqFalse: [], text: "(1)、(2) 及 (3)" }
+  ];
+
+  function prepareDynamicMC(mcItem) {
+    const shuffled = shuffle(mcItem.rawStmts);
+    mcItem.stmts = shuffled.map((s, idx) => ({
+      id: idx + 1,
+      text: `(${idx + 1}) ${s.text}`,
+      isTrue: s.isTrue,
+      exp: s.exp
+    }));
+    const trueIds = mcItem.stmts.filter(s => s.isTrue).map(s => s.id);
+    const correctCombo = allComboDefs.find(c =>
+      c.reqTrue.length === trueIds.length && c.reqTrue.every(id => trueIds.includes(id))
+    );
+    const wrongPool = shuffle(allComboDefs.filter(c => c !== correctCombo)).slice(0, 3);
+    const chosenCombos = [correctCombo, ...wrongPool].sort((a, b) => a.order - b.order);
+    const letters = ["A", "B", "C", "D"];
+    mcItem.options = chosenCombos.map((c, idx) => ({
+      label: `${letters[idx]}. ${c.text}`,
+      reqTrue: c.reqTrue,
+      reqFalse: c.reqFalse
+    }));
+    mcItem.ansIdx = chosenCombos.indexOf(correctCombo);
+  }
+
+  function randomizeAllData() {
+    sfpDoctorCases.forEach(dc => {
+      dc.flaws.forEach(f => {
+        f.curVal = null;
+        f.opts = shuffle(f.opts);
+      });
+    });
+    boundaryItems = shuffle(boundaryItems);
+    boundaryItems.forEach(b => { b.opts = shuffle(b.opts); });
+    ledgerClassItems = shuffle(ledgerClassItems);
+    wcCalcCases.forEach(c => {
+      c.opts1 = shuffle(c.opts1);
+      c.opts2 = shuffle(c.opts2);
+      c.opts3 = shuffle(c.opts3);
+    });
+    legoChallenges.forEach(ch => {
+      ch.step0 = shuffle(ch.step0);
+      ch.step1 = shuffle(ch.step1);
+      ch.step2 = shuffle(ch.step2);
+    });
+    redPenCases.forEach(c => { c.chips = shuffle(c.chips); });
+    elimMCs = shuffle(elimMCs);
+    elimMCs.forEach(m => prepareDynamicMC(m));
+  }
+
+  let curMode = 0;
+  let subIdx = [0, 0, 0, 0, 0];
+  let mod5Sub = 0;
+  let doneMap = {};
+  let score = 0;
+  let combo = 0;
+  let isZoom = false;
+  let legoPicked = [null, null, null];
+  let elimState = { 1: null, 2: null, 3: null };
+
+  function reshuffleAll() {
+    randomizeAllData();
+    lcPick = { p: null, r: null };
+    cStepPicks = [null, null, null];
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function toggleZoom() {
+    isZoom = !isZoom;
+    document.documentElement.style.setProperty('--scale', isZoom ? '1.18' : '1');
+    document.getElementById("zoomBtn").innerText = isZoom ? "🔍 投影大字體：開" : "🔍 投影大字體：關";
+  }
+
+  function addScore(pts, key) {
+    combo++;
+    if (!doneMap[key]) { doneMap[key] = true; score += pts; }
+    updateTopBar();
+  }
+
+  function breakCombo() {
+    combo = 0;
+    updateTopBar();
+    const st = document.getElementById("mainStage");
+    st.classList.remove("shake");
+    void st.offsetWidth;
+    st.classList.add("shake");
+  }
+
+  function updateTopBar() {
+    document.getElementById("comboBadge").innerText = `🔥 連擊：${combo}`;
+    document.getElementById("scoreBadge").innerText = `⭐ 專業積分：${score}`;
+  }
+
+  function switchMode(m) {
+    curMode = m;
+    for (let i = 0; i < 5; i++) {
+      document.getElementById(`mTab${i}`).className = "mode-tab" + (i === m ? " active" : "");
+    }
+    lcPick = { p: null, r: null };
+    cStepPicks = [null, null, null];
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function goSub(idx) {
+    subIdx[curMode] = idx;
+    lcPick = { p: null, r: null };
+    cStepPicks = [null, null, null];
+    legoPicked = [null, null, null];
+    elimState = { 1: null, 2: null, 3: null };
+    renderStage();
+  }
+
+  function nextOrSwitch(maxLen, nextModeIdx) {
+    if (subIdx[curMode] < maxLen - 1) goSub(subIdx[curMode] + 1);
+    else switchMode(nextModeIdx);
+  }
+
+  function moveSub(delta, maxLen) {
+    let next = subIdx[curMode] + delta;
+    if (next >= 0 && next < maxLen) goSub(next);
+  }
+
+  function buildDots(total, customKeyPrefix) {
+    const prefix = customKeyPrefix || `${curMode}`;
+    let html = "";
+    for (let i = 0; i < total; i++) {
+      const k = `${prefix}_${i}`;
+      const cls = (i === subIdx[curMode]) ? "dot-btn active" : (doneMap[k] ? "dot-btn done" : "dot-btn");
+      html += `<button class="${cls}" onclick="goSub(${i})">${i + 1}</button>`;
+    }
+    return html;
+  }
+
+  function renderStage() {
+    const stage = document.getElementById("mainStage");
+    stage.classList.remove("pop");
+    void stage.offsetWidth;
+    stage.classList.add("pop");
+    if (curMode === 0) renderSfpDoctorMode(stage);
+    else if (curMode === 1) renderMod2Mode(stage);
+    else if (curMode === 2) renderWcCalcMode(stage);
+    else if (curMode === 3) renderLegoMode(stage);
+    else if (curMode === 4) renderArenaMode(stage);
+  }
+
+  // ==================== 渲染模組 1：財務狀況表「診症執錯與排序」實驗室 ====================
+  function renderSfpDoctorMode(stage) {
+    const idx = subIdx[0];
+    const dc = sfpDoctorCases[idx];
+
+    let allFixed = true;
+    const cardsHtml = dc.flaws.map((f, fIdx) => {
+      const isRight = (f.curVal === "ok");
+      const isWrongPicked = (f.curVal !== null && f.curVal !== "ok");
+      if (!isRight) allFixed = false;
+
+      const btns = f.opts.map(o => {
+        let btnCls = "z-btn";
+        if (f.curVal === o.k) {
+          btnCls += o.ok ? " active-ok" : " active-err";
+        }
+        return `<button class="${btnCls}" onclick="setSfpFlaw(${fIdx}, '${o.k}', ${o.ok})">👉 ${o.t}</button>`;
+      }).join("");
+
+      return `
+        <div class="flaw-card ${isRight ? 'fixed' : (isWrongPicked ? 'wrong-picked' : '')}">
+          <div class="flaw-card-head">
+            <span>${isRight ? '✅' : (isWrongPicked ? '❌' : '🔍')} ${f.label}</span>
+            <span style="font-size:calc(12px * var(--scale)); color:${isRight ? '#059669' : (isWrongPicked ? '#e11d48' : '#64748b')};">
+              ${isRight ? '已選正確方案' : (isWrongPicked ? '選項有誤，請重選' : '請從下方 3 項中揀選')}
+            </span>
+          </div>
+          <div class="zone-btns">${btns}</div>
+        </div>
+      `;
+    }).join("");
+
+    if (allFixed) addScore(25, `0_${idx}`);
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🛠️ ${dc.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoFixSfpDoctor()">💡 示範正確報表</button>
+            ${buildDots(sfpDoctorCases.length)}
+          </div>
+        </div>
+
+        <div class="doctor-grid">
+          <div class="flaw-list-box">
+            <div style="font-weight:900; color:#065f46; margin-bottom:8px; font-size:calc(14px * var(--scale));">
+              👇 每個診症項目的 3 個選項已隨機洗牌，請選出唯一正確的會計處理方式：
+            </div>
+            ${cardsHtml}
+          </div>
+
+          <div class="sfp-preview-sheet">
+            ${dc.renderPreview(dc.flaws)}
+          </div>
+        </div>
+
+        <div class="feedback-pop ${allFixed ? 'fb-ok' : ''}" style="display:${allFixed ? 'block' : 'none'};">
+          🏆 <strong>財務狀況表修正完成並完美平衡！（+25 分）</strong><br>${dc.exp}
+        </div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${sfpDoctorCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一個案</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${sfpDoctorCases.length}, 1)">
+          ${idx === sfpDoctorCases.length - 1 ? '進入「資產與帳戶快篩」 →' : '下一個案 →'}
+        </button>
+      </div>
+    `;
+  }
+
+  function setSfpFlaw(fIdx, val, isOk) {
+    sfpDoctorCases[subIdx[0]].flaws[fIdx].curVal = val;
+    if (!isOk) breakCombo();
+    renderSfpDoctorMode(document.getElementById("mainStage"));
+  }
+
+  function autoFixSfpDoctor() {
+    const dc = sfpDoctorCases[subIdx[0]];
+    dc.flaws.forEach(f => { f.curVal = "ok"; });
+    renderSfpDoctorMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 2：資產負債邊界 ＆ 帳戶雙維度分類快篩站 ====================
+  function switchMod2Sub(s) {
+    mod2Sub = s;
+    subIdx[1] = 0;
+    lcPick = { p: null, r: null };
+    renderMod2Mode(document.getElementById("mainStage"));
+  }
+
+  function renderMod2Mode(stage) {
+    const idx = subIdx[1];
+    const topSwitch = `
+      <div class="sub-mode-bar">
+        <button class="sub-mode-btn ${mod2Sub === 0 ? 'active' : ''}" onclick="switchMod2Sub(0)">🏢 特訓 A：資產與負債進階邊界（按金／訂金／待售桌椅／定期存款）</button>
+        <button class="sub-mode-btn ${mod2Sub === 1 ? 'active' : ''}" onclick="switchMod2Sub(1)">🗂️ 特訓 B：分類帳帳戶雙維度分類（人名 vs 非人名 ＆ 虛帳戶 vs 實帳戶）</button>
+      </div>
+    `;
+
+    if (mod2Sub === 0) {
+      const item = boundaryItems[idx];
+      const btns = item.opts.map((o, oIdx) =>
+        `<button class="opt-tile" onclick="checkBoundaryAns(${oIdx})">📌 ${o}</button>`
+      ).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🏢 資產與負債進階邊界快篩（課本第 37–38 及 45–47 頁）</span>
+            <div class="dots-nav">${buildDots(boundaryItems.length, "1_bd")}</div>
+          </div>
+          <div class="item-spotlight">
+            <div>
+              <span class="sp-tag">${item.tag}</span>
+              <div class="sp-title">${item.title}</div>
+            </div>
+          </div>
+          <div class="step-label">請選擇此項目在年結日財務狀況表中的正確分類（選項已隨機排列）：</div>
+          <div class="grid-2">${btns}</div>
+          <div class="feedback-pop" id="bdFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${boundaryItems.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一案例</button>
+          <button class="nav-btn primary-action" onclick="${idx === boundaryItems.length - 1 ? 'switchMod2Sub(1)' : `moveSub(1, ${boundaryItems.length})`}">
+            ${idx === boundaryItems.length - 1 ? '進入「特訓 B：人名與虛實帳戶分類」 →' : '下一案例 →'}
+          </button>
+        </div>
+      `;
+    } else {
+      const item = ledgerClassItems[idx];
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🗂️ 分類帳帳戶的兩種分類法（課本第 47–48 頁第 6.5 節）</span>
+            <div class="dots-nav">${buildDots(ledgerClassItems.length, "1_lc")}</div>
+          </div>
+          <div class="item-spotlight">
+            <div>
+              <span class="sp-tag">🔍 待分類的分類帳帳戶：</span>
+              <div class="sp-title">${item.acctName}</div>
+            </div>
+          </div>
+
+          <div class="step-label">維度一（按交易對象分類）：此組帳戶屬於「人名帳戶」還是「非人名帳戶」？</div>
+          <div class="grid-2">
+            <button class="opt-tile ${lcPick.p === '人名帳戶' ? 'picked' : ''}" onclick="setLcPick('p','人名帳戶')">
+              👤 人名帳戶
+            </button>
+            <button class="opt-tile ${lcPick.p === '非人名帳戶' ? 'picked' : ''}" onclick="setLcPick('p','非人名帳戶')">
+              📦 非人名帳戶
+            </button>
+          </div>
+
+          <div class="step-label">維度二（按期末是否結清分類）：此組帳戶屬於「虛帳戶」還是「實帳戶」？</div>
+          <div class="grid-2">
+            <button class="opt-tile ${lcPick.r === '虛帳戶（臨時帳戶）' ? 'picked' : ''}" onclick="setLcPick('r','虛帳戶（臨時帳戶）')">
+              💨 虛帳戶（臨時帳戶）
+            </button>
+            <button class="opt-tile ${lcPick.r === '實帳戶（永久性帳戶）' ? 'picked' : ''}" onclick="setLcPick('r','實帳戶（永久性帳戶）')">
+              🏛️ 實帳戶（永久性帳戶）
+            </button>
+          </div>
+
+          <div class="feedback-pop" id="lcFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${ledgerClassItems.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一帳戶</button>
+          <button class="nav-btn primary-action" onclick="nextOrSwitch(${ledgerClassItems.length}, 2)">
+            ${idx === ledgerClassItems.length - 1 ? '進入「營運資金計算機」 →' : '下一帳戶 →'}
+          </button>
+        </div>
+      `;
+
+      if (lcPick.p && lcPick.r) {
+        const fb = document.getElementById("lcFb");
+        fb.style.display = "block";
+        const pOk = (lcPick.p === item.pAns);
+        const rOk = (lcPick.r === item.rAns);
+        if (pOk && rOk) {
+          addScore(20, `1_lc_${idx}`);
+          fb.className = "feedback-pop fb-ok";
+          fb.innerHTML = `🎯 <strong>雙維度分類完全正確！（+20 分）</strong><br>${item.exp}`;
+        } else {
+          breakCombo();
+          fb.className = "feedback-pop fb-err";
+          fb.innerHTML = `⚠️ <strong>分類有誤！</strong><br>• 維度一：${pOk ? '✓ 正確' : '✗ 應為「' + item.pAns + '」'}<br>• 維度二：${rOk ? '✓ 正確' : '✗ 應為「' + item.rAns + '」'}<br>${item.exp}`;
+        }
+      }
+    }
+  }
+
+  function checkBoundaryAns(oIdx) {
+    const idx = subIdx[1];
+    const item = boundaryItems[idx];
+    const fb = document.getElementById("bdFb");
+    fb.style.display = "block";
+    if (item.opts[oIdx] === item.ans) {
+      addScore(15, `1_bd_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🎯 <strong>分類精準無誤！（+15 分）</strong><br>${item.exp}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `❌ <strong>再想一想！</strong><br>${item.exp}`;
+    }
+  }
+
+  function setLcPick(key, val) {
+    lcPick[key] = val;
+    renderMod2Mode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 3：營運資金與資本計算機 ====================
+  function renderWcCalcMode(stage) {
+    const idx = subIdx[2];
+    const cc = wcCalcCases[idx];
+
+    const buildStepBox = (qTitle, optsArr, sIdx) => {
+      const btns = optsArr.map((o, oIdx) =>
+        `<button class="calc-opt-btn ${cStepPicks[sIdx] === oIdx ? 'picked' : ''}" onclick="pickWcStep(${sIdx}, ${oIdx})">${o.text}</button>`
+      ).join("");
+      return `
+        <div class="calc-step-box">
+          <div class="calc-step-q">${qTitle}</div>
+          ${btns}
+        </div>
+      `;
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🧮 ${cc.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoSolveWcCalc()">💡 示範三步滿分計算</button>
+            ${buildDots(wcCalcCases.length)}
+          </div>
+        </div>
+
+        <div class="invoice-card">
+          <div class="inv-title">${cc.cardTitle}</div>
+          <div class="inv-body">${cc.cardHtml}</div>
+        </div>
+
+        <div class="calc-steps-grid">
+          ${buildStepBox(cc.q1, cc.opts1, 0)}
+          ${buildStepBox(cc.q2, cc.opts2, 1)}
+          ${buildStepBox(cc.q3, cc.opts3, 2)}
+        </div>
+
+        <div class="feedback-pop" id="wcFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${wcCalcCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一實戰題</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${wcCalcCases.length}, 3)">
+          ${idx === wcCalcCases.length - 1 ? '進入「磁力積木砌答案」 →' : '下一實戰題 →'}
+        </button>
+      </div>
+    `;
+
+    if (cStepPicks[0] !== null && cStepPicks[1] !== null && cStepPicks[2] !== null) {
+      const fb = document.getElementById("wcFb");
+      fb.style.display = "block";
+      const ok0 = cc.opts1[cStepPicks[0]].ok;
+      const ok1 = cc.opts2[cStepPicks[1]].ok;
+      const ok2 = cc.opts3[cStepPicks[2]].ok;
+      if (ok0 && ok1 && ok2) {
+        addScore(25, `2_${idx}`);
+        fb.className = "feedback-pop fb-ok";
+        fb.innerHTML = `🏆 <strong>三步計算全數命中！（+25 分）</strong><br>${cc.exp}`;
+      } else {
+        breakCombo();
+        fb.className = "feedback-pop fb-err";
+        fb.innerHTML = `⚠️ <strong>部分步驟有誤：</strong> 第 1 步 [${ok0 ? '✓' : '✗'}] ｜ 第 2 步 [${ok1 ? '✓' : '✗'}] ｜ 第 3 步 [${ok2 ? '✓' : '✗'}]<br>${cc.exp}`;
+      }
+    }
+  }
+
+  function pickWcStep(sIdx, oIdx) {
+    cStepPicks[sIdx] = oIdx;
+    renderWcCalcMode(document.getElementById("mainStage"));
+  }
+
+  function autoSolveWcCalc() {
+    const cc = wcCalcCases[subIdx[2]];
+    cStepPicks[0] = cc.opts1.findIndex(o => o.ok);
+    cStepPicks[1] = cc.opts2.findIndex(o => o.ok);
+    cStepPicks[2] = cc.opts3.findIndex(o => o.ok);
+    renderWcCalcMode(document.getElementById("mainStage"));
+  }
+
+  // ==================== 渲染模組 4：磁力積木砌答案 ====================
+  function renderLegoMode(stage) {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    let trayHtml = "";
+    if (legoPicked[0] === null && legoPicked[1] === null && legoPicked[2] === null) {
+      trayHtml = `<span class="tray-placeholder">👇 三步積木的長度與格式均已對稱設計並隨機洗牌！請依序點擊「🟦 積木 1」＋「🟨 積木 2」＋「🟩 積木 3」拼出滿分答案</span>`;
+    } else {
+      const colors = ["chip-step0", "chip-step1", "chip-step2"];
+      const stepLabels = ["🟦 要點一", "🟨 要點二", "🟩 要點三"];
+      legoPicked.forEach((pk, sIdx) => {
+        if (pk !== null) {
+          const obj = item[`step${sIdx}`][pk];
+          trayHtml += `<span class="slot-chip ${colors[sIdx]}" onclick="removeLego(${sIdx})">${stepLabels[sIdx]}：${obj.text} ✖</span>`;
+        }
+      });
+    }
+
+    const buildPool = (stepArr, sIdx, tagLabel, tagBg, tagColor) => {
+      return stepArr.map((blk, bIdx) => {
+        const isSel = (legoPicked[sIdx] === bIdx);
+        return `
+          <button class="mag-block ${isSel ? 'selected' : ''}" onclick="pickLego(${sIdx}, ${bIdx})">
+            <span class="block-tag" style="background:${tagBg}; color:${tagColor};">${tagLabel} ${isSel ? '✓ 已選' : ''}</span>
+            <div>${blk.text}</div>
+          </button>
+        `;
+      }).join("");
+    };
+
+    stage.innerHTML = `
+      <div>
+        <div class="level-header">
+          <span class="level-title">🧲 ${item.title}</span>
+          <div class="dots-nav">
+            <button class="helper-btn" onclick="autoFillCorrectLego()">💡 示範滿分拼法</button>
+            ${buildDots(legoChallenges.length)}
+          </div>
+        </div>
+        <div class="question-strip">${item.q}</div>
+        <div class="tray-header">
+          <span style="font-size:calc(13.5px * var(--scale)); font-weight:900;">📥 你的磁力答題槽（揀齊 3 塊積木即自動批改）：</span>
+          <button class="helper-btn" onclick="resetAndShuffleLego()">🔄 清空並重新隨機排列積木</button>
+        </div>
+        <div class="tray-box">${trayHtml}</div>
+        <div class="blocks-section-title">1️⃣ 第一步：點選「第一方面核心概念積木」</div>
+        <div class="blocks-pool">${buildPool(item.step0, 0, "🟦 要點一", "#dbeafe", "#1e3a8a")}</div>
+        <div class="blocks-section-title">2️⃣ 第二步：點選「第二方面報表分析或機制積木」</div>
+        <div class="blocks-pool">${buildPool(item.step1, 1, "🟨 要點二", "#fef3c7", "#92400e")}</div>
+        <div class="blocks-section-title">3️⃣ 第三步：點選「第三方面對比或完整結論積木」</div>
+        <div class="blocks-pool">${buildPool(item.step2, 2, "🟩 要點三", "#d1fae5", "#065f46")}</div>
+        <div class="feedback-pop" id="legoFb"></div>
+      </div>
+      <div class="footer-nav">
+        <button class="nav-btn" onclick="moveSub(-1, ${legoChallenges.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+        <button class="nav-btn primary-action" onclick="nextOrSwitch(${legoChallenges.length}, 4)">
+          ${idx === legoChallenges.length - 1 ? '進入「捉錯與消去擂台」 →' : '下一題 →'}
+        </button>
+      </div>
+    `;
+
+    if (legoPicked[0] !== null && legoPicked[1] !== null && legoPicked[2] !== null) evaluateLego();
+  }
+
+  function pickLego(sIdx, bIdx) { legoPicked[sIdx] = bIdx; renderLegoMode(document.getElementById("mainStage")); }
+  function removeLego(sIdx) { legoPicked[sIdx] = null; renderLegoMode(document.getElementById("mainStage")); }
+  function resetAndShuffleLego() {
+    const ch = legoChallenges[subIdx[3]];
+    ch.step0 = shuffle(ch.step0);
+    ch.step1 = shuffle(ch.step1);
+    ch.step2 = shuffle(ch.step2);
+    legoPicked = [null, null, null];
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+  function autoFillCorrectLego() {
+    const item = legoChallenges[subIdx[3]];
+    legoPicked[0] = item.step0.findIndex(b => b.ok);
+    legoPicked[1] = item.step1.findIndex(b => b.ok);
+    legoPicked[2] = item.step2.findIndex(b => b.ok);
+    renderLegoMode(document.getElementById("mainStage"));
+  }
+
+  function evaluateLego() {
+    const idx = subIdx[3];
+    const item = legoChallenges[idx];
+    const b0 = item.step0[legoPicked[0]], b1 = item.step1[legoPicked[1]], b2 = item.step2[legoPicked[2]];
+    const fb = document.getElementById("legoFb");
+    fb.style.display = "block";
+    if (b0.ok && b1.ok && b2.ok) {
+      addScore(20, `3_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `🏆 <strong>磁力積木拼合完美！穩奪滿分！（+20 分）</strong><br>✨ <strong>合成標準答案</strong>：「<strong>${b0.text}</strong>。<strong>${b1.text}</strong>；<strong>${b2.text}</strong>」`;
+    } else {
+      breakCombo();
+      let errs = [];
+      if (!b0.ok) errs.push(`• 🟦 <strong>要點一積木有誤</strong>：${b0.err}`);
+      if (!b1.ok) errs.push(`• 🟨 <strong>要點二積木有誤</strong>：${b1.err}`);
+      if (!b2.ok) errs.push(`• 🟩 <strong>要點三積木有誤</strong>：${b2.err}`);
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⚠️ <strong>積木組合存在失分陷阱（請直接點擊下方正確積木替換）：</strong><br>${errs.join("<br>")}`;
+    }
+  }
+
+  // ==================== 渲染模組 5：紅筆捉錯 ＆ 選擇題消去雙擂台 ====================
+  function switchMod5Sub(s) {
+    mod5Sub = s;
+    subIdx[4] = 0;
+    elimState = { 1: null, 2: null, 3: null };
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function renderArenaMode(stage) {
+    const idx = subIdx[4];
+    const topSwitch = `
+      <div class="sub-mode-bar">
+        <button class="sub-mode-btn ${mod5Sub === 0 ? 'active' : ''}" onclick="switchMod5Sub(0)">🖍️ 挑戰 A：紅筆捉錯（點擊答卷錯句）</button>
+        <button class="sub-mode-btn ${mod5Sub === 1 ? 'active' : ''}" onclick="switchMod5Sub(1)">🏆 挑戰 B：組合選擇題消去法神器</button>
+      </div>
+    `;
+
+    if (mod5Sub === 0) {
+      const item = redPenCases[idx];
+      const nums = ["①", "②", "③"];
+      const chipsHtml = item.chips.map((ch, cIdx) => `
+        <div class="sentence-chip" id="rpChip_${cIdx}" onclick="checkRedPen(${cIdx})">
+          <span>${nums[cIdx]} ${ch.text}</span>
+          <span style="font-size:calc(13px * var(--scale)); color:var(--rose); font-weight:900; white-space:nowrap;">🖍️ 點此捉錯</span>
+        </div>
+      `).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🖍️ ${item.title}</span>
+            <div class="dots-nav">${buildDots(redPenCases.length, "4_rp")}</div>
+          </div>
+          <div class="question-strip">${item.q}</div>
+          <div class="paper-sheet">
+            <div style="font-weight:900; color:var(--rose); margin-bottom:10px; font-size:calc(14px * var(--scale));">
+              🖍️ 句子次序已隨機洗牌，請點擊藏有嚴重財務狀況表概念、使用者或限制錯誤的那一句：
+            </div>
+            <div class="sentence-chips-wrap">${chipsHtml}</div>
+          </div>
+          <div class="feedback-pop" id="rpFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${redPenCases.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="${idx === redPenCases.length - 1 ? 'switchMod5Sub(1)' : `moveSub(1, ${redPenCases.length})`}">
+            ${idx === redPenCases.length - 1 ? '進入「挑戰 B：選擇題消去法」 →' : '下一題 →'}
+          </button>
+        </div>
+      `;
+    } else {
+      const item = elimMCs[idx];
+      const stmtsHtml = item.stmts.map(st => {
+        const curVal = elimState[st.id];
+        return `
+          <div class="elim-stmt-row">
+            <div class="elim-stmt-text">${st.text}</div>
+            <div class="elim-toggles">
+              <button class="elim-btn ${curVal === true ? 't-true' : ''}" onclick="toggleElim(${st.id}, true)">⭕ 正確</button>
+              <button class="elim-btn ${curVal === false ? 't-false' : ''}" onclick="toggleElim(${st.id}, false)">❌ 錯誤</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const optsHtml = item.options.map((opt, oIdx) => {
+        let isElim = false;
+        [1, 2, 3].forEach(sId => {
+          if (elimState[sId] === true && opt.reqFalse.includes(sId)) isElim = true;
+          if (elimState[sId] === false && opt.reqTrue.includes(sId)) isElim = true;
+        });
+        return `<button class="mc-card-btn ${isElim ? 'eliminated' : ''}" onclick="checkElimMc(${oIdx})">${opt.label}</button>`;
+      }).join("");
+
+      stage.innerHTML = `
+        <div>
+          ${topSwitch}
+          <div class="level-header">
+            <span class="level-title">🏆 ${item.title}</span>
+            <div class="dots-nav">${buildDots(elimMCs.length, "4_mc")}</div>
+          </div>
+          <div class="question-strip">${item.stem}</div>
+          <p style="font-size:calc(14px * var(--scale)); font-weight:800; color:var(--teal); margin-bottom:8px;">
+            💡 消去法神器：本題可能只有 1 項、2 項或全部 3 項正確！請先在右方標記「⭕ 正確」或「❌ 錯誤」自動劃走錯項！
+          </p>
+          <div>${stmtsHtml}</div>
+          <div class="mc-options-row">${optsHtml}</div>
+          <div class="feedback-pop" id="elimFb"></div>
+        </div>
+        <div class="footer-nav">
+          <button class="nav-btn" onclick="moveSub(-1, ${elimMCs.length})" ${idx === 0 ? 'style="visibility:hidden"' : ''}>← 上一題</button>
+          <button class="nav-btn primary-action" onclick="moveSub(1, ${elimMCs.length})" ${idx === elimMCs.length - 1 ? 'style="visibility:hidden"' : ''}>下一題 →</button>
+        </div>
+      `;
+    }
+  }
+
+  function checkRedPen(cIdx) {
+    const idx = subIdx[4];
+    const item = redPenCases[idx];
+    const ch = item.chips[cIdx];
+    const nums = ["①", "②", "③"];
+    const el = document.getElementById(`rpChip_${cIdx}`);
+    const fb = document.getElementById("rpFb");
+    fb.style.display = "block";
+    if (ch.isFlaw) {
+      el.className = "sentence-chip flaw-found";
+      addScore(20, `4_rp_${idx}`);
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🖍️ 紅筆精準捉錯（第 ${nums[cIdx]} 句得 0 分）！</strong><br>${item.exp}`;
+    } else {
+      el.className = "sentence-chip good-clicked";
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = `⭕ <strong>第 ${nums[cIdx]} 句是完全正確的課本陳述！</strong> 請再檢查其餘句子找出真正的概念或格式陷阱！`;
+    }
+  }
+
+  function toggleElim(sId, val) {
+    elimState[sId] = (elimState[sId] === val) ? null : val;
+    renderArenaMode(document.getElementById("mainStage"));
+  }
+
+  function checkElimMc(oIdx) {
+    const idx = subIdx[4];
+    const item = elimMCs[idx];
+    const fb = document.getElementById("elimFb");
+    fb.style.display = "block";
+    if (oIdx === item.ansIdx) {
+      addScore(20, `4_mc_${idx}`);
+      const breakdown = item.stmts.map(s => `• <strong>陳述 (${s.id}) ${s.isTrue ? '⭕ 正確' : '❌ 錯誤'}</strong>：${s.exp}`).join("<br>");
+      fb.className = "feedback-pop fb-ok";
+      fb.innerHTML = `<strong>🏆 答對了！標準答案：${item.options[item.ansIdx].label}</strong><br>${breakdown}`;
+    } else {
+      breakCombo();
+      fb.className = "feedback-pop fb-err";
+      fb.innerHTML = "❌ <strong>選項不正確！</strong> 試試先在上方逐句判斷 (1)、(2)、(3) 的對錯，利用消去法鎖定答案！";
+    }
+  }
+
+  randomizeAllData();
+  renderStage();
+</script>
+</body>
+</html>
